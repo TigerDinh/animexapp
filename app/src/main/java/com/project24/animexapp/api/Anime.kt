@@ -60,3 +60,13 @@ data class AnimeSearchResponse(
     @Json(name = "data")
     val result: List<Anime>
 )
+
+data class UserFavouriteAnime(
+    @Json(name = "anime")
+    val result: List<Anime>
+)
+
+data class UserFavouritesResponse(
+    @Json(name = "data")
+    val result: UserFavouriteAnime
+)

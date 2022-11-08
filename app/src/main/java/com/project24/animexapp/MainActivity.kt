@@ -37,27 +37,5 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        /*
-        val client = JikanApiClient.apiService.requestAnimeByStatus("airing")
-
-        client.enqueue(object: Callback<AnimeSearchResponse> {
-            override fun onResponse(
-                call: Call<AnimeSearchResponse>,
-                response: Response<AnimeSearchResponse>
-            ){
-                if(response.isSuccessful){
-                    Log.d("anime",""+response.body()!!.result)
-                }
-            }
-
-            override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
-                Log.e("API FAIL",""+t.message)
-            }
-        })
-
-         */
-
-
-
     }
 }
