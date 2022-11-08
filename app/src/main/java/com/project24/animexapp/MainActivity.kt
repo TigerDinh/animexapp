@@ -1,13 +1,18 @@
 package com.project24.animexapp
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.ActivityMainBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,5 +36,25 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val client = JikanApiClient.apiService.requestAnime("airing")
+
+        client.enqueue(object: Callback<AnimeSearchResponse> {
+            override fun onResponse(
+                call: Call<AnimeSearchResponse>,
+                response: Response<AnimeSearchResponse>
+            ){
+                if(response.isSuccessful){
+                    Log.d("anime",""+response.body()!!.result)
+                }
+            }
+
+            override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
+                Log.e("API FAIL",""+t.message)
+            }
+        })
+
+
+
     }
 }
