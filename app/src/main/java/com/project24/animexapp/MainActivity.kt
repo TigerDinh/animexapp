@@ -37,7 +37,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val client = JikanApiClient.apiService.requestAnime("airing")
+        /*
+        val client = JikanApiClient.apiService.requestAnimeByStatus("airing")
 
         client.enqueue(object: Callback<AnimeSearchResponse> {
             override fun onResponse(
@@ -53,6 +54,8 @@ class MainActivity : AppCompatActivity() {
                 Log.e("API FAIL",""+t.message)
             }
         })
+
+         */
 
 
 
