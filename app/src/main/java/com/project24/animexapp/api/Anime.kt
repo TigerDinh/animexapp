@@ -27,7 +27,21 @@ data class Anime(
 
     @Json(name = "score")
     val score: Double?,
+
+    @Json(name = "trailer")
+    val trailerData: TrailerData?,
     )
+
+data class TrailerData(
+    @Json(name = "youtube_id")
+    val youtubeID: String?,
+
+    @Json(name = "url")
+    val youtubeURL: String?,
+
+    @Json(name = "embed_url")
+    val youtubeEmbedURL: String?,
+)
 
 data class AnimeImage(
     @Json(name = "jpg")
