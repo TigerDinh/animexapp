@@ -1,13 +1,18 @@
 package com.project24.animexapp.ui.home
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.project24.animexapp.LogInActivity
 import com.project24.animexapp.api.AnimeSearchResponse
 import com.project24.animexapp.api.JikanApiClient
 import com.project24.animexapp.api.UserFavouritesResponse
@@ -19,6 +24,7 @@ import retrofit2.Response
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private var isLoggedIn: Boolean = false //Integrate with firebase value
 
@@ -26,21 +32,53 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        firebaseAuth = FirebaseAuth.getInstance()
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        val homeLogInBtn = binding.homeLogInBtn
+        val homeLogOutBtn = binding.homeLogOutBtn
         val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        // get current user's email
+        val currentUser = firebaseAuth.currentUser?.email
+
+
+        // when login button is clicked, go to login activity
+        homeLogInBtn.setOnClickListener {
+            val intent = Intent(activity, LogInActivity::class.java)
+            startActivity(intent)
         }
+
+        // when logged out button is clicked, logout user and hide logout button, show login button
+        homeLogOutBtn.setOnClickListener {
+            firebaseAuth.signOut()
+            Toast.makeText(activity, "Logged out", Toast.LENGTH_SHORT).show()
+            homeLogOutBtn.visibility = View.GONE
+            homeLogInBtn.visibility = View.VISIBLE
+            textView.text = "Welcome to AnimeXApp"
+        }
+
+        // if logged in, hide login button, show logout button, change text to Welcome, User...
+        if(firebaseAuth.currentUser !== null) {
+            homeLogOutBtn.visibility = View.VISIBLE
+            homeLogInBtn.visibility = View.GONE
+            textView.text = "Welcome, $currentUser"
+        // if logged out, hide logout button, show login button
+        } else {
+            homeLogOutBtn.visibility = View.GONE
+            homeLogInBtn.visibility = View.VISIBLE
+            textView.text = "Welcome to AnimeXApp"
+        }
+
+        val user = firebaseAuth.currentUser?.email.toString()
+        Toast.makeText(activity, "Logged in as $user", Toast.LENGTH_SHORT).show()
 
         if(isLoggedIn){
             //Logged In View
@@ -65,13 +103,7 @@ class HomeFragment : Fragment() {
             */
             val username = "B_root" //Some random guy I found and decided to make our testing username lol
             logUserFavourites(username)
-
-
         }
-
-
-
-
         return root
     }
 

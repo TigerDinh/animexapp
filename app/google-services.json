@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "931930619702",
+    "project_id": "animexapp-796df",
+    "storage_bucket": "animexapp-796df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931930619702:android:dcfdfe4c527ae49a67bd97",
+        "android_client_info": {
+          "package_name": "com.project24.animexapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "931930619702-qoaicn55hbbnftmtguk29elahd3djbjf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkGL2PATxqxCsuLZdmYKRnLwDCMeblgfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "931930619702-qoaicn55hbbnftmtguk29elahd3djbjf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
