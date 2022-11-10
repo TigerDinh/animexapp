@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -57,6 +58,7 @@ dependencies {
 
     //Retrofit Logging
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation 'com.google.firebase:firebase-auth:21.1.0'
 
     //Youtube Implementation
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
