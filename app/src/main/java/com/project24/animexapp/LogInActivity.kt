@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.databinding.ActivityLogInBinding
 
 class LogInActivity : AppCompatActivity() {
@@ -15,6 +17,7 @@ class LogInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val db = Firebase.firestore
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
         firebaseAuth = FirebaseAuth.getInstance()
@@ -27,10 +30,15 @@ class LogInActivity : AppCompatActivity() {
             val userEmail = binding.emailInput.text.toString()
             val userPass = binding.passwordInput.text.toString()
 
+
+
+
             if (userEmail.isNotEmpty() && userPass.isNotEmpty()) {
                 firebaseAuth.signInWithEmailAndPassword(userEmail, userPass).addOnCompleteListener {
                     if(it.isSuccessful) {
                         Toast.makeText(this, "Logged in successfully", Toast.LENGTH_SHORT).show()
+
+
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
 

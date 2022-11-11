@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.project24.animexapp.Favourite
 import com.project24.animexapp.LogInActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.Anime
@@ -50,10 +53,16 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         firebaseAuth = FirebaseAuth.getInstance()
+        val db = Firebase.firestore
+
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // get current user's email
+        val currentUserEmail = firebaseAuth.currentUser?.email
+        val currentUserID = firebaseAuth.currentUser?.uid
+        
         val homeLogInBtn = binding.buttonHomeGuestLogin
         val homeLogOutBtn = binding.buttonHomeGuestLogout
         val textView: TextView = binding.textViewHomeGuestLoginStatus
@@ -69,7 +78,18 @@ class HomeFragment : Fragment() {
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
 
 
+        val dummyOne = binding.dummyone
+        val dummyTwo = binding.dummytwo
+        val favourite2 = Favourite(dummyTwo.text.toString())
+        val favourite1 = Favourite(dummyOne.text.toString())
 
+        dummyTwo.setOnClickListener {
+            db.collection("Users").document(currentUserID.toString()).collection("Favourites").add(favourite2)
+        }
+
+        dummyOne.setOnClickListener {
+            db.collection("Users").document(currentUserID.toString()).collection("Favourites").add(favourite1)
+        }
 
         // when login button is clicked, go to login activity
         homeLogInBtn.setOnClickListener {
@@ -86,11 +106,12 @@ class HomeFragment : Fragment() {
             textView.text = "Welcome to AnimeXApp"
         }
 
+
         // if logged in, hide login button, show logout button, change text to Welcome, User...
         if(firebaseAuth.currentUser !== null) {
             homeLogOutBtn.visibility = View.VISIBLE
             homeLogInBtn.visibility = View.GONE
-            textView.text = "Welcome, $currentUser"
+            textView.text = "Welcome, $currentUserEmail"
         // if logged out, hide logout button, show login button
         } else {
             homeLogOutBtn.visibility = View.GONE
@@ -173,7 +194,6 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
-
             override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
                 Log.e("ONGOING ANIME API FAIL",""+t.message)
             }
@@ -197,7 +217,6 @@ class HomeFragment : Fragment() {
                     Log.e("USER FAVS ANIME", response.message()+" "+call.request().url)
                 }
             }
-
             override fun onFailure(call: Call<UserFavouritesResponse>, t: Throwable) {
                 Log.e("USER FAVS API FAIL",""+t.message)
             }
