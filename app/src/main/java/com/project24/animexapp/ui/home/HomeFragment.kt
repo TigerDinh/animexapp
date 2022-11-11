@@ -10,12 +10,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.Favourite
 import com.project24.animexapp.LogInActivity
+import com.project24.animexapp.R
+import com.project24.animexapp.api.Anime
 import com.project24.animexapp.api.AnimeSearchResponse
 import com.project24.animexapp.api.JikanApiClient
 import com.project24.animexapp.api.UserFavouritesResponse
@@ -30,6 +33,14 @@ class HomeFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
 
     private var isLoggedIn: Boolean = false //Integrate with firebase value
+
+    private lateinit var ongoingList: List<Anime>
+    private lateinit var ongoingAnimeRV: RecyclerView
+    private lateinit var ongoingAnimeAdapter: AnimeRVAdapter
+
+    //private lateinit var recommendationsList: List<Anime>
+    //private lateinit var recommendedAnimeRV: RecyclerView
+    //private lateinit var recommendedAnimeAdapter: AnimeRVAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -48,13 +59,24 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val homeLogInBtn = binding.homeLogInBtn
-        val homeLogOutBtn = binding.homeLogOutBtn
-        val textView: TextView = binding.textHome
-
         // get current user's email
         val currentUserEmail = firebaseAuth.currentUser?.email
         val currentUserID = firebaseAuth.currentUser?.uid
+        
+        val homeLogInBtn = binding.buttonHomeGuestLogin
+        val homeLogOutBtn = binding.buttonHomeGuestLogout
+        val textView: TextView = binding.textViewHomeGuestLoginStatus
+        // get current user's email
+        val currentUser = firebaseAuth.currentUser?.email
+        isLoggedIn = firebaseAuth.currentUser !== null //thanks
+
+        ongoingList = emptyList()
+        ongoingAnimeRV = binding.recyclerViewHomeGuestOngoing
+        ongoingAnimeAdapter = AnimeRVAdapter(ongoingList)
+
+        ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        ongoingAnimeRV.adapter = ongoingAnimeAdapter
+
 
         val dummyOne = binding.dummyone
         val dummyTwo = binding.dummytwo
@@ -102,6 +124,24 @@ class HomeFragment : Fragment() {
 
         if(isLoggedIn){
             //Logged In View
+
+            /*
+            The function is a placeholder right now to showcase the working of the api.
+            The client will send a request for ongoing anime.
+            Play around with the params to get different kinds of anime results.
+            See the JikanApiService interface, at the JikanApiClient file for the options
+            See the api docs to see the possible values for the params.
+            */
+            logOngoingAnime()
+            //Log.d("ONGOING ANIME OUTSIDE",""+ongoingList.toString())
+            /*
+            This function will be useful as a starting point for importing user favourites.
+            It takes in a userID (set to some random guy for now) and logs the favourite anime
+            of that user.
+            After implementing login, we can search for a user and add their favs to our acct.
+            */
+            val username = "B_root" //Some random guy I found and decided to make our testing username lol
+            logUserFavourites(username)
         }
         else{
             //Not Logged In View
@@ -142,8 +182,15 @@ class HomeFragment : Fragment() {
             ){
                 if(response.isSuccessful){
                     if(response.body() != null){
-                        val ongoingList = response.body()!!.result
-                        Log.d("ONGOING ANIME",""+ongoingList.toString())
+                        ongoingList = response.body()!!.result
+
+                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+
+                        ongoingAnimeAdapter.animeList = ongoingList
+                        ongoingAnimeAdapter.notifyDataSetChanged()
+
+
+                        //Log.d("ONGOING ANIME",""+ongoingList.toString())
                     }
                 }
             }
