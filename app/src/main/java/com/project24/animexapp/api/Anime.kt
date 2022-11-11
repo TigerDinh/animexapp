@@ -84,3 +84,8 @@ data class UserFavouritesResponse(
     @Json(name = "data")
     val result: UserFavouriteAnime
 )
+
+data class AnimeSearchByIDResponse(
+    @Json(name = "data")
+    val animeData : Anime,
+)

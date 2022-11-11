@@ -75,4 +75,8 @@ interface JikanApiService{
     ) : Call<UserFavouritesResponse>
 
 
+    @GET("anime/{id}/full")
+    fun getAnimeByID(
+        @Path("id") id : Long,
+    ) : Call<AnimeSearchByIDResponse>
 }
