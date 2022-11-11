@@ -61,7 +61,8 @@ class HomeFragment : Fragment() {
         val currentUser = firebaseAuth.currentUser?.email
         isLoggedIn = firebaseAuth.currentUser !== null //thanks
 
-        ongoingAnimeRV = requireView().findViewById(R.id.recyclerViewHomeGuestOngoing)
+        ongoingList = emptyList()
+        ongoingAnimeRV = binding.recyclerViewHomeGuestOngoing
         ongoingAnimeAdapter = AnimeRVAdapter(ongoingList)
 
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)

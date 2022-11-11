@@ -63,7 +63,7 @@ interface JikanApiService{
         @Query("order_by") orderBy:String? = null, //Options: "mal_id", "title", "type", "rating", "start_date", "end_date", "episodes", "score", "scored_by", "rank", "popularity", "members", "favorites"
         //Defaulted Params:
         @Query("sfw") sfw:Boolean = true, //Don't want inappropriate stuff
-        @Query("limit") limit:Int = 3 //switch to null when testing function calls in depth.
+        @Query("limit") limit:Int = 10 //switch to null when testing function calls in depth.
     ) : Call<AnimeSearchResponse>
 
 
