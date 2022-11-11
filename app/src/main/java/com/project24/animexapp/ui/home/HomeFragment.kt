@@ -65,7 +65,7 @@ class HomeFragment : Fragment() {
         
         val homeLogInBtn = binding.buttonHomeGuestLogin
         val homeLogOutBtn = binding.buttonHomeGuestLogout
-        val textView: TextView = binding.textViewHomeGuestLoginStatus
+        val textView: TextView = binding.textViewHomeGuestLoginText
         // get current user's email
         val currentUser = firebaseAuth.currentUser?.email
         isLoggedIn = firebaseAuth.currentUser !== null //thanks
