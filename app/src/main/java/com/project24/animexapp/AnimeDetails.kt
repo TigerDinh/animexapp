@@ -12,7 +12,7 @@ class AnimeDetails : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val extras = intent.extras
         if(extras!=null)
-            Log.d("MAL_ID",extras.getString("ANIME_ID","oOPS"))
+            Log.d("MAL_ID", extras.getLong("ANIME_ID",-1).toString())
         setContentView(R.layout.activity_anime_details)
     }
 }
