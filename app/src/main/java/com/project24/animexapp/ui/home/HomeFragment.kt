@@ -163,13 +163,13 @@ class HomeFragment : Fragment() {
                     if(response.body() != null){
                         ongoingList = response.body()!!.result
 
-                        //PASS THE LIST TO THE ADAPTRER AND REFRESH IT
+                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
 
                         ongoingAnimeAdapter.animeList = ongoingList
                         ongoingAnimeAdapter.notifyDataSetChanged()
 
 
-                        Log.d("ONGOING ANIME",""+ongoingList.toString())
+                        //Log.d("ONGOING ANIME",""+ongoingList.toString())
                     }
                 }
             }
