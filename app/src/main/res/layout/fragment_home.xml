@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Anime x App"
+        android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="20sp"/>
 
@@ -19,7 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login Text"
-        android:gravity="right"
+        android:textColor="@color/black"
+        android:gravity="end"
         android:layout_alignParentEnd="true"/>
 
     <TextView
@@ -28,9 +30,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewHomeGuestTitle"
         android:text="Ongoing"
-        android:textStyle="bold"
+        android:textColor="@color/black"
         android:textSize="15sp"
-        android:paddingTop="10dp"/>
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHomeGuestOngoing"
@@ -48,9 +51,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/recyclerViewHomeGuestOngoing"
         android:text="Recommendations"
-        android:textStyle="bold"
+        android:textColor="@color/black"
         android:textSize="15sp"
-        android:paddingTop="10dp"/>
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHomeGuestRecommendations"
@@ -68,6 +72,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Login to get personalized recommendations based on the anime you love."
+        android:textColor="@color/black"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/recyclerViewHomeGuestRecommendations"
         android:paddingTop="10dp"/>

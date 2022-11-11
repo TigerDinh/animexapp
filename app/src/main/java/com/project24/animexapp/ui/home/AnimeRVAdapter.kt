@@ -48,7 +48,7 @@ class AnimeRVAdapter(var animeList : List<Anime>): RecyclerView.Adapter<AnimeRVA
 
         fun bindAnime(anime: Anime) {
             this.anime = anime
-            Glide.with(view.context).load(anime.imageData!!.jpg!!.URL).into(view.findViewById<ImageView>(R.id.anime_image))
+            Glide.with(view.context).load(anime.imageData!!.jpg!!.URL).centerCrop().into(view.findViewById<ImageView>(R.id.anime_image))
             view.findViewById<TextView>(R.id.anime_title).text = anime.title
         }
 
