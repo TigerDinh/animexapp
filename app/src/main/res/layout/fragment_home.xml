@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:paddingTop="50dp"
+    android:paddingTop="40dp"
     android:paddingStart="5dp"
     android:paddingEnd="5dp"
     android:paddingBottom="50dp">
@@ -17,8 +17,7 @@
         android:text="Ongoing"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"/>
+        android:paddingBottom="2dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHomeGuestOngoing"
@@ -36,8 +35,7 @@
         android:text="Recommendations"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:paddingTop="10dp"
-        android:paddingBottom="5dp"/>
+        android:paddingBottom="2dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHomeGuestRecommendations"
@@ -56,7 +54,7 @@
         android:text="Login to get personalized recommendations based on the anime you love."
         android:textColor="@color/black"
         android:layout_gravity="center"
-        android:paddingTop="10dp"/>
+        android:paddingTop="5dp"/>
     <Button
         android:id="@+id/buttonHomeGuestLogin"
         android:layout_width="100dp"

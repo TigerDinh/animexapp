@@ -77,6 +77,13 @@ class HomeFragment : Fragment() {
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
 
+        //Added by matthew
+        var recommendedAnimeRV = binding.recyclerViewHomeGuestRecommendations
+
+        recommendedAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        recommendedAnimeRV.adapter = ongoingAnimeAdapter
+        //////////
+
 
         val dummyOne = binding.dummyone
         val dummyTwo = binding.dummytwo
