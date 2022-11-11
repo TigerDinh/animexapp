@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textViewHomeGuestTitle"
@@ -15,6 +14,24 @@
         android:textStyle="bold"
         android:textSize="20sp"/>
 
+    <TextView
+        android:id="@+id/textViewHomeGuestLoginStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login Text"
+        android:gravity="right"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/textViewHomeGuestOngoing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewHomeGuestTitle"
+        android:text="Ongoing"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:paddingTop="10dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHomeGuestOngoing"
         android:layout_width="match_parent"
@@ -22,9 +39,18 @@
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_below="@+id/textViewHomeGuestTitle"
-        android:paddingTop="50dp"
+        android:layout_below="@+id/textViewHomeGuestOngoing"
         tools:listitem="@layout/listitem_anime"/>
+
+    <TextView
+        android:id="@+id/textViewHomeGuestRecommendations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recyclerViewHomeGuestOngoing"
+        android:text="Recommendations"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:paddingTop="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHomeGuestRecommendations"
@@ -33,8 +59,7 @@
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_below="@+id/recyclerViewHomeGuestOngoing"
-        android:paddingTop="50dp"
+        android:layout_below="@+id/textViewHomeGuestRecommendations"
         tools:listitem="@layout/listitem_anime"/>
 
     <TextView
@@ -45,14 +70,22 @@
         android:text="Login to get personalized recommendations based on the anime you love."
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/recyclerViewHomeGuestRecommendations"
-        android:paddingTop="100dp"/>
+        android:paddingTop="10dp"/>
     <Button
         android:id="@+id/buttonHomeGuestLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:text="Login"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/textViewHomeGuestLoginText"
         android:backgroundTint="@color/main_color"/>
+    <Button
+        android:id="@+id/buttonHomeGuestLogout"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="Logout"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/buttonHomeGuestLogin"
+        android:backgroundTint="@color/warning"/>
 
 </RelativeLayout>

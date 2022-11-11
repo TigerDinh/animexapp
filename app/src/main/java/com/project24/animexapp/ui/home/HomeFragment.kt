@@ -43,9 +43,9 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val homeLogInBtn = binding.homeLogInBtn
-        val homeLogOutBtn = binding.homeLogOutBtn
-        val textView: TextView = binding.textHome
+        val homeLogInBtn = binding.buttonHomeGuestLogin
+        val homeLogOutBtn = binding.buttonHomeGuestLogout
+        val textView: TextView = binding.textViewHomeGuestLoginStatus
         // get current user's email
         val currentUser = firebaseAuth.currentUser?.email
 
