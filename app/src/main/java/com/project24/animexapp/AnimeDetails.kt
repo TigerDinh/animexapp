@@ -60,7 +60,7 @@ class AnimeDetails : AppCompatActivity() {
     }
 
     private fun setAnimeDetails(animeData: Anime) {
-        val txt = findViewById<TextView>(R.id.animeDataTextView)
+        val txt = findViewById<TextView>(R.id.textViewAnimeDetailsTitle)
         txt.text = animeData.title
 
         if (animeData.trailerData?.youtubeID == null){

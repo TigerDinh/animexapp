@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:paddingTop="50dp">
+    android:paddingTop="50dp"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    android:paddingBottom="50dp">
 
     <TextView
         android:id="@+id/textViewHomeGuestOngoing"
@@ -24,14 +27,12 @@
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_below="@+id/textViewHomeGuestOngoing"
         tools:listitem="@layout/listitem_anime"/>
 
     <TextView
         android:id="@+id/textViewHomeGuestRecommendations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recyclerViewHomeGuestOngoing"
         android:text="Recommendations"
         android:textColor="@color/black"
         android:textSize="15sp"
@@ -45,7 +46,6 @@
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_below="@+id/textViewHomeGuestRecommendations"
         tools:listitem="@layout/listitem_anime"/>
 
     <TextView
@@ -55,24 +55,21 @@
         android:gravity="center"
         android:text="Login to get personalized recommendations based on the anime you love."
         android:textColor="@color/black"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/recyclerViewHomeGuestRecommendations"
+        android:layout_gravity="center"
         android:paddingTop="10dp"/>
     <Button
         android:id="@+id/buttonHomeGuestLogin"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="Login"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textViewHomeGuestLoginText"
+        android:layout_gravity="center"
         android:backgroundTint="@color/main_color"/>
     <Button
         android:id="@+id/buttonHomeGuestLogout"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="Logout"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/buttonHomeGuestLogin"
+        android:layout_gravity="center"
         android:backgroundTint="@color/warning"/>
 
 
@@ -82,8 +79,7 @@
         android:layout_height="wrap_content"
         android:text="5114"
         android:textColor="@color/black"
-        android:backgroundTint="@color/main_color"
-        android:layout_below="@id/buttonHomeGuestLogout"/>
+        android:backgroundTint="@color/main_color"/>
 
     <Button
         android:id="@+id/dummytwo"
@@ -91,7 +87,6 @@
         android:layout_height="wrap_content"
         android:text="6161"
         android:textColor="@color/black"
-        android:backgroundTint="@color/main_color"
-        android:layout_below="@id/dummyone"/>
+        android:backgroundTint="@color/main_color"/>
 
-</RelativeLayout>
+</LinearLayout>

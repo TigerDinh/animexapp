@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main_color">#7cb518</color>
     <color name="warning">#da1e37</color>
+    <color name="placehold_gray">#DDDDDD</color>
+    <color name="transparent">#00000000</color>
 </resources>
