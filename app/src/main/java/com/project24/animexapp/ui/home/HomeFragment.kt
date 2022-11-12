@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.project24.animexapp.Favourite
 import com.project24.animexapp.LogInActivity
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
@@ -35,8 +34,8 @@ class HomeFragment : Fragment() {
     private lateinit var ongoingAnimeAdapter: AnimeRVAdapter
 
     private lateinit var recommendationsList: List<Anime>
-    //private lateinit var recommendedAnimeRV: RecyclerView
-    //private lateinit var recommendedAnimeAdapter: AnimeRVAdapter
+    private lateinit var recommendedAnimeRV: RecyclerView
+    private lateinit var recommendedAnimeAdapter: AnimeRVAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -73,11 +72,16 @@ class HomeFragment : Fragment() {
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
 
-        //Added by matthew
-        var recommendedAnimeRV = binding.recyclerViewHomeGuestRecommendations
+        recommendationsList = emptyList()
+        recommendedAnimeRV = binding.RecForYouRV
+        recommendedAnimeAdapter = AnimeRVAdapter(recommendationsList)
+        recommendedAnimeRV.adapter = recommendedAnimeAdapter
 
-        recommendedAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-        recommendedAnimeRV.adapter = ongoingAnimeAdapter
+        //Added by matthew
+        var guestRecommendedAnimeRV = binding.recyclerViewHomeGuestRecommendations
+
+        guestRecommendedAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        guestRecommendedAnimeRV.adapter = ongoingAnimeAdapter
         //////////
 
 
@@ -173,9 +177,14 @@ class HomeFragment : Fragment() {
             ){
                 if(response.isSuccessful){
                     if(response.body() != null){
-                        recommendationsList = response.body()!!.result
+                        val animeEntries = response.body()!!.result
+                        for (animeEntry in animeEntries){
+                            recommendationsList = recommendationsList.plus(animeEntry.animeData)
+                        }
 
                         //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+                        recommendedAnimeAdapter.animeList = recommendationsList
+                        recommendedAnimeAdapter.notifyDataSetChanged()
 
                         //ongoingAnimeAdapter.animeList = ongoingList
                         //ongoingAnimeAdapter.notifyDataSetChanged()

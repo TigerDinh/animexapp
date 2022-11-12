@@ -46,6 +46,15 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/listitem_anime"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecForYouRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/listitem_anime"/>
+
     <TextView
         android:id="@+id/textViewHomeGuestLoginText"
         android:layout_width="170dp"

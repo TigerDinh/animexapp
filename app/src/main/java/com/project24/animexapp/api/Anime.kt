@@ -14,7 +14,7 @@ data class Anime(
     val title: String,
 
     @Json(name = "type")
-    val type: String,
+    val type: String?,
 
     @Json(name="title_english")
     val english_title: String?,
@@ -96,10 +96,14 @@ data class UserFavouritesResponse(
     @Json(name = "data")
     val result: UserFavouriteAnime
 )
+data class AnimeEntry(
+    @Json(name = "entry")
+    val animeData: Anime
+)
 
 data class RecommendationsByIDResponse(
     @Json(name = "data")
-    val result: List<Anime>,
+    val result: List<AnimeEntry>,
 )
 
 data class AnimeSearchByIDResponse(
