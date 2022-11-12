@@ -8,6 +8,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -20,6 +22,7 @@ import com.project24.animexapp.api.AnimeCharacterSearchResponse
 import com.project24.animexapp.api.AnimeSearchByIDResponse
 import com.project24.animexapp.api.Character
 import com.project24.animexapp.api.JikanApiClient
+import com.project24.animexapp.ui.home.AnimeRVAdapter
 import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Callback
@@ -175,7 +178,6 @@ class AnimeDetails : YouTubeBaseActivity() {
     }
 
     private fun setAnimeCharacterDetails(characterList: List<Character>) {
-        // TODO Matthew, use this list to set data about anime characters onto the UI
         /*
         Here's how you can access each character and their data within
         for (character in characterList){
@@ -184,6 +186,17 @@ class AnimeDetails : YouTubeBaseActivity() {
             character.characterData.imageData.webp
         }
          */
+
+        val characterRV = findViewById<RecyclerView>(R.id.recyclerViewAnimeDetailsCharacters)
+
+        var characterAdapter = CharacterRVAdapter(characterList)
+
+        characterRV.layoutManager = LinearLayoutManager(this,
+            LinearLayoutManager.HORIZONTAL,false)
+        characterRV.adapter = characterAdapter
+
+
+
     }
 
     private fun setAnimeDetails(animeData: Anime) {
@@ -229,6 +242,7 @@ class AnimeDetails : YouTubeBaseActivity() {
             return
         }
 
-        // TODO For Matthew, set this synopsis onto the UI
+        var syn = findViewById<TextView>(R.id.textViewAnimeDetailsSynopsis)
+        syn.text = synopsis.dropLast(25)
     }
 }
