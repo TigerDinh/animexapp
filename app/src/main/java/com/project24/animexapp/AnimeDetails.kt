@@ -16,8 +16,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.Anime
+import com.project24.animexapp.api.AnimeCharacterSearchResponse
 import com.project24.animexapp.api.AnimeSearchByIDResponse
+import com.project24.animexapp.api.Character
 import com.project24.animexapp.api.JikanApiClient
+import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,7 +54,6 @@ class AnimeDetails : YouTubeBaseActivity() {
 
 
         //Added by Matthew
-
         var favourite = 0; var watchlater = 0; var watching = 0;
         var favouriteButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsFavourite)
         var watchLaterButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatchLater)
@@ -138,7 +140,6 @@ class AnimeDetails : YouTubeBaseActivity() {
         }
 
         val client = JikanApiClient.apiService.getAnimeByID(animeID)
-
         client.enqueue(object: Callback<AnimeSearchByIDResponse> {
             override fun onResponse(
                 call: Call<AnimeSearchByIDResponse>,
@@ -154,21 +155,56 @@ class AnimeDetails : YouTubeBaseActivity() {
                 Log.e("API FAIL",""+t.message)
             }
         })
+
+        val client2 = JikanApiClient.apiService.getAnimeCharacterById(animeID)
+        client2.enqueue(object: Callback<AnimeCharacterSearchResponse> {
+            override fun onResponse(
+                call: Call<AnimeCharacterSearchResponse>,
+                response: Response<AnimeCharacterSearchResponse>
+            ) {
+                if(response.isSuccessful){
+                    Log.d("Anime Characters",""+ response.body()!!.animeData)
+                    setAnimeCharacterDetails(response.body()!!.animeData)
+                }
+            }
+
+            override fun onFailure(call: Call<AnimeCharacterSearchResponse>, t: Throwable) {
+                Log.e("API FAIL",""+t.message)
+            }
+        })
+    }
+
+    private fun setAnimeCharacterDetails(characterList: List<Character>) {
+        // TODO Matthew, use this list to set data about anime characters onto the UI
+        /*
+        Here's how you can access each character and their data within
+        for (character in characterList){
+            character.characterData.characterName
+            character.characterData.imageData.jpg
+            character.characterData.imageData.webp
+        }
+         */
     }
 
     private fun setAnimeDetails(animeData: Anime) {
-        val txt = findViewById<TextView>(R.id.textViewAnimeDetailsTitle)
-        txt.text = animeData.title
+        setAnimeTitle(animeData.title)
+        setAnimeTrailer(animeData.trailerData?.youtubeID)
+        setAnimeSynopsis(animeData.synopsis)
+    }
 
-        if (animeData.trailerData?.youtubeID == null){
+    private fun setAnimeTitle(givenTitle: String) {
+        val txt = findViewById<TextView>(R.id.textViewAnimeDetailsTitle)
+        txt.text = givenTitle
+    }
+
+    private fun setAnimeTrailer(youtubeID: String?) {
+        if (youtubeID == null){
             Log.d("Failed to load video", "Sadge") // DELETE THIS
             return
         }
 
-        val youtubeTrailerID = animeData.trailerData.youtubeID
+        val youtubeTrailerID = youtubeID
         val youTubePlayerView : YouTubePlayerView = findViewById(R.id.youtubePlayerView)
-
-
         youTubePlayerView.initialize(YOUTUBE_API_KEY, object:YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(
                 provider: YouTubePlayer.Provider?,
@@ -186,25 +222,13 @@ class AnimeDetails : YouTubeBaseActivity() {
                 Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_SHORT).show()
             }
         })
+    }
 
-        /* Load Video - Old Way
-        val youTubePlayerView: YouTubePlayerView = findViewById(R.id.videoPlayerAnimeDetails)
-        youTubePlayerView.enterFullScreen()
-        youTubePlayerView.toggleFullScreen()
-        youTubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-            override fun onReady(youTubePlayer: YouTubePlayer) {
-                // loading the selected video into the YouTube Player
-                youTubePlayer.cueVideo(animeData.trailerData?.youtubeID, 0F)
-            }
+    private fun setAnimeSynopsis(synopsis: String?) {
+        if (synopsis == null){
+            return
+        }
 
-            override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
-                // this method is called if video has ended,
-                super.onStateChange(youTubePlayer, state)
-            }
-        })
-
-         */
-
-
+        // TODO For Matthew, set this synopsis onto the UI
     }
 }
