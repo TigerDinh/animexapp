@@ -17,7 +17,10 @@ data class Anime(
     val type: String?,
 
     @Json(name="title_english")
-    val english_title: String?,
+    val englishTitle: String?,
+
+    @Json(name="title_japanese")
+    val japaneseTitle: String?,
 
     @Json(name = "images")
     val imageData: AnimeImage?,

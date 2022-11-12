@@ -48,7 +48,6 @@ interface JikanApiService{
 
 
     // https://api.jikan.moe/v4/anime
-
     @GET("anime")
     fun requestAnime(
         //Optional Params:
