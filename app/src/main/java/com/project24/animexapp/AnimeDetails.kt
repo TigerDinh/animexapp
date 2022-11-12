@@ -22,8 +22,6 @@ import com.project24.animexapp.api.AnimeCharacterSearchResponse
 import com.project24.animexapp.api.AnimeSearchByIDResponse
 import com.project24.animexapp.api.Character
 import com.project24.animexapp.api.JikanApiClient
-import com.project24.animexapp.ui.home.AnimeRVAdapter
-import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,14 +36,12 @@ class AnimeDetails : YouTubeBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        firebaseAuth = FirebaseAuth.getInstance()
-        val db = Firebase.firestore
-        val currentUserID = firebaseAuth.currentUser?.uid
 
         val extras = intent.extras
         if(extras!=null) {
-            animeID = extras.getLong("ANIME_ID", -1)
+            animeID = extras.getLong(getString(R.string.anime_id_key), -1)
         }
+
         setContentView(R.layout.activity_anime_details)
 
         YOUTUBE_API_KEY = this.packageManager.getApplicationInfo(
@@ -54,9 +50,83 @@ class AnimeDetails : YouTubeBaseActivity() {
         ).metaData.getString("com.project24.animexapp.YoutubeKey")
 
         grabAnimeInfo()
+    }
 
+    private fun grabAnimeInfo() {
+        if (animeID.toInt() == -1){
+            return //Indicates the previous activity did not correctly pass the animeID
+        }
 
-        // Added by Matthew
+        val client = JikanApiClient.apiService.getAnimeByID(animeID)
+        client.enqueue(object: Callback<AnimeSearchByIDResponse> {
+            override fun onResponse(
+                call: Call<AnimeSearchByIDResponse>,
+                response: Response<AnimeSearchByIDResponse>
+            ) {
+                if(response.isSuccessful){
+                    Log.d("anime",""+ response.body()!!.animeData)
+                    val animeData = response.body()!!.animeData
+
+                    setAnimeDetails(animeData)
+                    SetUpStarsRating(animeData)
+                    setButtons(animeData)
+                }
+            }
+
+            override fun onFailure(call: Call<AnimeSearchByIDResponse>, t: Throwable) {
+                Log.e("API FAIL",""+t.message)
+            }
+        })
+
+        val client2 = JikanApiClient.apiService.getAnimeCharacterById(animeID)
+        client2.enqueue(object: Callback<AnimeCharacterSearchResponse> {
+            override fun onResponse(
+                call: Call<AnimeCharacterSearchResponse>,
+                response: Response<AnimeCharacterSearchResponse>
+            ) {
+                if(response.isSuccessful){
+                    Log.d("Anime Characters",""+ response.body()!!.animeData)
+                    setAnimeCharacterDetails(response.body()!!.animeData)
+                }
+            }
+
+            override fun onFailure(call: Call<AnimeCharacterSearchResponse>, t: Throwable) {
+                Log.e("API FAIL",""+t.message)
+            }
+        })
+    }
+
+    private fun SetUpStarsRating(animeData: Anime) {
+        var starButtons = ArrayList<ImageButton>()
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar1))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar2))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar3))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar4))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar5))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar6))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar7))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar8))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar9))
+        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar10))
+
+        for (i in 0..9) {
+            starButtons[i].setOnClickListener() {
+                for (j in 0..i) {
+                    starButtons[j].setColorFilter(resources.getColor(R.color.main_color))
+                }
+
+                for (k in i + 1..9) {
+                    starButtons[k].setColorFilter(resources.getColor(R.color.placehold_gray))
+                }
+            }
+        }
+    }
+
+    private fun setButtons(animeData: Anime) {
+        firebaseAuth = FirebaseAuth.getInstance()
+        val db = Firebase.firestore
+        val currentUserID = firebaseAuth.currentUser?.uid
+
         var favourite = 0; var watchlater = 0; var watching = 0;
         var favouriteButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsFavourite)
         var watchLaterButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatchLater)
@@ -67,13 +137,13 @@ class AnimeDetails : YouTubeBaseActivity() {
 
         // keep favourite button green if user already favourited anime, else gray
         favDocRef.get().addOnSuccessListener {
-           if(it.exists()) {
-               favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
-               favouriteButton.setOnClickListener() {
-                   favouriteButton.setColorFilter(resources.getColor(R.color.placehold_gray))
-                   favDocRef.delete()
-               }
-           }
+            if(it.exists()) {
+                favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
+                favouriteButton.setOnClickListener() {
+                    favouriteButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                    favDocRef.delete()
+                }
+            }
         }
 
         favouriteButton.setOnClickListener() {
@@ -106,85 +176,9 @@ class AnimeDetails : YouTubeBaseActivity() {
                 1 -> watcthingButton.setColorFilter(resources.getColor(R.color.placehold_gray))
             }
         }
-
-        var starButtons = ArrayList<ImageButton>()
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar1))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar2))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar3))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar4))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar5))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar6))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar7))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar8))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar9))
-        starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar10))
-
-        for (i in 0..9) {
-            starButtons[i].setOnClickListener() {
-                println("debug: clicked! $i")
-                for (j in 0 .. i) {
-                    println("debug: color $j")
-                    starButtons[j].setColorFilter(resources.getColor(R.color.main_color))
-                }
-
-                for (k in i+1 .. 9) {
-                    println("debug: decolor $k")
-                    starButtons[k].setColorFilter(resources.getColor(R.color.placehold_gray))
-                }
-            }
-        }
-    }
-
-    private fun grabAnimeInfo() {
-        if (animeID.toInt() == -1){
-            return //Indicates the previous activity did not correctly pass the animeID
-        }
-
-        val client = JikanApiClient.apiService.getAnimeByID(animeID)
-        client.enqueue(object: Callback<AnimeSearchByIDResponse> {
-            override fun onResponse(
-                call: Call<AnimeSearchByIDResponse>,
-                response: Response<AnimeSearchByIDResponse>
-            ) {
-                if(response.isSuccessful){
-                    Log.d("anime",""+ response.body()!!.animeData)
-                    setAnimeDetails(response.body()!!.animeData)
-                }
-            }
-
-            override fun onFailure(call: Call<AnimeSearchByIDResponse>, t: Throwable) {
-                Log.e("API FAIL",""+t.message)
-            }
-        })
-
-        val client2 = JikanApiClient.apiService.getAnimeCharacterById(animeID)
-        client2.enqueue(object: Callback<AnimeCharacterSearchResponse> {
-            override fun onResponse(
-                call: Call<AnimeCharacterSearchResponse>,
-                response: Response<AnimeCharacterSearchResponse>
-            ) {
-                if(response.isSuccessful){
-                    Log.d("Anime Characters",""+ response.body()!!.animeData)
-                    setAnimeCharacterDetails(response.body()!!.animeData)
-                }
-            }
-
-            override fun onFailure(call: Call<AnimeCharacterSearchResponse>, t: Throwable) {
-                Log.e("API FAIL",""+t.message)
-            }
-        })
     }
 
     private fun setAnimeCharacterDetails(characterList: List<Character>) {
-        /*
-        Here's how you can access each character and their data within
-        for (character in characterList){
-            character.characterData.characterName
-            character.characterData.imageData.jpg
-            character.characterData.imageData.webp
-        }
-         */
-
         val characterRV = findViewById<RecyclerView>(R.id.recyclerViewAnimeDetailsCharacters)
 
         var characterAdapter = CharacterRVAdapter(characterList)
@@ -192,9 +186,6 @@ class AnimeDetails : YouTubeBaseActivity() {
         characterRV.layoutManager = LinearLayoutManager(this,
             LinearLayoutManager.HORIZONTAL,false)
         characterRV.adapter = characterAdapter
-
-
-
     }
 
     private fun setAnimeDetails(animeData: Anime) {
@@ -210,7 +201,6 @@ class AnimeDetails : YouTubeBaseActivity() {
 
     private fun setAnimeTrailer(youtubeID: String?) {
         if (youtubeID == null){
-            Log.d("Failed to load video", "Sadge") // DELETE THIS
             return
         }
 
