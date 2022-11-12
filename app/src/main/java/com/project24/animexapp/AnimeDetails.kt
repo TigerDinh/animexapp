@@ -53,7 +53,7 @@ class AnimeDetails : YouTubeBaseActivity() {
         grabAnimeInfo()
 
 
-        //Added by Matthew
+        // Added by Matthew
         var favourite = 0; var watchlater = 0; var watching = 0;
         var favouriteButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsFavourite)
         var watchLaterButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatchLater)
@@ -130,8 +130,6 @@ class AnimeDetails : YouTubeBaseActivity() {
                 }
             }
         }
-
-        //
     }
 
     private fun grabAnimeInfo() {
@@ -211,7 +209,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                 player: YouTubePlayer?,
                 bln: Boolean
             ) {
-                player?.loadVideo(youtubeTrailerID)
+                player?.cueVideo(youtubeTrailerID)
                 player?.play()
             }
 
