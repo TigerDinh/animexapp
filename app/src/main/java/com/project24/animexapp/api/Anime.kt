@@ -68,6 +68,18 @@ data class Webp(
     val largeURL: String?
 )
 
+data class Character(
+    @Json(name = "character")
+    val characterData : CharacterData
+)
+
+data class CharacterData(
+    @Json(name = "images")
+    val imageData : AnimeImage,
+
+    @Json(name = "name")
+    val characterName : String,
+)
 
 data class AnimeSearchResponse(
 
@@ -88,4 +100,9 @@ data class UserFavouritesResponse(
 data class AnimeSearchByIDResponse(
     @Json(name = "data")
     val animeData : Anime,
+)
+
+data class AnimeCharacterSearchResponse(
+    @Json(name = "data")
+    val animeData : List<Character>,
 )

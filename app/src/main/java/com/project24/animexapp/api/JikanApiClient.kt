@@ -43,13 +43,13 @@ object JikanApiClient {
 
 interface JikanApiService{
 
-    //https://api.jikan.moe/v4/top/anime
+    // https://api.jikan.moe/v4/top/anime
 
     @GET("top/anime")
     fun topAnime(@Query("limit") limit:Int): Call<AnimeSearchResponse>
 
 
-    //https://api.jikan.moe/v4/anime
+    // https://api.jikan.moe/v4/anime
 
     @GET("anime")
     fun requestAnime(
@@ -67,7 +67,7 @@ interface JikanApiService{
     ) : Call<AnimeSearchResponse>
 
 
-    //https://api.jikan.moe/v4/users/{username}/favorites
+    // https://api.jikan.moe/v4/users/{username}/favorites
     //INCOMPLETE FUNCTION DO NOT USE
     @GET("users/{username}/favorites")
     fun requestUserFavourites(
@@ -75,8 +75,15 @@ interface JikanApiService{
     ) : Call<UserFavouritesResponse>
 
 
+    // https://api.jikan.moe/v4/anime/{id}/full
     @GET("anime/{id}/full")
     fun getAnimeByID(
         @Path("id") id : Long,
     ) : Call<AnimeSearchByIDResponse>
+
+    // https://api.jikan.moe/v4/anime/{id}/characters
+    @GET("anime/{id}/characters")
+    fun getAnimeCharacterById(
+        @Path("id") id : Long,
+    ) : Call<AnimeCharacterSearchResponse>
 }
