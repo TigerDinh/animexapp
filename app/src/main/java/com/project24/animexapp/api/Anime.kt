@@ -97,6 +97,11 @@ data class UserFavouritesResponse(
     val result: UserFavouriteAnime
 )
 
+data class RecommendationsByIDResponse(
+    @Json(name = "data")
+    val result: List<Anime>,
+)
+
 data class AnimeSearchByIDResponse(
     @Json(name = "data")
     val animeData : Anime,

@@ -17,11 +17,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.Favourite
 import com.project24.animexapp.LogInActivity
-import com.project24.animexapp.R
-import com.project24.animexapp.api.Anime
-import com.project24.animexapp.api.AnimeSearchResponse
-import com.project24.animexapp.api.JikanApiClient
-import com.project24.animexapp.api.UserFavouritesResponse
+import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,7 +34,7 @@ class HomeFragment : Fragment() {
     private lateinit var ongoingAnimeRV: RecyclerView
     private lateinit var ongoingAnimeAdapter: AnimeRVAdapter
 
-    //private lateinit var recommendationsList: List<Anime>
+    private lateinit var recommendationsList: List<Anime>
     //private lateinit var recommendedAnimeRV: RecyclerView
     //private lateinit var recommendedAnimeAdapter: AnimeRVAdapter
 
@@ -127,7 +123,8 @@ class HomeFragment : Fragment() {
             See the JikanApiService interface, at the JikanApiClient file for the options
             See the api docs to see the possible values for the params.
             */
-            logOngoingAnime()
+            getOngoingAnime()
+            getMyRecommendations(5114)
             //Log.d("ONGOING ANIME OUTSIDE",""+ongoingList.toString())
             /*
             This function will be useful as a starting point for importing user favourites.
@@ -148,8 +145,7 @@ class HomeFragment : Fragment() {
             See the JikanApiService interface, at the JikanApiClient file for the options
             See the api docs to see the possible values for the params.
             */
-            logOngoingAnime()
-
+            getOngoingAnime()
             /*
             This function will be useful as a starting point for importing user favourites.
             It takes in a userID (set to some random guy for now) and logs the favourite anime
@@ -167,7 +163,37 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    fun logOngoingAnime(){
+    fun getMyRecommendations(id: Long){
+        val client = JikanApiClient.apiService.getRecommendationsByID(id = id)
+
+        client.enqueue(object: Callback<RecommendationsByIDResponse> {
+            override fun onResponse(
+                call: Call<RecommendationsByIDResponse>,
+                response: Response<RecommendationsByIDResponse>
+            ){
+                if(response.isSuccessful){
+                    if(response.body() != null){
+                        recommendationsList = response.body()!!.result
+
+                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+
+                        //ongoingAnimeAdapter.animeList = ongoingList
+                        //ongoingAnimeAdapter.notifyDataSetChanged()
+
+
+                        Log.d("RECOMMENDED FOR YOU",""+recommendationsList[0].toString())
+                    }else{
+                        Log.e("huh?","HUH")
+                    }
+                }
+            }
+            override fun onFailure(call: Call<RecommendationsByIDResponse>, t: Throwable) {
+                Log.e("RECOMMENDED API FAIL",""+t.message)
+            }
+        })
+    }
+
+    fun getOngoingAnime(){
         val client = JikanApiClient.apiService.requestAnime(status = "airing")
 
         client.enqueue(object: Callback<AnimeSearchResponse> {
