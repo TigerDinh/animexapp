@@ -92,7 +92,6 @@ class ProfileFragment : Fragment() {
             }
             //Log.d("MAL_IDFAV", idList.toString())
         }
-
         return root
     }
 
