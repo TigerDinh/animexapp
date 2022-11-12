@@ -12,6 +12,9 @@ import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.Anime
 import com.project24.animexapp.api.AnimeSearchByIDResponse
 import com.project24.animexapp.api.JikanApiClient
@@ -25,8 +28,14 @@ class AnimeDetails : YouTubeBaseActivity() {
     private var animeID : Long = -1
     private var YOUTUBE_API_KEY: String? = ""
 
+    private lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firebaseAuth = FirebaseAuth.getInstance()
+        val db = Firebase.firestore
+        val currentUserID = firebaseAuth.currentUser?.uid
+
         val extras = intent.extras
         if(extras!=null) {
             animeID = extras.getLong("ANIME_ID", -1)
@@ -48,10 +57,34 @@ class AnimeDetails : YouTubeBaseActivity() {
         var watchLaterButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatchLater)
         var watcthingButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatching)
 
+        var favDocRef = db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString())
+
+
+        // keep favourite button green if user already favourited anime, else gray
+        favDocRef.get().addOnSuccessListener {
+           if(it.exists()) {
+               favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
+               favouriteButton.setOnClickListener() {
+                   favouriteButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                   favDocRef.delete()
+               }
+           }
+        }
+
         favouriteButton.setOnClickListener() {
             when(favourite++ % 2 ) {
-                0 -> favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
-                1 -> favouriteButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                0 -> {
+                    favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
+                    if(db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).equals(animeID.toString()))
+                        Toast.makeText(this, "Already favourite", Toast.LENGTH_LONG).show()
+                    else
+                        db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).set(Favourite(animeID))
+                }
+
+                1 -> {
+                    favouriteButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                    favDocRef.delete()
+                }
             }
         }
 

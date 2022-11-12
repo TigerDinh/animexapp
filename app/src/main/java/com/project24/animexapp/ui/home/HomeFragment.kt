@@ -85,18 +85,6 @@ class HomeFragment : Fragment() {
         //////////
 
 
-        val dummyOne = binding.dummyone
-        val dummyTwo = binding.dummytwo
-        val favourite2 = Favourite(dummyTwo.text.toString())
-        val favourite1 = Favourite(dummyOne.text.toString())
-
-        dummyTwo.setOnClickListener {
-            db.collection("Users").document(currentUserID.toString()).collection("Favourites").add(favourite2)
-        }
-
-        dummyOne.setOnClickListener {
-            db.collection("Users").document(currentUserID.toString()).collection("Favourites").add(favourite1)
-        }
 
         // when login button is clicked, go to login activity
         homeLogInBtn.setOnClickListener {

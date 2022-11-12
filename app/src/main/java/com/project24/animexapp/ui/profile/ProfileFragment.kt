@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -46,9 +48,16 @@ class ProfileFragment : Fragment() {
 
         db.collection("Users").document(currentUserID).collection("Favourites").get().addOnSuccessListener { favourite ->
             for (document in favourite) {
-                Log.d(TAG, "${document.data.getValue("favText")}")
+                val favButton = Button(this.requireContext())
+                favButton.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                favButton.text = document.data.getValue("mal_id").toString()
+                binding.root.addView(favButton)
             }
         }
+
         return root
     }
 

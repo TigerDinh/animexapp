@@ -69,22 +69,4 @@
         android:text="Logout"
         android:layout_gravity="center"
         android:backgroundTint="@color/warning"/>
-
-
-    <Button
-        android:id="@+id/dummyone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="5114"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/main_color"/>
-
-    <Button
-        android:id="@+id/dummytwo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="6161"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/main_color"/>
-
 </LinearLayout>
