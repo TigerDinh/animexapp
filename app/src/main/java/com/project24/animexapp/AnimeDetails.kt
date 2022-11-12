@@ -1,32 +1,29 @@
 package com.project24.animexapp
 
-import android.content.res.ColorStateList
-import android.graphics.PorterDuff
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
-import android.widget.MediaController
-import android.widget.TextView
-import android.widget.VideoView
-import androidx.core.widget.ImageViewCompat
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import android.widget.*
+import com.google.android.youtube.player.YouTubeBaseActivity
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubePlayer
+import com.google.android.youtube.player.YouTubePlayerView
 import com.project24.animexapp.api.Anime
 import com.project24.animexapp.api.AnimeSearchByIDResponse
 import com.project24.animexapp.api.JikanApiClient
-import com.project24.animexapp.api.TrailerData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AnimeDetails : AppCompatActivity() {
 
-    private val MAL_ID = 5114 // DELETE THIS
+class AnimeDetails : YouTubeBaseActivity() {
+
     private var animeID : Long = -1
+    private var YOUTUBE_API_KEY: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +32,11 @@ class AnimeDetails : AppCompatActivity() {
             animeID = extras.getLong("ANIME_ID", -1)
         }
         setContentView(R.layout.activity_anime_details)
+
+        YOUTUBE_API_KEY = this.packageManager.getApplicationInfo(
+            this.packageName,
+            PackageManager.GET_META_DATA
+        ).metaData.getString("com.project24.animexapp.YoutubeKey")
 
         grabAnimeInfo()
 
@@ -99,7 +101,7 @@ class AnimeDetails : AppCompatActivity() {
 
     private fun grabAnimeInfo() {
         if (animeID.toInt() == -1){
-            return
+            return //Indicates the previous activity did not correctly pass the animeID
         }
 
         val client = JikanApiClient.apiService.getAnimeByID(animeID)
@@ -130,7 +132,29 @@ class AnimeDetails : AppCompatActivity() {
             return
         }
 
-        // Load Video
+        val youtubeTrailerID = animeData.trailerData.youtubeID
+        val youTubePlayerView : YouTubePlayerView = findViewById(R.id.youtubePlayerView)
+
+
+        youTubePlayerView.initialize(YOUTUBE_API_KEY, object:YouTubePlayer.OnInitializedListener {
+            override fun onInitializationSuccess(
+                provider: YouTubePlayer.Provider?,
+                player: YouTubePlayer?,
+                bln: Boolean
+            ) {
+                player?.loadVideo(youtubeTrailerID)
+                player?.play()
+            }
+
+            override fun onInitializationFailure(
+                provider: YouTubePlayer.Provider?,
+                result: YouTubeInitializationResult?
+            ) {
+                Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        /* Load Video - Old Way
         val youTubePlayerView: YouTubePlayerView = findViewById(R.id.videoPlayerAnimeDetails)
         youTubePlayerView.enterFullScreen()
         youTubePlayerView.toggleFullScreen()
@@ -145,6 +169,8 @@ class AnimeDetails : AppCompatActivity() {
                 super.onStateChange(youTubePlayer, state)
             }
         })
+
+         */
 
 
     }

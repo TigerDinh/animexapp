@@ -64,6 +64,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <meta-data
+            android:name="com.project24.animexapp.YoutubeKey"
+            android:value="${YT_KEY}" />
     </application>
 
 </manifest>
