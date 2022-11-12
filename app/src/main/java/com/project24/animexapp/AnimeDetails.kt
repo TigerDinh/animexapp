@@ -192,11 +192,17 @@ class AnimeDetails : YouTubeBaseActivity() {
         setAnimeTitle(animeData.title)
         setAnimeTrailer(animeData.trailerData?.youtubeID)
         setAnimeSynopsis(animeData.synopsis)
+        setAnimeScore(animeData.score.toString())
     }
 
     private fun setAnimeTitle(givenTitle: String) {
         val txt = findViewById<TextView>(R.id.textViewAnimeDetailsTitle)
         txt.text = givenTitle
+    }
+
+    private fun setAnimeScore(givenScore: String) {
+        val score = findViewById<TextView>(R.id.textViewAnimeDetailsScore)
+        score.text = givenScore
     }
 
     private fun setAnimeTrailer(youtubeID: String?) {
