@@ -98,6 +98,10 @@ data class KitsuTitle(
     @Json(name = "en_jp")
     val enJapTitle: String?
 )
+data class KitsuImageData(
+    @Json(name = "original")
+    val original: String?
+)
 
 data class KitsuAttribute(
     @Json(name = "synopsis")
@@ -107,7 +111,10 @@ data class KitsuAttribute(
     val otherTitles: KitsuTitle,
 
     @Json(name = "canonicalTitle")
-    val title: String
+    val title: String,
+
+    @Json(name = "coverImage")
+    val coverImageData: KitsuImageData?
 )
 
 data class KitsuAnimeData(
