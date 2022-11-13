@@ -5,10 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:paddingTop="40dp"
-    android:paddingStart="5dp"
-    android:paddingEnd="5dp"
-    android:paddingBottom="50dp">
+    android:layout_marginTop="30dp">
 
     <TextView
         android:id="@+id/textViewHomeOngoing"
@@ -17,7 +14,8 @@
         android:text="Ongoing"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:paddingBottom="2dp"/>
+        android:padding="5dp"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHomeOngoing"
@@ -35,12 +33,15 @@
         android:text="Recommended For You"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:paddingBottom="2dp"/>
+        android:paddingBottom="2dp"
+        android:paddingLeft="5dp"
+        android:textStyle="bold"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
@@ -57,7 +58,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="128dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="10dp">
 
             <LinearLayout
                 android:id="@+id/linearLayoutHomeRecommendationsTitleAndScore"

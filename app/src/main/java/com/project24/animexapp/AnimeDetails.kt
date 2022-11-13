@@ -17,11 +17,7 @@ import com.google.android.youtube.player.YouTubePlayerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.project24.animexapp.api.Anime
-import com.project24.animexapp.api.AnimeCharacterSearchResponse
-import com.project24.animexapp.api.AnimeSearchByIDResponse
-import com.project24.animexapp.api.Character
-import com.project24.animexapp.api.JikanApiClient
+import com.project24.animexapp.api.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -133,9 +129,11 @@ class AnimeDetails : YouTubeBaseActivity() {
         var watcthingButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatching)
 
         var favDocRef = db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString())
+        var watchLaterDocRef = db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString())
+        var watchingDocRef = db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString())
 
 
-        // keep favourite button green if user already favourited anime, else gray
+        // keep buttons selected if clicked, else gray
         favDocRef.get().addOnSuccessListener {
             if(it.exists()) {
                 favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
@@ -146,17 +144,43 @@ class AnimeDetails : YouTubeBaseActivity() {
             }
         }
 
+        watchLaterDocRef.get().addOnSuccessListener {
+            if(it.exists()) {
+                watchLaterButton.setColorFilter(resources.getColor(R.color.main_color))
+                watchLaterButton.setOnClickListener() {
+                    watchLaterButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                    watchLaterDocRef.delete()
+                }
+            }
+        }
+
+        watchingDocRef.get().addOnSuccessListener {
+            if(it.exists()) {
+                watcthingButton.setColorFilter(resources.getColor(R.color.main_color))
+                watcthingButton.setOnClickListener() {
+                    watcthingButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                    watchingDocRef.delete()
+                }
+            }
+        }
+
         favouriteButton.setOnClickListener() {
             when(favourite++ % 2 ) {
-                0 -> {
+                0 ->
+                {
                     favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
                     if(db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).equals(animeID.toString()))
                         Toast.makeText(this, "Already favourite", Toast.LENGTH_LONG).show()
-                    else
+                    else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
+                        Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
+                    else {
                         db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title))
+                        db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))
+                    }
                 }
 
-                1 -> {
+                1 ->
+                {
                     favouriteButton.setColorFilter(resources.getColor(R.color.placehold_gray))
                     favDocRef.delete()
                 }
@@ -165,15 +189,47 @@ class AnimeDetails : YouTubeBaseActivity() {
 
         watchLaterButton.setOnClickListener() {
             when(watchlater++ % 2 ) {
-                0 -> watchLaterButton.setColorFilter(resources.getColor(R.color.main_color))
-                1 -> watchLaterButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                0 ->
+                {
+                    watchLaterButton.setColorFilter(resources.getColor(R.color.main_color))
+                    if(db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString()).equals(animeID.toString()))
+                        Toast.makeText(this, "Already in watch later", Toast.LENGTH_LONG).show()
+                    else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
+                        Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
+                    else {
+                        db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title))
+                        db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))
+                    }
+                }
+                1 ->
+                {
+                    watchLaterButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                    watchLaterDocRef.delete()
+                }
             }
         }
 
         watcthingButton.setOnClickListener() {
             when(watching++ % 2 ) {
-                0 -> watcthingButton.setColorFilter(resources.getColor(R.color.main_color))
-                1 -> watcthingButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                0 ->
+                {
+                    watcthingButton.setColorFilter(resources.getColor(R.color.main_color))
+                    if(db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString()).equals(animeID.toString()))
+                        Toast.makeText(this, "Already in watching", Toast.LENGTH_LONG).show()
+                    else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
+                        Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
+                    else {
+                        db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title))
+                        db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))
+                    }
+                }
+
+
+                1 ->
+                {
+                    watcthingButton.setColorFilter(resources.getColor(R.color.placehold_gray))
+                    watchingDocRef.delete()
+                }
             }
         }
     }

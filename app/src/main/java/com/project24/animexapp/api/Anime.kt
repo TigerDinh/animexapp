@@ -39,7 +39,11 @@ data class LocalAnime(
     val mal_id: Long,
     val title: String,
     val imgURl: String,
-    )
+    val synopsis: String? = null,
+    val score: Double? = null,
+    val trailerURL: TrailerData? = null,
+    val localRating: Float? = null
+)
 
 
 data class TrailerData(
