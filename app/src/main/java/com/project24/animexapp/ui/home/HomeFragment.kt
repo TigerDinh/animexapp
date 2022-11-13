@@ -273,6 +273,7 @@ class HomeFragment : Fragment() {
 
                         trendingAdapter = SliderAdapter(trendingList)
                         trendingAnimeSV.setSliderAdapter(trendingAdapter)
+                        trendingAdapter.notifyDataSetChanged()
                         trendingAnimeSV.scrollTimeInMillis = 5000
                         trendingAnimeSV.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
                         trendingAnimeSV.setIndicatorAnimation(IndicatorAnimationType.SLIDE);

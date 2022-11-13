@@ -1,5 +1,6 @@
 package com.project24.animexapp.ui.home
 
+import android.util.Log
 import com.project24.animexapp.R
 import android.view.LayoutInflater
 import android.view.View
@@ -31,10 +32,13 @@ class SliderAdapter(var animeList : List<KitsuAnimeData>): SliderViewAdapter<Sli
 
         private var view: View = itemView
         private lateinit var anime: KitsuAnimeData
+        private var imgURL: String? = ""
 
         fun bindAnime(anime: KitsuAnimeData) {
             this.anime = anime
-            Glide.with(view.context).load(anime.attributes.coverImageData!!.original).centerCrop().into(view.findViewById(R.id.slider_anime_image))
+            this.imgURL = anime.attributes.coverImageData!!.original
+            //Log.d("HEADER IMG",""+imgURL)
+            Glide.with(this.itemView).load(imgURL).centerCrop().dontAnimate().into(view.findViewById(R.id.slider_anime_image))
             view.findViewById<TextView>(R.id.slider_anime_title).text = anime.attributes.title
             view.findViewById<TextView>(R.id.slider_anime_synopsis).text = anime.attributes.synopsis
         }
