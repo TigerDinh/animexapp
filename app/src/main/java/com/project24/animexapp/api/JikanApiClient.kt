@@ -52,7 +52,8 @@ interface JikanApiService{
     fun requestAnime(
         //Optional Params:
         @Query("q") query:String? = null, //search entry
-        @Query("genre") genre:String? = null, //preferred genre
+        @Query("genres") genres:String? = null, //preferred genre. PLEASE NOTE. NEEDS TO BE INPUTTED AS COMMA SEPARATED LIST OF GENRE_ID eg [1,2]
+        @Query("genres_exclude") genresExcluded:String? = null, //excluded genre. PLEASE NOTE. NEEDS TO BE INPUTTED AS COMMA SEPARATED LIST OF GENRE_ID eg [1,2]
         @Query("status") status:String? = null, //Options: "airing", "complete", "upcoming"
         @Query("type") type:String? = null, //Options: "tv" "movie" "ova" "special" "ona" "music"
         @Query("min_score") minScore:Double? = null, //minimum score of returned anime
