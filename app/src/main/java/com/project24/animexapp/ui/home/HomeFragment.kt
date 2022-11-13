@@ -1,12 +1,17 @@
 package com.project24.animexapp.ui.home
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -16,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.LogInActivity
+import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
 import retrofit2.Call
@@ -83,14 +89,10 @@ class HomeFragment : Fragment() {
         recommendedAnimeAdapter = AnimeRVAdapter(recommendationsList)
         //recommendedAnimeRV.adapter = recommendedAnimeAdapter
 
-        //TODO Ui interface to import single recommended anime here
-        val recImage = binding.imageViewHomeRecommend
-        val recTitle = binding.textViewHomeRecommendationsTitle
-        val recScore = binding.textViewHomeRecommendationsScore
-        val recBecTitle = binding.textViewHomeRecommendationsBecauseTitle
-        var recSynopsis = binding.textViewHomeRecommendationsSynopsis
-        //Inputed for Displa Example
-        recSynopsis.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+        setRecommendedAnime()
+        setHeadAnime()
+
 
 
 
@@ -260,5 +262,47 @@ class HomeFragment : Fragment() {
                 Log.e("TRENDING ANIME API FAIL",""+t.message)
             }
         })
+    }
+
+    fun setRecommendedAnime(){
+        //TODO Ui interface to import single recommended anime here
+        val recImage = binding.imageViewHomeRecommend
+        val recTitle = binding.textViewHomeRecommendationsTitle
+        val recScore = binding.textViewHomeRecommendationsScore
+        val recBecTitle = binding.textViewHomeRecommendationsBecauseTitle
+        var recSynopsis = binding.textViewHomeRecommendationsSynopsis
+
+        //Inputted for Display Example
+        recSynopsis.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+    }
+
+    fun setHeadAnime(){
+        //TODO Implement anime header info here (only three can be displayed)
+        val viewFlipper = binding.viewFlipperHome
+        val radioButtons = arrayListOf(binding.radioButtonHomeFlipper1, binding.radioButtonHomeFlipper2, binding.radioButtonHomeFlipper3)
+
+        viewFlipper.inAnimation.setAnimationListener(object : Animation.AnimationListener{
+            override fun onAnimationStart(p0: Animation?) {
+                //Ignore, these were necessary to make radio buttons keep up with display
+            }
+
+            override fun onAnimationEnd(p0: Animation?) {
+                radioButtons[viewFlipper.displayedChild].isChecked = true
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) {
+                //Ignore, these were necessary to make radio buttons keep up with display
+            }
+        })
+
+        //The val you need
+        //Format:
+        //headerList[listed anime 0 to 2][image, title, synopsis]
+        val headerList = mutableListOf<Any>()
+        headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader1, binding.textViewHomeTitleHeader1, binding.textViewHomeSynopsisHeader1))
+        headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader2, binding.textViewHomeTitleHeader2, binding.textViewHomeSynopsisHeader2))
+        headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader3, binding.textViewHomeTitleHeader3, binding.textViewHomeSynopsisHeader3))
+
     }
 }
