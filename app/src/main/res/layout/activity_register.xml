@@ -40,6 +40,21 @@
             android:layout_marginBottom="10dp" />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/black"/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/newUsernameInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Type your username"
+            android:background="@drawable/customborder"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Password"

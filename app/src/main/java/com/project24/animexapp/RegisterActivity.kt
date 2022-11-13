@@ -34,8 +34,10 @@ class RegisterActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         binding.signUpBtn.setOnClickListener {
             val userEmail = binding.newEmailInput.text.toString()
+            val userName = binding.newUsernameInput.text.toString()
             val userPass = binding.newPasswordInput.text.toString()
             val confirmUserPass = binding.newRetypePasswordInput.text.toString()
+
 
 
             if(userEmail.isNotEmpty() && userPass.isNotEmpty() && confirmUserPass.isNotEmpty()) {
@@ -48,7 +50,8 @@ class RegisterActivity : AppCompatActivity() {
                             // create hashmap with user email and ID
                             val user = hashMapOf(
                                 "uid" to userID,
-                                "email" to userEmail
+                                "email" to userEmail,
+                                "username" to userName
                             )
 
                             // add user to user database in Firebase

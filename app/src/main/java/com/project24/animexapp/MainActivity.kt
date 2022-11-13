@@ -1,5 +1,6 @@
 package com.project24.animexapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.ActivityMainBinding
 import com.project24.animexapp.ui.home.AnimeRVAdapter
@@ -31,15 +34,25 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        firebaseAuth = FirebaseAuth.getInstance()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val db = Firebase.firestore
         val navView: BottomNavigationView = binding.navView
+        val navAccount = binding.navAccount
+        val currentUserID = firebaseAuth.currentUser?.uid.toString()
+        var userName = ""
 
+        Toast.makeText(this, userName, Toast.LENGTH_SHORT).show()
 
-
+        if(firebaseAuth.currentUser !== null) {
+            navAccount.text = "Welcome, " + firebaseAuth.currentUser?.email.toString()
+        } else {
+            navAccount.text = ""
+        }
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -53,29 +66,3 @@ class MainActivity : AppCompatActivity() {
 
     }
 }
-
-//firebaseAuth = FirebaseAuth.getInstance()
-//
-//val homeLogInBtn = findViewById<Button>(R.id.homeLogInBtn)
-//val homeLogOutBtn = findViewById<Button>(R.id.homeLogOutBtn)
-//
-//homeLogInBtn.setOnClickListener {
-//    val intent = Intent(this, LogInActivity::class.java)
-//    startActivity(intent)
-//}
-//
-//if(firebaseAuth.currentUser !== null) {
-//    homeLogOutBtn.visibility = View.VISIBLE
-//    homeLogInBtn.visibility = View.INVISIBLE
-//} else {
-//    homeLogOutBtn.visibility = View.INVISIBLE
-//    homeLogInBtn.visibility = View.VISIBLE
-//}
-//
-//homeLogOutBtn.setOnClickListener {
-//    firebaseAuth.signOut()
-//    Toast.makeText(this, "Logged out", Toast.LENGTH_LONG).show()
-//}
-//
-//val user = firebaseAuth.currentUser?.email.toString()
-//Toast.makeText(this, "Logged in as $user", Toast.LENGTH_LONG).show()

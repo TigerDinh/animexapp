@@ -5,10 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:paddingTop="40dp"
-    android:paddingStart="5dp"
-    android:paddingEnd="5dp"
-    android:paddingBottom="50dp">
+  >
 
 
     <LinearLayout
@@ -24,10 +21,6 @@
             android:paddingRight="20dp"
             android:paddingTop="20dp">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Login" />
         </LinearLayout>
 
 
@@ -43,26 +36,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginTop="20dp"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/favouriteHeader"
-        android:text="Favourites"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="20dp"
-        android:textSize="20dp"
-        android:textStyle="bold"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favoritesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/listitem_anime"/>
+        android:orientation="vertical"
+        android:paddingLeft="20dp">
+        <TextView
+            android:id="@+id/favouriteHeader"
+            android:text="Favourites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favoritesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/listitem_anime"/>
+    </LinearLayout>
 </LinearLayout>

@@ -153,7 +153,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                     if(db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).equals(animeID.toString()))
                         Toast.makeText(this, "Already favourite", Toast.LENGTH_LONG).show()
                     else
-                        db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.url, animeData.title))
+                        db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title))
                 }
 
                 1 -> {
