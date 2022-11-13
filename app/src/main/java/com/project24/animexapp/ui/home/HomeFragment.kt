@@ -1,27 +1,25 @@
 package com.project24.animexapp.ui.home
 
-import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.LinearLayout
-import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.project24.animexapp.AnimeDetails
+import com.project24.animexapp.LoadingBarActivity
 import com.project24.animexapp.LogInActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
@@ -157,6 +155,7 @@ class HomeFragment : Fragment() {
             */
             getOngoingAnime()
             getMyRecommendations(5114)
+            setRecommendedForYou()
             //Log.d("ONGOING ANIME OUTSIDE",""+ongoingList.toString())
             //getTrending()
             /*
@@ -218,8 +217,6 @@ class HomeFragment : Fragment() {
                         //ongoingAnimeAdapter.animeList = ongoingList
                         //ongoingAnimeAdapter.notifyDataSetChanged()
 
-
-                        Log.d("RECOMMENDED FOR YOU",""+recommendationsList[0].toString())
                     }else{
                         Log.e("huh?","HUH")
                     }
@@ -229,6 +226,93 @@ class HomeFragment : Fragment() {
                 Log.e("RECOMMENDED API FAIL",""+t.message)
             }
         })
+    }
+
+    private fun setRecommendedForYou() {
+        val db = Firebase.firestore
+        val currentUserID = firebaseAuth.currentUser?.uid.toString()
+        val favDocRef = db.collection("Users").document(currentUserID).collection("Favourites")
+
+        // Checking if favourite list is empty
+        favDocRef.get().addOnSuccessListener() {
+            if(it.isEmpty) {
+                // TODO Matthew, implement what the user sees when he has no favourites
+
+            }
+            else {
+                getRecommendedForYou()
+            }
+        }
+    }
+
+    private fun getRecommendedForYou() {
+        val db = Firebase.firestore
+        val currentUserID = firebaseAuth.currentUser?.uid.toString()
+
+        // Asynchronous method to get random anime from favourites
+        db.collection("Users").document(currentUserID).collection("Favourites").get()
+            .addOnSuccessListener { favourite ->
+                val favouriteList = ArrayList<QueryDocumentSnapshot>()
+                for (document in favourite) {
+                    favouriteList.add(document)
+                }
+                val randomFavouriteAnimeIndex = (0..(favouriteList.size - 1)).random()
+
+                val favouriteAnimeTitle = favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
+                setBecauseYouLike(favouriteAnimeTitle)
+
+                val randomFavouriteAnimeID = favouriteList[randomFavouriteAnimeIndex].data.getValue(("mal_id")) as Long
+                setRecommendedForYouDetails(randomFavouriteAnimeID)
+            }
+    }
+
+    private fun setBecauseYouLike(favouriteAnimeTitle: String) {
+       // TODO Matthew, set the "Because You Like" anime title to favouriteAnimeTitle
+
+    }
+
+    private fun setRecommendedForYouDetails(givenAnimeID: Long) {
+        val client = JikanApiClient.apiService.getRecommendationsByID(givenAnimeID)
+        client.enqueue(object: Callback<RecommendationsByIDResponse> {
+            override fun onResponse(
+                call: Call<RecommendationsByIDResponse>,
+                response: Response<RecommendationsByIDResponse>
+            ) {
+                if(response.isSuccessful) {
+                    val recommendedAnimeDataList = response.body()!!.result
+                    val firstRecommendedAnime = recommendedAnimeDataList.get(0).animeData
+
+                    // TODO Matthew, set "Recommended For You" details here except for the "Because You Like" anime title
+                    // To get title: firstRecommendedAnime.title
+                    // To get synopsis: firstRecommendedAnime.synopsis
+                    // To get score: firstRecommendedAnime.score
+                    // To get image: firstRecommendedAnime.imageData.jpg or firstRecommendedAnime.imageData.webp
+                    // I tried to help but I passed out. Good luck matthew
+
+                    val recommendedForYouTitle = binding.textViewHomeRecommendationsTitle
+                    val recommendedForYouSynopsis = binding.textViewHomeRecommendationsSynopsis
+                    val recommendedForYouScore = binding.textViewHomeRecommendationsScore
+                    val recommendedForYouImageView = binding.imageViewHomeRecommend
+
+
+                    recommendedForYouImageView.setOnClickListener {
+                        val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
+                        showAnimeIntent.putExtra(getString(R.string.anime_id_key), firstRecommendedAnime.mal_id)
+                        requireActivity().startActivity(showAnimeIntent)
+                        startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<RecommendationsByIDResponse>, t: Throwable) {
+                Log.e("API FAIL",""+t.message)
+            }
+        })
+    }
+
+    private fun startLoadingActivity(requireActivity: FragmentActivity) {
+        val intent = Intent(requireActivity, LoadingBarActivity::class.java)
+        requireActivity.startActivity(intent)
     }
 
     fun getOngoingAnime(){

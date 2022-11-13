@@ -1,7 +1,7 @@
 package com.project24.animexapp.ui.home
 
+import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.project24.animexapp.AnimeDetails
+import com.project24.animexapp.LoadingBarActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 
@@ -44,6 +45,12 @@ class AnimeRVAdapter(var animeList : List<Anime>): RecyclerView.Adapter<AnimeRVA
             val showAnimeIntent = Intent(context,AnimeDetails::class.java)
             showAnimeIntent.putExtra(ANIME_ID,anime.mal_id)
             context.startActivity(showAnimeIntent)
+            startLoadingActivity(itemView.context) // Activities are placed in "First In Last Out" stack
+        }
+
+        private fun startLoadingActivity(context: Context?) {
+            val intent = Intent(context, LoadingBarActivity::class.java)
+            context?.startActivity(intent)
         }
 
         fun bindAnime(anime: Anime) {

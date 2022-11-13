@@ -4,6 +4,7 @@ package com.project24.animexapp
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -21,18 +22,19 @@ import com.project24.animexapp.api.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Thread.sleep
 
 
 class AnimeDetails : YouTubeBaseActivity() {
-
     private var animeID : Long = -1
     private var YOUTUBE_API_KEY: String? = ""
 
     private lateinit var firebaseAuth: FirebaseAuth
 
+    private var youTubePlayerView : YouTubePlayerView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val extras = intent.extras
         if(extras!=null) {
             animeID = extras.getLong(getString(R.string.anime_id_key), -1)
@@ -60,7 +62,6 @@ class AnimeDetails : YouTubeBaseActivity() {
                 response: Response<AnimeSearchByIDResponse>
             ) {
                 if(response.isSuccessful){
-                    Log.d("anime",""+ response.body()!!.animeData)
                     val animeData = response.body()!!.animeData
 
                     setAnimeDetails(animeData)
@@ -81,7 +82,6 @@ class AnimeDetails : YouTubeBaseActivity() {
                 response: Response<AnimeCharacterSearchResponse>
             ) {
                 if(response.isSuccessful){
-                    Log.d("Anime Characters",""+ response.body()!!.animeData)
                     setAnimeCharacterDetails(response.body()!!.animeData)
                 }
             }

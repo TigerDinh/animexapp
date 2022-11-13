@@ -144,9 +144,6 @@ data class KitsuAnimeData(
 
 )
 
-
-
-
 data class AnimeSearchResponse(
 
     @Json(name = "data")
