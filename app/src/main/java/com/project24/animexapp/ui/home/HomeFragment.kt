@@ -37,6 +37,10 @@ class HomeFragment : Fragment() {
     private lateinit var recommendedAnimeRV: RecyclerView
     private lateinit var recommendedAnimeAdapter: AnimeRVAdapter
 
+    private lateinit var trendingList: List<KitsuAnimeData>
+
+
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -134,7 +138,7 @@ class HomeFragment : Fragment() {
             getOngoingAnime()
             getMyRecommendations(5114)
             //Log.d("ONGOING ANIME OUTSIDE",""+ongoingList.toString())
-            logTrending()
+            getTrending()
             /*
             This function will be useful as a starting point for importing user favourites.
             It takes in a userID (set to some random guy for now) and logs the favourite anime
@@ -235,7 +239,7 @@ class HomeFragment : Fragment() {
         })
     }
 
-    fun logTrending(){
+    fun getTrending(){
         val client = KitsuApiClient.apiService.trendingAnime()
 
         client.enqueue(object: Callback<AnimeTrendingResponse> {
@@ -245,8 +249,8 @@ class HomeFragment : Fragment() {
             ){
                 if(response.isSuccessful){
                     if(response.body() != null){
-                        val trendingResponse = response.body()!!.animeData
-                        Log.d("TRENDING ANIME",""+trendingResponse.toString())
+                        trendingList = response.body()!!.animeData
+                        Log.d("TRENDING ANIME",""+trendingList.toString())
                     }
                 }else{
                     Log.e("TRENDING ANIME", response.message()+" "+call.request().url)
@@ -254,29 +258,6 @@ class HomeFragment : Fragment() {
             }
             override fun onFailure(call: Call<AnimeTrendingResponse>, t: Throwable) {
                 Log.e("TRENDING ANIME API FAIL",""+t.message)
-            }
-        })
-    }
-
-    fun logUserFavourites(username: String){
-        val client = JikanApiClient.apiService.requestUserFavourites(username = username)
-
-        client.enqueue(object: Callback<UserFavouritesResponse> {
-            override fun onResponse(
-                call: Call<UserFavouritesResponse>,
-                response: Response<UserFavouritesResponse>
-            ){
-                if(response.isSuccessful){
-                    if(response.body() != null){
-                        val userFavs = response.body()!!.result
-                        Log.d("USER FAVS ANIME",""+userFavs.toString())
-                    }
-                }else{
-                    Log.e("USER FAVS ANIME", response.message()+" "+call.request().url)
-                }
-            }
-            override fun onFailure(call: Call<UserFavouritesResponse>, t: Throwable) {
-                Log.e("USER FAVS API FAIL",""+t.message)
             }
         })
     }
