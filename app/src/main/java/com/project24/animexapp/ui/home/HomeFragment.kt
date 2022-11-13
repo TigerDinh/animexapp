@@ -260,6 +260,9 @@ class HomeFragment : Fragment() {
                 }
                 val randomFavouriteAnimeIndex = (0..(favouriteList.size - 1)).random()
 
+                val favouriteAnimeImage = favouriteList[randomFavouriteAnimeIndex].data.getValue("image_url") as String
+                // TODO Matthew, set favouriteAnimeImage (which is a string url) to an imageview for the "recommended for you" section
+
                 val favouriteAnimeTitle = favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
                 setBecauseYouLike(favouriteAnimeTitle)
 
@@ -270,8 +273,6 @@ class HomeFragment : Fragment() {
 
     private fun setBecauseYouLike(favouriteAnimeTitle: String) {
         binding.textViewHomeRecommendationsBecauseTitle.text = favouriteAnimeTitle
-       // TODO Matthew, set the "Because You Like" anime title to favouriteAnimeTitle [STOLE IT HAHA -HASSAN]
-
     }
 
     private fun setRecommendedForYouDetails(givenAnimeID: Long) {
@@ -284,25 +285,13 @@ class HomeFragment : Fragment() {
                 if(response.isSuccessful) {
                     val recommendedAnimeDataList = response.body()!!.result
                     val recommendedAnime = recommendedAnimeDataList.get(0).animeData
-                    Log.d("recANime", recommendedAnime.toString())
 
-                    // TODO Matthew, set "Recommended For You" details here except for the "Because You Like" anime title
-                    // To get title: firstRecommendedAnime.title
-                    // To get synopsis: firstRecommendedAnime.synopsis
-                    // To get score: firstRecommendedAnime.score
-                    // To get image: firstRecommendedAnime.imageData.jpg or firstRecommendedAnime.imageData.webp
-                    // I tried to help but I passed out. Good luck matthew - bro you shouldve just slept like damn - Hassan
                     binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
-                    binding.textViewHomeRecommendationsSynopsis.text = recommendedAnime.synopsis
                     binding.textViewHomeRecommendationsScore.text = recommendedAnime.score.toString()
                     Glide.with(view!!).load(recommendedAnime.imageData!!.jpg!!.URL).centerCrop().into(binding.imageViewHomeRecommend)
-                    val recommendedForYouTitle = binding.textViewHomeRecommendationsTitle
-                    val recommendedForYouSynopsis = binding.textViewHomeRecommendationsSynopsis
-                    val recommendedForYouScore = binding.textViewHomeRecommendationsScore
-                    val recommendedForYouImageView = binding.imageViewHomeRecommend
 
-
-                    recommendedForYouImageView.setOnClickListener {
+                    // When recommended for you image is clicked, open anime detail page for that anime
+                    binding.imageViewHomeRecommend.setOnClickListener {
                         val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
                         showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
                         requireActivity().startActivity(showAnimeIntent)
