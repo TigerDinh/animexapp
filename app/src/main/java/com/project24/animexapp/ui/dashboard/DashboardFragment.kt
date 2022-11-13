@@ -123,7 +123,7 @@ class DashboardFragment : Fragment() {
 
             filterSettings[4] = radioGroupOrder.indexOfChild(dialog.findViewById<RadioButton>(radioGroupOrder.checkedRadioButtonId))
 
-            println("debug: $filterSettings")
+            //println("debug: $filterSettings")
             dialog.dismiss()
             //TODO this space is the moment after the filter parameters are set
             /*Filters are stored in filterSettings (int array[5])
