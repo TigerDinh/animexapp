@@ -10,7 +10,7 @@
     <com.smarteist.autoimageslider.SliderView
         android:id="@+id/sliderViewHomeHeader"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         app:sliderAnimationDuration="600"
         app:sliderAutoCycleDirection="right"
         app:sliderAutoCycleEnabled="true"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:text="Ongoing"
         android:textColor="@color/black"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:padding="5dp"
         android:textStyle="bold"/>
 
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:text="Recommended For You"
         android:textColor="@color/black"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:paddingBottom="2dp"
         android:paddingLeft="5dp"
         android:textStyle="bold"/>

@@ -1,10 +1,44 @@
 <resources>
     <string name="app_name">AnimeXApp</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_dashboard">Explore</string>
+    <string name="title_notifications">Community</string>
     <string name="title_profile">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="anime_id_key">ANIME_ID</string>
+    <string-array name="genres">
+        <item>Genre</item>
+        <item>Action</item>
+        <item>Adventure</item>
+        <item>Drama"</item>
+        <item>Fantasy"</item>
+        <item>Horror"</item>
+        <item>Mystery"</item>
+        <item>Romance"</item>
+        <item>Sci-Fi"</item>
+        <item>Slice of Life"</item>
+        <item>Sports"</item>
+        <item>Isekai"</item>
+        <item>Horror"</item>
+        <item>Mystery"</item>
+    </string-array>
+    <string-array name="status">
+        <item>Status</item>
+        <item>Completed</item>
+        <item>Ongoing</item>
+        <item>Upcoming"</item>
+    </string-array>
+    <string-array name="type">
+        <item>Type</item>
+        <item>TV</item>
+        <item>Movies</item>
+        <item>OVAs</item>
+        <item>ONAs</item>
+    </string-array>
+    <string-array name="sortby">
+        <item>Score</item>
+        <item>Alphabetically</item>
+        <item>Favourites</item>
+    </string-array>
 </resources>

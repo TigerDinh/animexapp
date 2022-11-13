@@ -26,6 +26,9 @@
         android:text="This is a test title"
         android:textAlignment="center"
         android:gravity="center_horizontal"
-        android:maxLines="2"/>
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:singleLine="false"
+        android:textColor="@color/display_anime_black"/>
 
 </LinearLayout>

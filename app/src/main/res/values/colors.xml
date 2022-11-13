@@ -7,12 +7,19 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="main_color">#7cb518</color>
+    <!--<color name="main_color">#7cb518</color>-->
+    <color name="main_color">#5E548E</color>
     <color name="main_color_variant">#5E8A12</color>
     <color name="warning">#da1e37</color>
     <color name="placehold_gray">#DDDDDD</color>
     <color name="transparent">#00000000</color>
     <color name="black_tint">#9F000000</color>
     <color name="radio_back">#4DB3B3B3</color>
+    <color name="display_anime_black">#515151</color>
+
+
+    <!--Theme Colors-->
+    <color name="primary">#9F86C0</color>
+    <color name="primary_off">#5E548E</color>
 
 </resources>
