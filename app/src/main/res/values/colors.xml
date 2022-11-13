@@ -12,5 +12,7 @@
     <color name="warning">#da1e37</color>
     <color name="placehold_gray">#DDDDDD</color>
     <color name="transparent">#00000000</color>
-    <color name="black_tint">#6F000000</color>
+    <color name="black_tint">#9F000000</color>
+    <color name="radio_back">#4DB3B3B3</color>
+
 </resources>

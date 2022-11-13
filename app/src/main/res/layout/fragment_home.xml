@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_marginTop="30dp">
+    android:layout_marginTop="40dp">
 
     <com.smarteist.autoimageslider.SliderView
         android:id="@+id/sliderViewHomeHeader"
@@ -23,7 +23,7 @@
         app:sliderIndicatorPadding="1dp"
         app:sliderIndicatorRadius="2dp"
         app:sliderIndicatorSelectedColor="@color/white"
-        app:sliderIndicatorUnselectedColor="@color/placehold_gray"/>
+        app:sliderIndicatorUnselectedColor="@color/radio_back"/>
 
     <TextView
         android:id="@+id/textViewHomeOngoing"
