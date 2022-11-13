@@ -58,31 +58,35 @@ class HomeFragment : Fragment() {
         val currentUserEmail = firebaseAuth.currentUser?.email
         val currentUserID = firebaseAuth.currentUser?.uid
         
-        val homeLogInBtn = binding.buttonHomeGuestLogin
-        val homeLogOutBtn = binding.buttonHomeGuestLogout
-        val textView: TextView = binding.textViewHomeGuestLoginText
+        val homeLogInBtn = binding.buttonHomeLogin
+        val homeLogOutBtn = binding.buttonHomeLogout
+        val textView: TextView = binding.textViewHomeLoginText
         // get current user's email
         val currentUser = firebaseAuth.currentUser?.email
         isLoggedIn = firebaseAuth.currentUser !== null //thanks
 
         ongoingList = emptyList()
-        ongoingAnimeRV = binding.recyclerViewHomeGuestOngoing
+        ongoingAnimeRV = binding.recyclerViewHomeOngoing
         ongoingAnimeAdapter = AnimeRVAdapter(ongoingList)
 
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
 
+
+        //Removed functionality
         recommendationsList = emptyList()
-        recommendedAnimeRV = binding.RecForYouRV
+        //recommendedAnimeRV = binding.RecForYouRV
         recommendedAnimeAdapter = AnimeRVAdapter(recommendationsList)
-        recommendedAnimeRV.adapter = recommendedAnimeAdapter
+        //recommendedAnimeRV.adapter = recommendedAnimeAdapter
 
-        //Added by matthew
-        var guestRecommendedAnimeRV = binding.recyclerViewHomeGuestRecommendations
-
-        guestRecommendedAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-        guestRecommendedAnimeRV.adapter = ongoingAnimeAdapter
-        //////////
+        //TODO Ui interface to import single recommended anime here
+        val recImage = binding.imageViewHomeRecommend
+        val recTitle = binding.textViewHomeRecommendationsTitle
+        val recScore = binding.textViewHomeRecommendationsScore
+        val recBecTitle = binding.textViewHomeRecommendationsBecauseTitle
+        var recSynopsis = binding.textViewHomeRecommendationsSynopsis
+        //Inputed for Displa Example
+        recSynopsis.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
 
 
