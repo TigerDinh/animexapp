@@ -87,9 +87,9 @@ class HomeFragment : Fragment() {
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
 
 
-        mainFlipper = binding.viewFlipperHome
+        /*mainFlipper = binding.viewFlipperHome
         mainFlipper.flipInterval = 2000 //2 seconds before flip
-        mainFlipper.isAutoStart = true //Autostart
+        mainFlipper.isAutoStart = true //Autostart*/
 
 
 
@@ -289,7 +289,11 @@ class HomeFragment : Fragment() {
 
     fun setHeadAnime(){
         //TODO Implement anime header info here (only three can be displayed)
-        val viewFlipper = binding.viewFlipperHome
+        val sliderView = binding.sliderViewHomeHeader
+        //the layout for each anime is under slideritem_anime.xml
+
+
+        /*val viewFlipper = binding.viewFlipperHome
         val radioButtons = arrayListOf(binding.radioButtonHomeFlipper1, binding.radioButtonHomeFlipper2, binding.radioButtonHomeFlipper3)
 
         viewFlipper.inAnimation.setAnimationListener(object : Animation.AnimationListener{
@@ -312,7 +316,9 @@ class HomeFragment : Fragment() {
         val headerList = mutableListOf<Any>()
         headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader1, binding.textViewHomeTitleHeader1, binding.textViewHomeSynopsisHeader1))
         headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader2, binding.textViewHomeTitleHeader2, binding.textViewHomeSynopsisHeader2))
-        headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader3, binding.textViewHomeTitleHeader3, binding.textViewHomeSynopsisHeader3))
+        headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader3, binding.textViewHomeTitleHeader3, binding.textViewHomeSynopsisHeader3))*/
 
     }
+
+
 }

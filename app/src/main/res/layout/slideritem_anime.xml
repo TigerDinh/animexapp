@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/animeHeader_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/icon_eye_unchecked"
+        android:background="@color/black"
+        app:tint="@color/black_tint"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="80dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anime Title"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/textViewHomeSynopsisHeader1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textColor="@color/white"
+            android:textStyle="italic"
+            android:textSize="12sp"
+            android:maxLines="5"
+            android:ellipsize="end"
+            android:singleLine="false"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:layout_marginTop="30dp">
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200dp">
         
@@ -15,7 +15,7 @@
             android:id="@+id/viewFlipperHome"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:flipInterval="10000"
+            android:flipInterval="2000"
             android:autoStart="true"
             android:inAnimation="@anim/slide_in_right"
             android:outAnimation="@anim/slide_out_left">
@@ -165,7 +165,25 @@
                 android:scaleY="0.5"
                 android:buttonTint="@color/black"/>
         </RadioGroup>
-    </RelativeLayout>
+    </RelativeLayout>-->
+
+    <com.smarteist.autoimageslider.SliderView
+        android:id="@+id/sliderViewHomeHeader"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:sliderAnimationDuration="600"
+        app:sliderAutoCycleDirection="back_and_forth"
+        app:sliderAutoCycleEnabled="true"
+        app:sliderIndicatorAnimationDuration="600"
+        app:sliderStartAutoCycle="true"
+        app:sliderScrollTimeInSec="1"
+        app:sliderIndicatorGravity="center_horizontal|bottom"
+        app:sliderIndicatorMargin="15dp"
+        app:sliderIndicatorOrientation="horizontal"
+        app:sliderIndicatorPadding="1dp"
+        app:sliderIndicatorRadius="2dp"
+        app:sliderIndicatorSelectedColor="@color/white"
+        app:sliderIndicatorUnselectedColor="@color/placehold_gray"/>
 
     <TextView
         android:id="@+id/textViewHomeOngoing"
