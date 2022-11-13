@@ -91,6 +91,37 @@ data class CharacterData(
     val characterName : String,
 )
 
+data class KitsuTitle(
+    @Json(name = "en")
+    val englishTitle: String?,
+
+    @Json(name = "en_jp")
+    val enJapTitle: String?
+)
+
+data class KitsuAttribute(
+    @Json(name = "synopsis")
+    val synopsis: String,
+
+    @Json(name = "titles")
+    val otherTitles: KitsuTitle,
+
+    @Json(name = "canonicalTitle")
+    val title: String
+)
+
+data class KitsuAnimeData(
+    @Json(name = "id")
+    val kitsuID: Long,
+
+    @Json(name = "attributes")
+    val attributes: KitsuAttribute
+
+)
+
+
+
+
 data class AnimeSearchResponse(
 
     @Json(name = "data")
@@ -125,3 +156,10 @@ data class AnimeCharacterSearchResponse(
     @Json(name = "data")
     val animeData : List<Character>,
 )
+
+data class AnimeTrendingResponse(
+    @Json(name = "data")
+    val animeData: List<KitsuAnimeData>
+)
+
+

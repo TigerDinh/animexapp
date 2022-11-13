@@ -130,14 +130,15 @@ class HomeFragment : Fragment() {
             getOngoingAnime()
             getMyRecommendations(5114)
             //Log.d("ONGOING ANIME OUTSIDE",""+ongoingList.toString())
+            logTrending()
             /*
             This function will be useful as a starting point for importing user favourites.
             It takes in a userID (set to some random guy for now) and logs the favourite anime
             of that user.
             After implementing login, we can search for a user and add their favs to our acct.
             */
-            val username = "B_root" //Some random guy I found and decided to make our testing username lol
-            logUserFavourites(username)
+            //val username = "B_root" //Some random guy I found and decided to make our testing username lol
+            //logUserFavourites(username)
         }
         else{
             //Not Logged In View
@@ -156,8 +157,8 @@ class HomeFragment : Fragment() {
             of that user.
             After implementing login, we can search for a user and add their favs to our acct.
             */
-            val username = "B_root" //Some random guy I found and decided to make our testing username lol
-            logUserFavourites(username)
+            //val username = "B_root" //Some random guy I found and decided to make our testing username lol
+            //logUserFavourites(username)
         }
         return root
     }
@@ -226,6 +227,29 @@ class HomeFragment : Fragment() {
             }
             override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
                 Log.e("ONGOING ANIME API FAIL",""+t.message)
+            }
+        })
+    }
+
+    fun logTrending(){
+        val client = KitsuApiClient.apiService.trendingAnime()
+
+        client.enqueue(object: Callback<AnimeTrendingResponse> {
+            override fun onResponse(
+                call: Call<AnimeTrendingResponse>,
+                response: Response<AnimeTrendingResponse>
+            ){
+                if(response.isSuccessful){
+                    if(response.body() != null){
+                        val trendingResponse = response.body()!!.animeData
+                        Log.d("TRENDING ANIME",""+trendingResponse.toString())
+                    }
+                }else{
+                    Log.e("TRENDING ANIME", response.message()+" "+call.request().url)
+                }
+            }
+            override fun onFailure(call: Call<AnimeTrendingResponse>, t: Throwable) {
+                Log.e("TRENDING ANIME API FAIL",""+t.message)
             }
         })
     }
