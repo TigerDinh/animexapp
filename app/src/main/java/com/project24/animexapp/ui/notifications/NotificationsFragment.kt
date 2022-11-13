@@ -68,7 +68,7 @@ class NotificationsFragment : Fragment() {
     }
 
     fun getAnime(){
-        val client = JikanApiClient.apiService.requestAnime()
+        val client = JikanApiClient.apiService.requestAnime(limit = 50)
 
         client.enqueue(object: Callback<AnimeSearchResponse> {
             override fun onResponse(

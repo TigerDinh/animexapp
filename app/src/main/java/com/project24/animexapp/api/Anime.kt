@@ -35,6 +35,13 @@ data class Anime(
     val trailerData: TrailerData?,
     )
 
+data class LocalAnime(
+    val mal_id: Long,
+    val title: String,
+    val imgURl: String,
+    )
+
+
 data class TrailerData(
     @Json(name = "youtube_id")
     val youtubeID: String?,
