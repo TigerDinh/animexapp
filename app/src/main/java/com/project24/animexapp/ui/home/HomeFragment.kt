@@ -26,6 +26,9 @@ import com.project24.animexapp.LogInActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
+import com.smarteist.autoimageslider.SliderAnimations
+import com.smarteist.autoimageslider.SliderView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,6 +49,8 @@ class HomeFragment : Fragment() {
     private lateinit var recommendedAnimeAdapter: AnimeRVAdapter
 
     private lateinit var trendingList: List<KitsuAnimeData>
+    private lateinit var trendingAnimeSV: SliderView
+    private lateinit var trendingAdapter: SliderAdapter
 
     private lateinit var mainFlipper: ViewFlipper
 
@@ -86,7 +91,10 @@ class HomeFragment : Fragment() {
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
 
-
+        trendingAnimeSV = binding.sliderViewHomeHeader
+        //trendingList = emptyList()
+        //trendingAdapter = SliderAdapter(trendingList)
+        //trendingAnimeSV.setSliderAdapter(trendingAdapter)
         /*mainFlipper = binding.viewFlipperHome
         mainFlipper.flipInterval = 2000 //2 seconds before flip
         mainFlipper.isAutoStart = true //Autostart*/
@@ -99,9 +107,9 @@ class HomeFragment : Fragment() {
         recommendedAnimeAdapter = AnimeRVAdapter(recommendationsList)
         //recommendedAnimeRV.adapter = recommendedAnimeAdapter
 
-
+        getTrending()
         setRecommendedAnime()
-        setHeadAnime()
+        //setHeadAnime()
 
 
 
@@ -150,7 +158,7 @@ class HomeFragment : Fragment() {
             getOngoingAnime()
             getMyRecommendations(5114)
             //Log.d("ONGOING ANIME OUTSIDE",""+ongoingList.toString())
-            getTrending()
+            //getTrending()
             /*
             This function will be useful as a starting point for importing user favourites.
             It takes in a userID (set to some random guy for now) and logs the favourite anime
@@ -262,7 +270,15 @@ class HomeFragment : Fragment() {
                 if(response.isSuccessful){
                     if(response.body() != null){
                         trendingList = response.body()!!.animeData
-                        Log.d("TRENDING ANIME",""+trendingList.toString())
+
+                        trendingAdapter = SliderAdapter(trendingList)
+                        trendingAnimeSV.setSliderAdapter(trendingAdapter)
+                        trendingAnimeSV.scrollTimeInMillis = 5000
+                        trendingAnimeSV.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+                        trendingAnimeSV.setIndicatorAnimation(IndicatorAnimationType.SLIDE);
+                        trendingAnimeSV.startAutoCycle();
+
+                        //Log.d("TRENDING ANIME",""+trendingList.toString())
                     }
                 }else{
                     Log.e("TRENDING ANIME", response.message()+" "+call.request().url)
@@ -290,34 +306,6 @@ class HomeFragment : Fragment() {
     fun setHeadAnime(){
         //TODO Implement anime header info here (only three can be displayed)
         val sliderView = binding.sliderViewHomeHeader
-        //the layout for each anime is under slideritem_anime.xml
-
-
-        /*val viewFlipper = binding.viewFlipperHome
-        val radioButtons = arrayListOf(binding.radioButtonHomeFlipper1, binding.radioButtonHomeFlipper2, binding.radioButtonHomeFlipper3)
-
-        viewFlipper.inAnimation.setAnimationListener(object : Animation.AnimationListener{
-            override fun onAnimationStart(p0: Animation?) {
-                //Ignore, these were necessary to make radio buttons keep up with display
-            }
-
-            override fun onAnimationEnd(p0: Animation?) {
-                radioButtons[viewFlipper.displayedChild].isChecked = true
-            }
-
-            override fun onAnimationRepeat(p0: Animation?) {
-                //Ignore, these were necessary to make radio buttons keep up with display
-            }
-        })
-
-        //The val you need
-        //Format:
-        //headerList[listed anime 0 to 2][image, title, synopsis]
-        val headerList = mutableListOf<Any>()
-        headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader1, binding.textViewHomeTitleHeader1, binding.textViewHomeSynopsisHeader1))
-        headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader2, binding.textViewHomeTitleHeader2, binding.textViewHomeSynopsisHeader2))
-        headerList.add(mutableListOf<Any>(binding.imageViewHomeHeader3, binding.textViewHomeTitleHeader3, binding.textViewHomeSynopsisHeader3))*/
-
     }
 
 

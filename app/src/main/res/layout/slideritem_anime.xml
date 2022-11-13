@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/animeHeader_image"
+        android:id="@+id/slider_anime_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:src="@drawable/icon_eye_unchecked"
@@ -19,6 +19,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/slider_anime_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Anime Title"
@@ -26,7 +27,7 @@
             android:textSize="20sp"/>
 
         <TextView
-            android:id="@+id/textViewHomeSynopsisHeader1"
+            android:id="@+id/slider_anime_synopsis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Description"
