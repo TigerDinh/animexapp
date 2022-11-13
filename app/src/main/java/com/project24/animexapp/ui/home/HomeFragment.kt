@@ -11,9 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ViewFlipper
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,6 +46,8 @@ class HomeFragment : Fragment() {
     private lateinit var recommendedAnimeAdapter: AnimeRVAdapter
 
     private lateinit var trendingList: List<KitsuAnimeData>
+
+    private lateinit var mainFlipper: ViewFlipper
 
 
 
@@ -81,6 +85,12 @@ class HomeFragment : Fragment() {
 
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
+
+
+        mainFlipper = binding.viewFlipperHome
+        mainFlipper.flipInterval = 2000 //2 seconds before flip
+        mainFlipper.isAutoStart = true //Autostart
+
 
 
         //Removed functionality
