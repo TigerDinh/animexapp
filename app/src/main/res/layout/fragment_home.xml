@@ -173,7 +173,7 @@
         android:layout_height="wrap_content"
         android:text="Ongoing"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="18dp"
         android:padding="5dp"
         android:textStyle="bold"/>
 
@@ -192,7 +192,7 @@
         android:layout_height="wrap_content"
         android:text="Recommended For You"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="18dp"
         android:paddingBottom="2dp"
         android:paddingLeft="5dp"
         android:textStyle="bold"/>
