@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewFlipper
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -267,7 +269,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setBecauseYouLike(favouriteAnimeTitle: String) {
-       // TODO Matthew, set the "Because You Like" anime title to favouriteAnimeTitle
+        binding.textViewHomeRecommendationsBecauseTitle.text = favouriteAnimeTitle
+       // TODO Matthew, set the "Because You Like" anime title to favouriteAnimeTitle [STOLE IT HAHA -HASSAN]
 
     }
 
@@ -280,15 +283,19 @@ class HomeFragment : Fragment() {
             ) {
                 if(response.isSuccessful) {
                     val recommendedAnimeDataList = response.body()!!.result
-                    val firstRecommendedAnime = recommendedAnimeDataList.get(0).animeData
+                    val recommendedAnime = recommendedAnimeDataList.get(0).animeData
+                    Log.d("recANime", recommendedAnime.toString())
 
                     // TODO Matthew, set "Recommended For You" details here except for the "Because You Like" anime title
                     // To get title: firstRecommendedAnime.title
                     // To get synopsis: firstRecommendedAnime.synopsis
                     // To get score: firstRecommendedAnime.score
                     // To get image: firstRecommendedAnime.imageData.jpg or firstRecommendedAnime.imageData.webp
-                    // I tried to help but I passed out. Good luck matthew
-
+                    // I tried to help but I passed out. Good luck matthew - bro you shouldve just slept like damn - Hassan
+                    binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
+                    binding.textViewHomeRecommendationsSynopsis.text = recommendedAnime.synopsis
+                    binding.textViewHomeRecommendationsScore.text = recommendedAnime.score.toString()
+                    Glide.with(view!!).load(recommendedAnime.imageData!!.jpg!!.URL).centerCrop().into(binding.imageViewHomeRecommend)
                     val recommendedForYouTitle = binding.textViewHomeRecommendationsTitle
                     val recommendedForYouSynopsis = binding.textViewHomeRecommendationsSynopsis
                     val recommendedForYouScore = binding.textViewHomeRecommendationsScore
@@ -297,7 +304,7 @@ class HomeFragment : Fragment() {
 
                     recommendedForYouImageView.setOnClickListener {
                         val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
-                        showAnimeIntent.putExtra(getString(R.string.anime_id_key), firstRecommendedAnime.mal_id)
+                        showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
                         requireActivity().startActivity(showAnimeIntent)
                         startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
                     }

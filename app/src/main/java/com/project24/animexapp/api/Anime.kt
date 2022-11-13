@@ -117,7 +117,6 @@ data class KitsuImageData(
 
     @Json(name = "large")
     val large: String?,
-    
      */
 )
 
