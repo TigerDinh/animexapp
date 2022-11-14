@@ -56,9 +56,10 @@ interface JikanApiService{
         @Query("genres_exclude") genresExcluded:String? = null, //excluded genre. PLEASE NOTE. NEEDS TO BE INPUTTED AS COMMA SEPARATED LIST OF GENRE_ID eg [1,2]
         @Query("status") status:String? = null, //Options: "airing", "complete", "upcoming"
         @Query("type") type:String? = null, //Options: "tv" "movie" "ova" "special" "ona" "music"
-        @Query("min_score") minScore:Double? = null, //minimum score of returned anime
+        @Query("min_score") minScore:Double? = 1.0, //minimum score of returned anime. I want only anime which have a score.
         @Query("rating") rating:Int? = null, //Options: "g" "pg" "pg13" "r17" "r" "rx"
         @Query("order_by") orderBy:String? = null, //Options: "mal_id", "title", "type", "rating", "start_date", "end_date", "episodes", "score", "scored_by", "rank", "popularity", "members", "favorites"
+        @Query("sort") sort:String? = null, //Options: desc, asc
         //Defaulted Params:
         @Query("sfw") sfw:Boolean = true, //Don't want inappropriate stuff
         @Query("limit") limit:Int = 10 //switch to null when testing function calls in depth.

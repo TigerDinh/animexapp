@@ -6,16 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
-import androidx.appcompat.view.menu.ListMenuItemView
-import androidx.core.view.children
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +24,6 @@ import com.project24.animexapp.ui.home.AnimeRVAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.Query
 
 private lateinit var exploreAnimeList: List<Anime>
 private lateinit var exploreAnimeRV: RecyclerView
@@ -86,6 +80,7 @@ class DashboardFragment : Fragment() {
         minScore:Double? = null, //minimum score of returned anime
         rating:Int? = null, //Options: "g" "pg" "pg13" "r17" "r" "rx"
         orderBy:String? = null, //Options: "mal_id", "title", "type", "rating", "start_date", "end_date", "episodes", "score", "scored_by", "rank", "popularity", "members", "favorites"
+        sort:String? = null
     ){
         val client = JikanApiClient.apiService.requestAnime(
             query = query,
@@ -96,6 +91,7 @@ class DashboardFragment : Fragment() {
             minScore = minScore,
             rating = rating,
             orderBy = orderBy,
+            sort = sort,
             limit = 24 //Custom for explore.
         )
 
@@ -242,6 +238,12 @@ class DashboardFragment : Fragment() {
             5 = order (either desc or asc)
             each element contains unique int index which coresponds with index of string.xml array
             note that genres is not mapped properly/does not contain all genres, will fix later*/
+            getExploreAnime(
+                status = if(filterSettings[2]!="status") filterSettings[2] else null,
+                type = if(filterSettings[3]!="type") filterSettings[3] else null,
+                orderBy = filterSettings[4],
+                sort = if(filterSettings[5]!="default") filterSettings[5] else null,
+            )
         }
     }
 }
