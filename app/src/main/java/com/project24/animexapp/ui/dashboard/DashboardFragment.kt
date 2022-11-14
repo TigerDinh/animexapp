@@ -29,10 +29,11 @@ import com.project24.animexapp.ui.home.AnimeRVAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.Query
 
-private lateinit var animeList: List<Anime>
-private lateinit var animeAnimeRV: RecyclerView
-private lateinit var animeAnimeAdapter: AnimeRVAdapter
+private lateinit var exploreAnimeList: List<Anime>
+private lateinit var exploreAnimeRV: RecyclerView
+private lateinit var exploreAnimeAdapter: AnimeRVAdapter
 private var filterSettings = mutableListOf("", "", "", "", "", "")
 
 class DashboardFragment : Fragment() {
@@ -55,15 +56,15 @@ class DashboardFragment : Fragment() {
         val root: View = binding.root
 
 
-        animeList = emptyList()
-        animeAnimeRV = binding.ExploreRV
-        animeAnimeAdapter = AnimeRVAdapter(animeList)
+        exploreAnimeList = emptyList()
+        exploreAnimeRV = binding.ExploreRV
+        exploreAnimeAdapter = AnimeRVAdapter(exploreAnimeList)
 
-        animeAnimeRV.layoutManager = GridLayoutManager(context, 4)
+        exploreAnimeRV.layoutManager = GridLayoutManager(context, 4)
         //animeAnimeRV.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
-        animeAnimeRV.adapter = animeAnimeAdapter
+        exploreAnimeRV.adapter = exploreAnimeAdapter
 
-        getAnime()
+        getExploreAnime()
 
         getFilter()
 
@@ -75,8 +76,28 @@ class DashboardFragment : Fragment() {
         _binding = null
     }
 
-    fun getAnime(){
-        val client = JikanApiClient.apiService.requestAnime(limit = 24)
+
+    fun getExploreAnime(
+        query:String? = null, //search entry
+        genres:String? = null, //preferred genre. PLEASE NOTE. NEEDS TO BE INPUTTED AS COMMA SEPARATED LIST OF GENRE_ID eg [1,2]
+        genresExcluded:String? = null, //excluded genre. PLEASE NOTE. NEEDS TO BE INPUTTED AS COMMA SEPARATED LIST OF GENRE_ID eg [1,2]
+        status:String? = null, //Options: "airing", "complete", "upcoming"
+        type:String? = null, //Options: "tv" "movie" "ova" "special" "ona" "music"
+        minScore:Double? = null, //minimum score of returned anime
+        rating:Int? = null, //Options: "g" "pg" "pg13" "r17" "r" "rx"
+        orderBy:String? = null, //Options: "mal_id", "title", "type", "rating", "start_date", "end_date", "episodes", "score", "scored_by", "rank", "popularity", "members", "favorites"
+    ){
+        val client = JikanApiClient.apiService.requestAnime(
+            query = query,
+            genres = genres,
+            genresExcluded = genresExcluded,
+            status = status,
+            type = type,
+            minScore = minScore,
+            rating = rating,
+            orderBy = orderBy,
+            limit = 24 //Custom for explore.
+        )
 
         client.enqueue(object: Callback<AnimeSearchResponse> {
             override fun onResponse(
@@ -85,12 +106,12 @@ class DashboardFragment : Fragment() {
             ){
                 if(response.isSuccessful){
                     if(response.body() != null){
-                        animeList = response.body()!!.result
+                        exploreAnimeList = response.body()!!.result
 
                         //PASS THE LIST TO THE ADAPTER AND REFRESH IT
 
-                        animeAnimeAdapter.animeList = animeList
-                        animeAnimeAdapter.notifyDataSetChanged()
+                        exploreAnimeAdapter.animeList = exploreAnimeList
+                        exploreAnimeAdapter.notifyDataSetChanged()
 
 
                         //Log.d("ONGOING ANIME",""+ongoingList.toString())
@@ -205,7 +226,7 @@ class DashboardFragment : Fragment() {
                 1-> filterSettings[5] = "asc"
             }
 
-            //println("debug: $filterSettings")
+            Log.d("debug",": $filterSettings")
             dialog.dismiss()
 
             //TODO Hassan, this is the called function when the user confirms all their filters
@@ -224,3 +245,4 @@ class DashboardFragment : Fragment() {
         }
     }
 }
+
