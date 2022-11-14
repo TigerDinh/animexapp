@@ -22,7 +22,10 @@
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/buttonExploreFilter"
-            android:hint="Search"/>
+            android:maxLines="1"
+            android:inputType="text"
+            android:hint="Search"
+            android:imeOptions="actionSearch" />
         <Button
             android:id="@+id/buttonExploreFilter"
             android:layout_width="wrap_content"

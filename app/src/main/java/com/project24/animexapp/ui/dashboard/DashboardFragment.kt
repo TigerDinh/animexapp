@@ -3,14 +3,12 @@ package com.project24.animexapp.ui.dashboard
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ListView
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Spinner
+import android.view.inputmethod.EditorInfo
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +26,7 @@ import retrofit2.Response
 private lateinit var exploreAnimeList: List<Anime>
 private lateinit var exploreAnimeRV: RecyclerView
 private lateinit var exploreAnimeAdapter: AnimeRVAdapter
-private var filterSettings = mutableListOf("", "", "", "", "", "")
+private var filterSettings = mutableListOf("", "", "", "", "", "desc")
 
 class DashboardFragment : Fragment() {
 
@@ -186,7 +184,6 @@ class DashboardFragment : Fragment() {
             }
         }
 
-
         buttonGenreAccept.setOnClickListener() {
 
             //Check the status of each genre filter
@@ -205,7 +202,7 @@ class DashboardFragment : Fragment() {
             genreDialog.dismiss()
         }
 
-
+        val searchBar = binding.inputEditTextExploreSearch
 
 
         buttonFilterAccept.setOnClickListener() {
@@ -239,12 +236,31 @@ class DashboardFragment : Fragment() {
             each element contains unique int index which coresponds with index of string.xml array
             note that genres is not mapped properly/does not contain all genres, will fix later*/
             getExploreAnime(
+                query = if(searchBar.text.toString()!="") searchBar.text.toString() else null,
                 status = if(filterSettings[2]!="status") filterSettings[2] else null,
                 type = if(filterSettings[3]!="type") filterSettings[3] else null,
                 orderBy = filterSettings[4],
                 sort = if(filterSettings[5]!="default") filterSettings[5] else null,
             )
         }
+
+        searchBar.setOnEditorActionListener(object: TextView.OnEditorActionListener{
+            override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
+                if(p1 == EditorInfo.IME_ACTION_SEARCH){
+                    getExploreAnime(
+                        query = if(searchBar.text.toString()!="") searchBar.text.toString() else null,
+                        status = if(filterSettings[2]!="status") filterSettings[2] else null,
+                        type = if(filterSettings[3]!="type") filterSettings[3] else null,
+                        orderBy = filterSettings[4],
+                        sort = if(filterSettings[5]!="default") filterSettings[5] else null,
+                    )
+                    return true
+                }
+                return false
+            }
+
+        })
+
     }
 }
 
