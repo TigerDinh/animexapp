@@ -6,13 +6,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ListView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
+import androidx.appcompat.view.menu.ListMenuItemView
+import androidx.core.view.children
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.project24.animexapp.Genre_Map.getItemGenreID
 import com.project24.animexapp.R
 import com.project24.animexapp.api.Anime
 import com.project24.animexapp.api.AnimeSearchResponse
@@ -26,7 +33,7 @@ import retrofit2.Response
 private lateinit var animeList: List<Anime>
 private lateinit var animeAnimeRV: RecyclerView
 private lateinit var animeAnimeAdapter: AnimeRVAdapter
-private var filterSettings = arrayListOf(0, 0, 0, 0, 0)
+private var filterSettings = mutableListOf("", "", "", "", "", "")
 
 class DashboardFragment : Fragment() {
 
@@ -60,8 +67,6 @@ class DashboardFragment : Fragment() {
 
         getFilter()
 
-
-
         return root
     }
 
@@ -71,7 +76,7 @@ class DashboardFragment : Fragment() {
     }
 
     fun getAnime(){
-        val client = JikanApiClient.apiService.requestAnime(limit = 50)
+        val client = JikanApiClient.apiService.requestAnime(limit = 24)
 
         client.enqueue(object: Callback<AnimeSearchResponse> {
             override fun onResponse(
@@ -100,38 +105,120 @@ class DashboardFragment : Fragment() {
 
     fun getFilter(){
         val searchFilter = binding.buttonExploreFilter
+        val stringArrays = arrayOf(resources.getStringArray(R.array.status),
+            resources.getStringArray(R.array.type), resources.getStringArray(R.array.sortby))
+        val stringGenreArray = resources.getStringArray(R.array.genres)
+
+        //Filter Dialog
         val dialog = Dialog(requireContext())
+        dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_search_filter)
-        val spinnerArray = arrayListOf<Spinner>(dialog.findViewById(R.id.spinnerSearchFilterGenre),
-            dialog.findViewById(R.id.spinnerSearchFilterStatus), dialog.findViewById(R.id.spinnerSearchFilterType),
+
+        //Get Resources
+        val spinnerArray = arrayListOf<Spinner>(dialog.findViewById(R.id.spinnerSearchFilterStatus), dialog.findViewById(R.id.spinnerSearchFilterType),
             dialog.findViewById(R.id.spinnerSearchFilterSort))
-
         val radioGroupOrder = dialog.findViewById<RadioGroup>(R.id.radioGroupSearchFilterOrder)
-
         val buttonFilterAccept = dialog.findViewById<Button>(R.id.buttonFilterAccept)
+        val filterGenreButton = dialog.findViewById<Button>(R.id.buttonFilterGenreButton)
 
+        //Genre Dialog
+        val genreDialog = Dialog(requireContext())
+        genreDialog.setCanceledOnTouchOutside(false)
+        genreDialog.setContentView(R.layout.dialog_genre_filter)
+
+        //Get Resources Genre
+        val genreList = genreDialog.findViewById<ListView>(R.id.listViewFilterGenre)
+        var filterGenre = Array(stringGenreArray.size) {i -> 0}
+        var buttonGenreAccept = genreDialog.findViewById<Button>(R.id.buttonFilterGenreAccept)
+
+        //Open filter dialog
         searchFilter.setOnClickListener() {
             dialog.show()
         }
 
+        //Open genre dialog
+        filterGenreButton.setOnClickListener() {
+            genreDialog.show()
+        }
 
-        buttonFilterAccept.setOnClickListener() {
-            for (i in 0..3) {
-                filterSettings[i] = spinnerArray[i].selectedItemPosition
+
+        //When genre item is clicked
+        genreList.setOnItemClickListener() {
+            parent, view, position, id ->
+
+            //filterGenre is a int array with each element representing a genre
+            //if the value is 0, the item is neutral
+            //if the value is 1, the item should be filterd in and color the view green
+            //if the value is 2, the item should be filtered out and color the view red
+            //BUGGED: Bc the listview recycles and im setting the view color, it is reusing colored views for non selected items
+            when(filterGenre[position]) {
+                //Set genre to filter in, filter out, or neutral
+                //change color accordingly
+                0 -> {
+                    view.setBackgroundColor(resources.getColor(R.color.filter_ok))
+                    filterGenre[position] = 1
+                }
+                1 -> {
+                    view.setBackgroundColor(resources.getColor(R.color.filter_no))
+                    filterGenre[position] = 2
+                }
+                2 -> {
+                    view.setBackgroundColor(resources.getColor(R.color.transparent))
+                    filterGenre[position] = 0
+                }
+            }
+        }
+
+
+        buttonGenreAccept.setOnClickListener() {
+
+            //Check the status of each genre filter
+            //if 1 or 2, filter in or our respectfully
+            for (i in 0..filterGenre.size-1) {
+                when(filterGenre[i]) {
+                    //Function to map genre string to mal_id is called for each
+                    1-> filterSettings[0] = filterSettings[0]+getItemGenreID(stringGenreArray[i])+","
+                    2-> filterSettings[1] = filterSettings[1]+getItemGenreID(stringGenreArray[i])+","
+                }
             }
 
-            filterSettings[4] = radioGroupOrder.indexOfChild(dialog.findViewById<RadioButton>(radioGroupOrder.checkedRadioButtonId))
+            //Dropping last comma
+            filterSettings[0] = filterSettings[0].dropLast(1)
+            filterSettings[1] = filterSettings[1].dropLast(1)
+            genreDialog.dismiss()
+        }
+
+
+
+
+        buttonFilterAccept.setOnClickListener() {
+
+            //Return the string selected for status, type, and sort by
+            for (i in 2..4) {
+                filterSettings[i] = stringArrays[i-2][spinnerArray[i-2].selectedItemPosition].lowercase()
+            }
+
+
+            //Return order choice
+            when(radioGroupOrder.indexOfChild(dialog.findViewById<RadioButton>(radioGroupOrder.checkedRadioButtonId))) {
+                0-> filterSettings[5] = "desc"
+                1-> filterSettings[5] = "asc"
+            }
 
             //println("debug: $filterSettings")
             dialog.dismiss()
-            //TODO this space is the moment after the filter parameters are set
-            /*Filters are stored in filterSettings (int array[5])
+
+            //TODO Hassan, this is the called function when the user confirms all their filters
+            //There is a bug where other genres are being colored bc the listview is recyling the view
+            //im still trying to fix it, but if you wanna take a crack go ahead
+            /*Filters are stored in filterSettings (string array[6])
             index of:
-            0 = genre
-            1 = status
-            2 = type
-            3 = sort by
-            4 = 0 is list in descending, 1 is list in ascending
+            0 = genre filter in (ex: "1,2,6,4")
+            1 = genre filter out (ex: "1,2,6,4")
+            2 = status (ex: complete)
+            3 = type (ex: tv)
+            4 = sortby (ex: score)
+            5 = order (either desc or asc)
             each element contains unique int index which coresponds with index of string.xml array
             note that genres is not mapped properly/does not contain all genres, will fix later*/
         }

@@ -8,33 +8,85 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="anime_id_key">ANIME_ID</string>
     <string-array name="genres">
-        <item>Genre</item>
         <item>Action</item>
         <item>Adventure</item>
-        <item>Drama"</item>
-        <item>Fantasy"</item>
-        <item>Horror"</item>
-        <item>Mystery"</item>
-        <item>Romance"</item>
-        <item>Sci-Fi"</item>
-        <item>Slice of Life"</item>
-        <item>Sports"</item>
-        <item>Isekai"</item>
-        <item>Horror"</item>
-        <item>Mystery"</item>
+        <item>Avant Garde</item>
+        <item>Award Winning</item>
+        <item>Comedy</item>
+        <item>Drama</item>
+        <item>Fantasy</item>
+        <item>Gourmet</item>
+        <item>Horror</item>
+        <item>Mystery</item>
+        <item>Romance</item>
+        <item>Sci-Fi</item>
+        <item>Slice of Life</item>
+        <item>Sports</item>
+        <item>Supernatural</item>
+        <item>Suspense</item>
+        <item>Childcare</item>
+        <item>Combat Sports</item>
+        <item>Delinquents</item>
+        <item>Detective</item>
+        <item>Educational</item>
+        <item>Gag Humor</item>
+        <item>Gore</item>
+        <item>High Stakes Game</item>
+        <item>Historical</item>
+        <item>Idols (Female)</item>
+        <item>Idols (Male)</item>
+        <item>Isekai</item>
+        <item>Iyashikei</item>
+        <item>Love Polygon</item>
+        <item>Mahou Shoujo</item>
+        <item>Martial Arts</item>
+        <item>Mecha</item>
+        <item>Medical</item>
+        <item>Military</item>
+        <item>Music</item>
+        <item>Mythology</item>
+        <item>Organized Crime</item>
+        <item>Otaku Culture</item>
+        <item>Parody</item>
+        <item>Performing Arts</item>
+        <item>Pets</item>
+        <item>Psychological</item>
+        <item>Racing</item>
+        <item>Reincarnation</item>
+        <item>Romantic Subtext</item>
+        <item>Samurai</item>
+        <item>School</item>
+        <item>Showbiz</item>
+        <item>Space</item>
+        <item>Strategy Game</item>
+        <item>Super Power</item>
+        <item>Survival</item>
+        <item>Team Sports</item>
+        <item>Time Travel</item>
+        <item>Vampire</item>
+        <item>Video Game</item>
+        <item>Visual Arts</item>
+        <item>Workplace</item>
+        <item>Joesei</item>
+        <item>Kids</item>
+        <item>Seinen</item>
+        <item>Shoujo</item>
+        <item>Shounen</item>
     </string-array>
     <string-array name="status">
         <item>Status</item>
-        <item>Completed</item>
-        <item>Ongoing</item>
+        <item>Complete</item>
+        <item>Airing</item>
         <item>Upcoming"</item>
     </string-array>
     <string-array name="type">
         <item>Type</item>
         <item>TV</item>
-        <item>Movies</item>
-        <item>OVAs</item>
-        <item>ONAs</item>
+        <item>Movie</item>
+        <item>OVA</item>
+        <item>ONA</item>
+        <item>Special</item>
+        <item>Music</item>
     </string-array>
     <string-array name="sortby">
         <item>Score</item>

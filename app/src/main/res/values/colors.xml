@@ -17,6 +17,10 @@
     <color name="radio_back">#4DB3B3B3</color>
     <color name="display_anime_black">#515151</color>
 
+    <!--Filter Colors-->
+    <color name="filter_ok">#33A1FF00</color>
+    <color name="filter_no">#33FF0022</color>
+
 
     <!--Theme Colors-->
     <color name="primary">#9F86C0</color>
