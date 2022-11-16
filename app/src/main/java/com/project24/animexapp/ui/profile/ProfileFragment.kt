@@ -92,7 +92,7 @@ class ProfileFragment : Fragment() {
 
 
 
-        profileEmail.text = currentUserEmail
+        profileEmail.text = if(currentUserEmail=="null") "Guest" else currentUserEmail
 
         favoritesList = emptyList()
         favoritesAnimeRV = binding.favoritesRecyclerView

@@ -117,6 +117,8 @@ class HomeFragment : Fragment() {
         homeLogInBtn.setOnClickListener {
             val intent = Intent(activity, LogInActivity::class.java)
             startActivity(intent)
+            binding.homeRecommendedForYouLayout.visibility = View.VISIBLE
+            binding.textViewHomeRecommendations.visibility = View.VISIBLE
         }
 
         // when logged out button is clicked, logout user and hide logout button, show login button
@@ -125,6 +127,8 @@ class HomeFragment : Fragment() {
             Toast.makeText(activity, "Logged out", Toast.LENGTH_SHORT).show()
             homeLogOutBtn.visibility = View.GONE
             homeLogInBtn.visibility = View.VISIBLE
+            binding.homeRecommendedForYouLayout.visibility = View.GONE
+            binding.textViewHomeRecommendations.visibility = View.GONE
             textView.text = "Welcome to AnimeXApp"
         }
 
@@ -133,16 +137,21 @@ class HomeFragment : Fragment() {
         if(firebaseAuth.currentUser !== null) {
             homeLogOutBtn.visibility = View.VISIBLE
             homeLogInBtn.visibility = View.GONE
+            binding.homeRecommendedForYouLayout.visibility = View.VISIBLE
+            binding.textViewHomeRecommendations.visibility = View.VISIBLE
             textView.text = "Welcome, $currentUserEmail"
         // if logged out, hide logout button, show login button
         } else {
             homeLogOutBtn.visibility = View.GONE
             homeLogInBtn.visibility = View.VISIBLE
-            textView.text = "Welcome to AnimeXApp"
+            binding.homeRecommendedForYouLayout.visibility = View.GONE
+            binding.textViewHomeRecommendations.visibility = View.GONE
+            textView.text = "Login to get personalized recommendations based on the anime you love."
         }
 
         val user = firebaseAuth.currentUser?.email.toString()
-        Toast.makeText(activity, "Logged in as $user", Toast.LENGTH_SHORT).show()
+        if(user!="null")
+            Toast.makeText(activity, "Logged in as $user", Toast.LENGTH_SHORT).show()
 
         if(isLoggedIn){
             //Logged In View
