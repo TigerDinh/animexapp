@@ -31,6 +31,8 @@ The only anime app that you'll ever need
 
 ## Version 1 Screenshots
 
+<p align="middle">
 <img src="https://i.imgur.com/KPsimA0.png" width="320">
 <img src="https://i.imgur.com/sLAogRV.png" width="320">
 <img src="https://i.imgur.com/S5rI1ju.png" width="320">
+</p>
