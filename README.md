@@ -10,13 +10,15 @@ The only anime app that you'll ever need
 - Search extenstive database of anime through query/filer search
 - Create an account and save anime to favorite, watcher later, and other lists
 - Read and write reviews as well as community posts
-- Clean UI and easy-to-use
+- Clean UI and easy-to-use!
+- Open-source and constantly improving!
 
 
 ## Acknowledgements
 
  - [Jikan Rest API](https://docs.api.jikan.moe/#section/Information)
  - [Glide](https://github.com/bumptech/glide)
+ - [Kitsu](https://kitsu.docs.apiary.io/#introduction/json:api)
 
 
 
@@ -29,6 +31,6 @@ The only anime app that you'll ever need
 
 ## Version 1 Screenshots
 
-![Home](https://i.imgur.com/KPsimA0.png)
-![Explore](https://i.imgur.com/sLAogRV.png)
-![Profile](https://i.imgur.com/S5rI1ju.png)
+<img src="https://i.imgur.com/KPsimA0.png" width="320">
+<img src="https://i.imgur.com/sLAogRV.png" width="320">
+<img src="https://i.imgur.com/S5rI1ju.png" width="320">
