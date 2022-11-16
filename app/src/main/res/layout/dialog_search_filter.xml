@@ -147,14 +147,11 @@
                 android:text="Ascending"
                 android:buttonTint="@color/black"/>
         </RadioGroup>
-
         <Button
             android:id="@+id/buttonFilterAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Accept"/>
-
     </LinearLayout>
-
 </LinearLayout>

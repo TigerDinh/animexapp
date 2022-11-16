@@ -4,8 +4,10 @@ package com.project24.animexapp
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-import android.content.Intent
+import android.app.Dialog
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
@@ -22,7 +24,6 @@ import com.project24.animexapp.api.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Thread.sleep
 
 
 class AnimeDetails : YouTubeBaseActivity() {
@@ -47,6 +48,7 @@ class AnimeDetails : YouTubeBaseActivity() {
             PackageManager.GET_META_DATA
         ).metaData.getString("com.project24.animexapp.YoutubeKey")
 
+
         grabAnimeInfo()
     }
 
@@ -67,6 +69,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                     setAnimeDetails(animeData)
                     SetUpStarsRating(animeData)
                     setButtons(animeData)
+                    setReviewDialog(animeData)
                 }
             }
 
@@ -115,6 +118,38 @@ class AnimeDetails : YouTubeBaseActivity() {
                     starButtons[k].setColorFilter(resources.getColor(R.color.placehold_gray))
                 }
             }
+        }
+    }
+
+    private fun setReviewDialog(animeData: Anime) {
+        val submitAReview = findViewById<Button>(R.id.submitAReview)
+        val reviewDialog = Dialog(this)
+
+        reviewDialog.setContentView(R.layout.dialog_review)
+        reviewDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val reviewRatingSpinner = reviewDialog.findViewById(R.id.reviewRatingSpinner) as Spinner
+        val reviewArrow = reviewDialog.findViewById(R.id.spinnerArrow) as ImageView
+        val reviewAnimeTitle = reviewDialog.findViewById(R.id.reviewAnimeTitle) as TextView
+        val submitReviewDialog = reviewDialog.findViewById(R.id.reviewSubmitButton) as Button
+        val reviewComment = reviewDialog.findViewById(R.id.reviewAnimeComment) as EditText
+
+        reviewAnimeTitle.text = animeData.title
+
+            reviewArrow.setOnClickListener {
+                reviewRatingSpinner.performClick()
+            }
+
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.reviewrating,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            reviewRatingSpinner.adapter = adapter
+        }
+        submitAReview.setOnClickListener {
+            reviewDialog.show()
         }
     }
 
