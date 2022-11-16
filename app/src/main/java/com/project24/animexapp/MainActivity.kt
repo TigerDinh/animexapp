@@ -3,6 +3,7 @@ package com.project24.animexapp
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.Profile
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -19,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.local.BundleCache
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.ActivityMainBinding
 import com.project24.animexapp.ui.home.AnimeRVAdapter
+import com.project24.animexapp.ui.profile.ProfileFragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

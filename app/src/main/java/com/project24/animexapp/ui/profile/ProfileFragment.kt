@@ -1,5 +1,6 @@
 package com.project24.animexapp.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.project24.animexapp.LogInActivity
+import com.project24.animexapp.MainActivity
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentProfileBinding
 import retrofit2.Call
@@ -61,36 +64,18 @@ class ProfileFragment : Fragment() {
         val favEmptyText = binding.emptyFavText
         val watchingEmptyText = binding.emptyWatchingText
         val watchLaterEmptyText = binding.emptyWatchLaterText
+        val profileContent = binding.profileContent
+        val profileLogoutButton = binding.profileLogoutButton
+        val noAccountContent = binding.noAccountContent
 
-        val favDocRef = db.collection("Users").document(currentUserID).collection("Favourites")
-        val watchLaterDocRef = db.collection("Users").document(currentUserID).collection("WatchLater")
-        val watchingDocRef = db.collection("Users").document(currentUserID).collection("Watching")
-
-        favDocRef.get().addOnSuccessListener() {
-            if(it.isEmpty) {
-                favEmptyText.text = "You have no items on your favourites yet."
-            } else {
-                favEmptyText.visibility = View.GONE
-            }
+        profileLogoutButton.setOnClickListener {
+            firebaseAuth.signOut()
+            Toast.makeText(activity, "Logged out", Toast.LENGTH_SHORT).show()
+            profileContent.visibility = View.GONE
+            profileLogoutButton.visibility = View.GONE
+            noAccountContent.visibility = View.VISIBLE
+            profileEmail.text = "Guest"
         }
-
-        watchingDocRef.get().addOnSuccessListener() {
-            if(it.isEmpty) {
-                watchingEmptyText.text = "You have no items on your watching yet."
-            } else {
-                watchingEmptyText.visibility = View.GONE
-            }
-        }
-
-        watchLaterDocRef.get().addOnSuccessListener() {
-            if(it.isEmpty) {
-                watchLaterEmptyText.text = "You have no items on your watch later yet."
-            } else {
-                watchLaterEmptyText.visibility = View.GONE
-            }
-        }
-
-
 
         profileEmail.text = if(currentUserEmail=="null") "Guest" else currentUserEmail
 
@@ -125,58 +110,107 @@ class ProfileFragment : Fragment() {
         )
         watchingAnimeRV.adapter = watchingAnimeAdapter
 
-        db.collection("Users").document(currentUserID).collection("Favourites").get()
-            .addOnSuccessListener { favourite ->
-                //Log.d("favorite",favourite.documents.)
-                //var idList = emptyList<Long>()
-                for (document in favourite) {
-                    var malID: Long = document.data.getValue("mal_id") as Long
-                    var imgURL: String = document.data.getValue("image_url") as String
-                    var animeTitle: String = document.data.getValue("anime_title") as String
-                    favoritesList = favoritesList + LocalAnime(malID, animeTitle, imgURL)
-                    favoritesAnimeAdapter.animeList = favoritesList
-                    favoritesAnimeAdapter.notifyDataSetChanged()
-                    //idList = idList.plus(malID)
-                    //Log.d("MAL_IDFAV", malID.toString())
+        if(currentUserID!=="null") {
 
+            val favDocRef = db.collection("Users").document(currentUserID).collection("Favourites")
+            val watchLaterDocRef = db.collection("Users").document(currentUserID).collection("WatchLater")
+            val watchingDocRef = db.collection("Users").document(currentUserID).collection("Watching")
+
+
+
+            noAccountContent.visibility = View.GONE
+            profileLogoutButton.visibility = View.VISIBLE
+
+            favDocRef.get().addOnSuccessListener() {
+                if(it.isEmpty) {
+                    favEmptyText.text = "You have no items on your favourites yet."
+                } else {
+                    favEmptyText.visibility = View.GONE
                 }
-                //Log.d("MAL_IDFAV", idList.toString())
             }
 
-        db.collection("Users").document(currentUserID).collection("WatchLater").get()
-            .addOnSuccessListener { watchLater ->
-                //Log.d("favorite",favourite.documents.)
-                //var idList = emptyList<Long>()
-                for (document in watchLater) {
-                    var malID: Long = document.data.getValue("mal_id") as Long
-                    var imgURL: String = document.data.getValue("image_url") as String
-                    var animeTitle: String = document.data.getValue("anime_title") as String
-                    watchLaterList = watchLaterList + LocalAnime(malID, animeTitle, imgURL)
-                    watchLaterAnimeAdapter.animeList = watchLaterList
-                    watchLaterAnimeAdapter.notifyDataSetChanged()
-                    //idList = idList.plus(malID)
-                    //Log.d("MAL_IDFAV", malID.toString())
-
+            watchingDocRef.get().addOnSuccessListener() {
+                if(it.isEmpty) {
+                    watchingEmptyText.text = "You have no items on your watching yet."
+                } else {
+                    watchingEmptyText.visibility = View.GONE
                 }
-                //Log.d("MAL_IDFAV", idList.toString())
             }
 
-        db.collection("Users").document(currentUserID).collection("Watching").get()
-            .addOnSuccessListener { watching ->
-                //Log.d("favorite",favourite.documents.)
-                //var idList = emptyList<Long>()
-                for (document in watching) {
-                    var malID: Long = document.data.getValue("mal_id") as Long
-                    var imgURL: String = document.data.getValue("image_url") as String
-                    var animeTitle: String = document.data.getValue("anime_title") as String
-                    watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
-                    watchingAnimeAdapter.animeList = watchingList
-                    watchingAnimeAdapter.notifyDataSetChanged()
-                    //idList = idList.plus(malID)
-                    //Log.d("MAL_IDFAV", malID.toString())
+            watchLaterDocRef.get().addOnSuccessListener() {
+                if(it.isEmpty) {
+                    watchLaterEmptyText.text = "You have no items on your watch later yet."
+                } else {
+                    watchLaterEmptyText.visibility = View.GONE
                 }
-                //Log.d("MAL_IDFAV", idList.toString())
             }
+
+            db.collection("Users").document(currentUserID).collection("Favourites").get()
+                .addOnSuccessListener { favourite ->
+                    //Log.d("favorite",favourite.documents.)
+                    //var idList = emptyList<Long>()
+                    for (document in favourite) {
+                        var malID: Long = document.data.getValue("mal_id") as Long
+                        var imgURL: String = document.data.getValue("image_url") as String
+                        var animeTitle: String = document.data.getValue("anime_title") as String
+                        favoritesList = favoritesList + LocalAnime(malID, animeTitle, imgURL)
+                        favoritesAnimeAdapter.animeList = favoritesList
+                        favoritesAnimeAdapter.notifyDataSetChanged()
+                        //idList = idList.plus(malID)
+                        //Log.d("MAL_IDFAV", malID.toString())
+
+                    }
+                    //Log.d("MAL_IDFAV", idList.toString())
+                }
+
+            db.collection("Users").document(currentUserID).collection("WatchLater").get()
+                .addOnSuccessListener { watchLater ->
+                    //Log.d("favorite",favourite.documents.)
+                    //var idList = emptyList<Long>()
+                    for (document in watchLater) {
+                        var malID: Long = document.data.getValue("mal_id") as Long
+                        var imgURL: String = document.data.getValue("image_url") as String
+                        var animeTitle: String = document.data.getValue("anime_title") as String
+                        watchLaterList = watchLaterList + LocalAnime(malID, animeTitle, imgURL)
+                        watchLaterAnimeAdapter.animeList = watchLaterList
+                        watchLaterAnimeAdapter.notifyDataSetChanged()
+                        //idList = idList.plus(malID)
+                        //Log.d("MAL_IDFAV", malID.toString())
+
+                    }
+                    //Log.d("MAL_IDFAV", idList.toString())
+                }
+
+            db.collection("Users").document(currentUserID).collection("Watching").get()
+                .addOnSuccessListener { watching ->
+                    //Log.d("favorite",favourite.documents.)
+                    //var idList = emptyList<Long>()
+                    for (document in watching) {
+                        var malID: Long = document.data.getValue("mal_id") as Long
+                        var imgURL: String = document.data.getValue("image_url") as String
+                        var animeTitle: String = document.data.getValue("anime_title") as String
+                        watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
+                        watchingAnimeAdapter.animeList = watchingList
+                        watchingAnimeAdapter.notifyDataSetChanged()
+                        //idList = idList.plus(malID)
+                        //Log.d("MAL_IDFAV", malID.toString())
+                    }
+                    //Log.d("MAL_IDFAV", idList.toString())
+                }
+        } else {
+            profileContent.visibility = View.GONE
+            profileLogoutButton.visibility = View.GONE
+
+            val profileLoginButton = binding.profileLoginButton
+
+            profileLoginButton.setOnClickListener {
+                val intent = Intent(activity, LogInActivity::class.java)
+                startActivity(intent)
+
+            }
+        }
+
+
         return root
     }
     fun logUserFavourites(username: String){

@@ -154,27 +154,4 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewHomeLoginText"
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Login to get personalized recommendations based on the anime you love."
-        android:textColor="@color/black"
-        android:layout_gravity="center"
-        android:paddingTop="25dp"/>
-    <Button
-        android:id="@+id/buttonHomeLogin"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="Login"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/main_color"/>
-    <Button
-        android:id="@+id/buttonHomeLogout"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="Logout"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/warning"/>
 </LinearLayout>

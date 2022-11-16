@@ -75,10 +75,7 @@ class HomeFragment : Fragment() {
         // get current user's email
         val currentUserEmail = firebaseAuth.currentUser?.email
         val currentUserID = firebaseAuth.currentUser?.uid
-        
-        val homeLogInBtn = binding.buttonHomeLogin
-        val homeLogOutBtn = binding.buttonHomeLogout
-        val textView: TextView = binding.textViewHomeLoginText
+
         // get current user's email
         val currentUser = firebaseAuth.currentUser?.email
         isLoggedIn = firebaseAuth.currentUser !== null //thanks
@@ -98,8 +95,6 @@ class HomeFragment : Fragment() {
         mainFlipper.flipInterval = 2000 //2 seconds before flip
         mainFlipper.isAutoStart = true //Autostart*/
 
-
-
         //Removed functionality
         recommendationsList = emptyList()
         //recommendedAnimeRV = binding.RecForYouRV
@@ -110,44 +105,6 @@ class HomeFragment : Fragment() {
         setRecommendedAnime()
         //setHeadAnime()
 
-
-
-
-        // when login button is clicked, go to login activity
-        homeLogInBtn.setOnClickListener {
-            val intent = Intent(activity, LogInActivity::class.java)
-            startActivity(intent)
-            binding.homeRecommendedForYouLayout.visibility = View.VISIBLE
-            binding.textViewHomeRecommendations.visibility = View.VISIBLE
-        }
-
-        // when logged out button is clicked, logout user and hide logout button, show login button
-        homeLogOutBtn.setOnClickListener {
-            firebaseAuth.signOut()
-            Toast.makeText(activity, "Logged out", Toast.LENGTH_SHORT).show()
-            homeLogOutBtn.visibility = View.GONE
-            homeLogInBtn.visibility = View.VISIBLE
-            binding.homeRecommendedForYouLayout.visibility = View.GONE
-            binding.textViewHomeRecommendations.visibility = View.GONE
-            textView.text = "Welcome to AnimeXApp"
-        }
-
-
-        // if logged in, hide login button, show logout button, change text to Welcome, User...
-        if(firebaseAuth.currentUser !== null) {
-            homeLogOutBtn.visibility = View.VISIBLE
-            homeLogInBtn.visibility = View.GONE
-            binding.homeRecommendedForYouLayout.visibility = View.VISIBLE
-            binding.textViewHomeRecommendations.visibility = View.VISIBLE
-            textView.text = "Welcome, $currentUserEmail"
-        // if logged out, hide logout button, show login button
-        } else {
-            homeLogOutBtn.visibility = View.GONE
-            homeLogInBtn.visibility = View.VISIBLE
-            binding.homeRecommendedForYouLayout.visibility = View.GONE
-            binding.textViewHomeRecommendations.visibility = View.GONE
-            textView.text = "Login to get personalized recommendations based on the anime you love."
-        }
 
         val user = firebaseAuth.currentUser?.email.toString()
         if(user!="null")

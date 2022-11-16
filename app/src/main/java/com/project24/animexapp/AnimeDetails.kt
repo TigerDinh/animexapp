@@ -136,9 +136,9 @@ class AnimeDetails : YouTubeBaseActivity() {
 
         reviewAnimeTitle.text = animeData.title
 
-            reviewArrow.setOnClickListener {
-                reviewRatingSpinner.performClick()
-            }
+        reviewArrow.setOnClickListener {
+            reviewRatingSpinner.performClick()
+        }
 
         ArrayAdapter.createFromResource(
             this,
