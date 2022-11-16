@@ -19,15 +19,16 @@ The only anime app that you'll ever need
  - [Glide](https://github.com/bumptech/glide)
 
 
-## Version 1 Screenshots
-
-![Home](https://i.imgur.com/KPsimA0.png)
-![Explore](https://i.imgur.com/sLAogRV.png)
-![Profile](https://i.imgur.com/S5rI1ju.png)
-
 
 ## Authors
 - [Hassan Shahid](https://github.com/h-shahid3)
 - [Eric Coscolluela](https://github.com/vancityeric)
 - [Tiger Dinh](https://github.com/TigerDinh)
 - [Matthew Lee](https://github.com/mkwlee)
+
+
+## Version 1 Screenshots
+
+![Home](https://i.imgur.com/KPsimA0.png)
+![Explore](https://i.imgur.com/sLAogRV.png)
+![Profile](https://i.imgur.com/S5rI1ju.png)
