@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!--<color name="main_color">#7cb518</color>-->
-    <color name="main_color">#5E548E</color>
+    <color name="main_color">#673AB7</color>
     <color name="main_color_variant">#5E8A12</color>
     <color name="warning">#da1e37</color>
     <color name="placehold_gray">#DDDDDD</color>
@@ -23,7 +23,7 @@
 
 
     <!--Theme Colors-->
-    <color name="primary">#9F86C0</color>
-    <color name="primary_off">#5E548E</color>
+    <color name="primary">#673AB7</color>
+    <color name="primary_off">#673AB7</color>
 
 </resources>

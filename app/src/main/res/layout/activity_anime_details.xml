@@ -291,7 +291,8 @@
                             android:text="Synopsis"
                             android:textColor="@color/black"
                             android:textStyle="bold"
-                            android:layout_marginBottom="5dp"/>
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="10dp"/>
 
                         <TextView
                             android:id="@+id/textViewAnimeDetailsSynopsis"
@@ -301,8 +302,11 @@
                             android:textSize="12sp"
                             android:textStyle="italic"
                             android:justificationMode="inter_word"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"/>
+                            android:padding="10dp"
+                            android:background="@drawable/custom_dialog_background"
+                            android:backgroundTint="#F1F1F1"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="5dp" />
 
                     </LinearLayout>
 
@@ -319,12 +323,13 @@
                         android:orientation="vertical">
 
                         <TextView
+                        android:layout_marginTop="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Characters"
                         android:textColor="@color/black"
                         android:textStyle="bold"
-                        android:layout_marginBottom="5dp"/>
+                        android:layout_marginBottom="5dp" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerViewAnimeDetailsCharacters"
@@ -372,12 +377,18 @@
                             android:backgroundTint="@color/main_color"
                             android:textColor="@color/white"/>
                         <TextView
+                            android:id="@+id/noReviewsYet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="No reviews yet."
                             android:textAlignment="center"
                             android:paddingTop="20dp"
                             android:paddingBottom="20dp"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/reviewsRecycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
 
                     </LinearLayout>
 

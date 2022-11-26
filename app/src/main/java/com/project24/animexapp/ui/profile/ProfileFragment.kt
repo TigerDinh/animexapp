@@ -60,21 +60,25 @@ class ProfileFragment : Fragment() {
 
         val profileEmail = binding.profileEmail
         val currentUserEmail = firebaseAuth.currentUser?.email.toString()
-        val currentUserID = firebaseAuth.currentUser?.uid.toString()
+        var currentUserID = firebaseAuth.currentUser?.uid.toString()
         val favEmptyText = binding.emptyFavText
         val watchingEmptyText = binding.emptyWatchingText
         val watchLaterEmptyText = binding.emptyWatchLaterText
         val profileContent = binding.profileContent
         val profileLogoutButton = binding.profileLogoutButton
         val noAccountContent = binding.noAccountContent
+        val profileLoginButton = binding.profileLoginButton
 
         profileLogoutButton.setOnClickListener {
             firebaseAuth.signOut()
+            currentUserID = null.toString()
             Toast.makeText(activity, "Logged out", Toast.LENGTH_SHORT).show()
             profileContent.visibility = View.GONE
             profileLogoutButton.visibility = View.GONE
             noAccountContent.visibility = View.VISIBLE
             profileEmail.text = "Guest"
+            profileLoginButton.isClickable
+            activity?.recreate()
         }
 
         profileEmail.text = if(currentUserEmail=="null") "Guest" else currentUserEmail
@@ -115,8 +119,6 @@ class ProfileFragment : Fragment() {
             val favDocRef = db.collection("Users").document(currentUserID).collection("Favourites")
             val watchLaterDocRef = db.collection("Users").document(currentUserID).collection("WatchLater")
             val watchingDocRef = db.collection("Users").document(currentUserID).collection("Watching")
-
-
 
             noAccountContent.visibility = View.GONE
             profileLogoutButton.visibility = View.VISIBLE
@@ -200,8 +202,6 @@ class ProfileFragment : Fragment() {
         } else {
             profileContent.visibility = View.GONE
             profileLogoutButton.visibility = View.GONE
-
-            val profileLoginButton = binding.profileLoginButton
 
             profileLoginButton.setOnClickListener {
                 val intent = Intent(activity, LogInActivity::class.java)

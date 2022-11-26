@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="350dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
@@ -10,23 +10,40 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Write a review for:"
+        android:text="Write a review"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:textSize="20dp"/>
-
-    <TextView
-        android:id="@+id/reviewAnimeTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textStyle="bold"
-        android:paddingBottom="20dp"/>
+        android:textSize="20dp"
+        android:gravity="center"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Comments:"/>
+        android:text="Title"
+        android:layout_marginBottom="5dp"/>
+
+
+    <EditText
+        android:id="@+id/reviewAnimeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/customborder"
+        android:overScrollMode="always"
+        android:lines="1"
+        android:textSize="12dp"
+        android:textColor="@color/black"
+        android:gravity="top"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:scrollHorizontally="false"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comment"
+        android:layout_marginBottom="5dp"/>
 
     <EditText
         android:id="@+id/reviewAnimeComment"
@@ -35,20 +52,30 @@
         android:background="@drawable/customborder"
         android:overScrollMode="always"
         android:lines="6"
+        android:textSize="12dp"
+        android:textColor="@color/black"
         android:gravity="top"
         android:scrollbarStyle="insideInset"
         android:scrollbars="vertical"
         android:scrollHorizontally="false"
         android:inputType="textMultiLine"/>
 
+    <CheckBox
+        android:id="@+id/reviewSpoilersCheckbox"
+        android:layout_width="111dp"
+        android:layout_height="match_parent"
+        android:text="Spoilers"
+        android:layout_marginTop="5dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your rating:"
-        android:layout_marginTop="10dp"/>
+        android:text="Your rating"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"/>
 
     <LinearLayout
-        android:layout_width="139dp"
+        android:layout_width="111dp"
         android:layout_height="wrap_content"
         android:background="@drawable/customborder"
         android:orientation="horizontal">
@@ -69,7 +96,6 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_keyboard_arrow_down_24" />
-
 
     </LinearLayout>
 

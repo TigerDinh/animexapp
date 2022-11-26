@@ -5,12 +5,16 @@ package com.project24.animexapp
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import android.app.Dialog
+import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.youtube.player.YouTubeBaseActivity
@@ -21,18 +25,26 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.*
+import com.project24.animexapp.ui.profile.LocalAnimeRVAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AnimeDetails : YouTubeBaseActivity() {
     private var animeID : Long = -1
     private var YOUTUBE_API_KEY: String? = ""
-
     private lateinit var firebaseAuth: FirebaseAuth
-
     private var youTubePlayerView : YouTubePlayerView? = null
+    private lateinit var reviewsList: List<Reviews>
+    private lateinit var reviewsAnimeRV: RecyclerView
+    private lateinit var reviewsAnimeAdapter: ReviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +60,6 @@ class AnimeDetails : YouTubeBaseActivity() {
             PackageManager.GET_META_DATA
         ).metaData.getString("com.project24.animexapp.YoutubeKey")
 
-
         grabAnimeInfo()
     }
 
@@ -59,6 +70,7 @@ class AnimeDetails : YouTubeBaseActivity() {
 
         val client = JikanApiClient.apiService.getAnimeByID(animeID)
         client.enqueue(object: Callback<AnimeSearchByIDResponse> {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(
                 call: Call<AnimeSearchByIDResponse>,
                 response: Response<AnimeSearchByIDResponse>
@@ -70,6 +82,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                     SetUpStarsRating(animeData)
                     setButtons(animeData)
                     setReviewDialog(animeData)
+                    setReviewAdapter(animeData)
                 }
             }
 
@@ -93,6 +106,52 @@ class AnimeDetails : YouTubeBaseActivity() {
                 Log.e("API FAIL",""+t.message)
             }
         })
+
+
+    }
+
+    private fun setReviewAdapter(animeData: Anime) {
+        firebaseAuth = FirebaseAuth.getInstance()
+        val db = Firebase.firestore
+        reviewsList = emptyList()
+        reviewsAnimeRV = findViewById(R.id.reviewsRecycler)
+        reviewsAnimeAdapter = ReviewAdapter(reviewsList)
+        val noReviewsYet = findViewById<TextView>(R.id.noReviewsYet)
+
+        reviewsAnimeRV.layoutManager = LinearLayoutManager (
+            this,
+            LinearLayoutManager.VERTICAL, false
+        )
+
+        reviewsAnimeRV.adapter = reviewsAnimeAdapter
+
+
+        db.collection("Reviews").document(animeData.mal_id.toString()).collection("Reviews").get()
+            .addOnSuccessListener { review ->
+                //Log.d("favorite",favourite.documents.)
+                //var idList = emptyList<Long>()
+                for (review in review) {
+                    var reviewTitle: String = review.data.getValue("reviewTitle") as String
+                    var reviewComment: String = review.data.getValue("reviewComment") as String
+                    var reviewUser: String = review.data.getValue("username") as String
+                    var reviewSpoiler: String = review.data.getValue("reviewSpoilers") as String
+                    var reviewDate: String = review.data.getValue("reviewDate") as String
+                    reviewsList = reviewsList + Reviews(animeData.mal_id, reviewTitle, reviewComment, reviewSpoiler, reviewUser, reviewDate)
+                    reviewsAnimeAdapter.reviewList = reviewsList
+                    reviewsAnimeAdapter.notifyDataSetChanged()
+                    Log.d("MAL_IDFAV", reviewComment)
+
+                }
+
+                if(reviewsList.isEmpty()) {
+                    noReviewsYet.visibility = View.VISIBLE
+                } else {
+                    noReviewsYet.visibility = View.GONE
+                }
+
+
+                //Log.d("MAL_IDFAV", idList.toString())
+            }
     }
 
     private fun SetUpStarsRating(animeData: Anime) {
@@ -121,20 +180,25 @@ class AnimeDetails : YouTubeBaseActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setReviewDialog(animeData: Anime) {
         val submitAReview = findViewById<Button>(R.id.submitAReview)
         val reviewDialog = Dialog(this)
+        firebaseAuth = FirebaseAuth.getInstance()
+        val db = Firebase.firestore
+        val currentUserID = firebaseAuth.currentUser?.uid
+        var currentUsername: String
+
 
         reviewDialog.setContentView(R.layout.dialog_review)
         reviewDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val reviewRatingSpinner = reviewDialog.findViewById(R.id.reviewRatingSpinner) as Spinner
         val reviewArrow = reviewDialog.findViewById(R.id.spinnerArrow) as ImageView
-        val reviewAnimeTitle = reviewDialog.findViewById(R.id.reviewAnimeTitle) as TextView
         val submitReviewDialog = reviewDialog.findViewById(R.id.reviewSubmitButton) as Button
         val reviewComment = reviewDialog.findViewById(R.id.reviewAnimeComment) as EditText
-
-        reviewAnimeTitle.text = animeData.title
+        val reviewAnimeTitle = reviewDialog.findViewById(R.id.reviewAnimeTitle) as EditText
+        val reviewSpoilersCheckbox = reviewDialog.findViewById(R.id.reviewSpoilersCheckbox) as CheckBox
 
         reviewArrow.setOnClickListener {
             reviewRatingSpinner.performClick()
@@ -148,8 +212,37 @@ class AnimeDetails : YouTubeBaseActivity() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             reviewRatingSpinner.adapter = adapter
         }
+
         submitAReview.setOnClickListener {
-            reviewDialog.show()
+            if (currentUserID == null) {
+                Toast.makeText(this, "You must be logged in to submit a review", Toast.LENGTH_SHORT).show()
+            } else {
+                reviewDialog.show()
+                submitReviewDialog.setOnClickListener {
+                    val userReviewComment = reviewComment.text.toString()
+                    val userReviewTitle = reviewAnimeTitle.text.toString()
+                    val sdf = SimpleDateFormat("MM/dd/yyyy")
+                    val currentDate = sdf.format(Date())
+                    var spoilers = if(reviewSpoilersCheckbox.isChecked) { "yes" } else { "no" }
+
+                    var docRef = db.collection("Users").document(currentUserID!!)
+                    docRef.get()
+                        .addOnSuccessListener { document ->
+                            if (document != null) {
+                                currentUsername = document.data?.get("username").toString()
+                                Toast.makeText(this, currentUsername, Toast.LENGTH_SHORT).show()
+                                db.collection("Reviews").document(animeData.mal_id.toString()).collection("Reviews").add(Reviews(animeData.mal_id, userReviewTitle, userReviewComment, spoilers, currentUsername, currentDate))
+                            } else {
+                                Log.d(TAG, "No such document")
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.d(TAG, "get failed with ", exception)
+                        }
+                    reviewDialog.dismiss()
+                    this.recreate()
+                }
+            }
         }
     }
 
