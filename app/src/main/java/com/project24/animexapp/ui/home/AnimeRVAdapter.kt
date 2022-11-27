@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.project24.animexapp.AnimeDetails
-import com.project24.animexapp.LoadingBarActivity
+import com.project24.animexapp.ui.LoadingScreens.LoadingBarActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 

@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.fragment.app.Fragment
@@ -20,8 +19,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.AnimeDetails
-import com.project24.animexapp.LoadingBarActivity
-import com.project24.animexapp.LogInActivity
+import com.project24.animexapp.ui.LoadingScreens.LoadingBarActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding

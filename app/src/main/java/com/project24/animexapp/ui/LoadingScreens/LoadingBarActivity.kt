@@ -1,10 +1,11 @@
-package com.project24.animexapp
+package com.project24.animexapp.ui.LoadingScreens
 
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import com.project24.animexapp.R
 import java.lang.Thread.sleep
 
 class LoadingBarActivity : AppCompatActivity() {
