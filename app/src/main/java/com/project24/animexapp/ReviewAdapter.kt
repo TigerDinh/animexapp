@@ -20,27 +20,14 @@ class ReviewAdapter(var reviewList : List<Reviews>): RecyclerView.Adapter<Review
     override fun getItemCount(): Int {
         return reviewList.size
     }
-
     override fun onBindViewHolder(holder: ReviewAdapter.ViewHolder, position: Int) {
         val reviewItemAnime = reviewList[position]
         holder.bindAnime(reviewItemAnime)
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-//        private var reviewUser: TextView
-//        private var reviewComment: TextView
-//        var spoiler: TextView
-//        private var date: TextView
-
         private var view: View = itemView
         private lateinit var reviewAnime: Reviews
-
-//        init {
-//            reviewUser = itemView.findViewById(R.id.reviewUsername)
-//            reviewComment = itemView.findViewById(R.id.reviewComment)
-//            spoiler = itemView.findViewById(R.id.spoilerTag)
-//            date = itemView.findViewById(R.id.reviewDate)
-//        }
 
         fun bindAnime(reviewAnime: Reviews) {
             this.reviewAnime = reviewAnime
@@ -55,6 +42,5 @@ class ReviewAdapter(var reviewList : List<Reviews>): RecyclerView.Adapter<Review
                 view.findViewById<TextView>(R.id.spoilerTag).visibility = View.GONE
             }
         }
-
     }
 }

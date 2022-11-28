@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.project24.animexapp.ui.notifications.NotificationsFragment"
+        android:name="com.project24.animexapp.ui.community.CommunityFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_community" />
 
     <fragment
         android:id="@+id/navigation_profile"

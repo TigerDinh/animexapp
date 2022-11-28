@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:paddingStart="5dp">
+    android:paddingStart="10dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -15,7 +15,7 @@
             <ImageView
                 android:id = "@+id/anime_image"
                 android:layout_width="90dp"
-                android:layout_height="128dp"
+                android:layout_height="138dp"
                 android:src="@drawable/ic_home_black_24dp"/>
 
     </androidx.cardview.widget.CardView>

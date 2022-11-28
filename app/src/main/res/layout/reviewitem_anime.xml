@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:text="AlishaAnime"
                     android:textColor="@color/black"
-                    android:textSize="17dp"
+                    android:textSize="15dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -65,16 +65,11 @@
                 android:id="@+id/reviewDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="15dp"
-                android:text="Nov 23, 2022"
-                android:gravity="left"/>
+                android:gravity="left"
+                android:paddingBottom="13dp"
+                android:text="Nov 23, 2022" />
         </LinearLayout>
-
-
     </LinearLayout>
-
-
-
     <HorizontalScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -84,7 +79,8 @@
             android:layout_height="wrap_content"
             android:textColor="#000000"
             android:textStyle="bold"
-            android:scrollHorizontally="true"/>
+            android:scrollHorizontally="true"
+            android:textSize="13dp"/>
     </HorizontalScrollView>
 
     <TextView
@@ -92,8 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:textColor="#616161" />
-
-
+        android:textColor="#616161"
+        android:textSize="13dp"/>\
 </LinearLayout>
 

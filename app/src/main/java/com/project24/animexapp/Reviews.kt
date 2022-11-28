@@ -6,5 +6,5 @@ data class Reviews(
     val reviewComment: String? = null,
     val reviewSpoilers: String? = null,
     val username: String? = null,
-    val reviewDate: String? = null
+    val reviewDate: String? = null,
 ) {}

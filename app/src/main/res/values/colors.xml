@@ -26,4 +26,6 @@
     <color name="primary">#673AB7</color>
     <color name="primary_off">#673AB7</color>
 
+    <!-- Text Colors -->
+    <color name="text_black">#303030</color>
 </resources>
