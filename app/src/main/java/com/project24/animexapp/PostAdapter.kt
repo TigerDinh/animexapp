@@ -77,7 +77,6 @@ class PostAdapter(var postList : List<Posts>): RecyclerView.Adapter<PostAdapter.
                         db.collection("Posts").document(postItem.postId.toString()).collection("LikedBy").document(currentUserId.toString()).delete()
                     } else {
                         button.setImageDrawable(thumbsClicked)
-                        Toast.makeText(context, "This is new", Toast.LENGTH_SHORT).show()
                         db.collection("Posts").document(postItem.postId.toString()).collection("LikedBy")
                             .document(currentUserId.toString()).set(
                                 Posts(
