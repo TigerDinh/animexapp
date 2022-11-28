@@ -56,6 +56,12 @@
                     android:id="@+id/youtubePlayerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+
+                <ImageView
+                    android:id="@+id/animeDetailsImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_150sdp"
+                    android:adjustViewBounds="true"/>
             </LinearLayout>
 
             <LinearLayout

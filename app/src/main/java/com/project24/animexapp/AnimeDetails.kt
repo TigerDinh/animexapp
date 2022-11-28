@@ -17,6 +17,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -25,14 +26,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.*
-import com.project24.animexapp.ui.profile.LocalAnimeRVAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -374,7 +371,7 @@ class AnimeDetails : YouTubeBaseActivity() {
 
     private fun setAnimeDetails(animeData: Anime) {
         setAnimeTitle(animeData.title)
-        setAnimeTrailer(animeData.trailerData?.youtubeID)
+        setAnimeTrailer(animeData.trailerData?.youtubeID, animeData.imageData?.jpg)
         setAnimeSynopsis(animeData.synopsis)
         setAnimeScore(animeData.score.toString())
     }
@@ -389,13 +386,24 @@ class AnimeDetails : YouTubeBaseActivity() {
         score.text = givenScore
     }
 
-    private fun setAnimeTrailer(youtubeID: String?) {
+    private fun setAnimeTrailer(youtubeID: String?, givenJPG: Jpg?) {
+
+        val youTubePlayerView : YouTubePlayerView = findViewById(R.id.youtubePlayerView)
+        val animeDetailsImageView = findViewById<ImageView>(R.id.animeDetailsImageView)
+
         if (youtubeID == null){
+            youTubePlayerView.visibility = View.GONE
+            Glide.with(this)
+                .load(givenJPG!!.URL)
+                .fitCenter()
+                .into(animeDetailsImageView)
             return
+        }
+        else{
+            animeDetailsImageView.visibility = View.GONE
         }
 
         val youtubeTrailerID = youtubeID
-        val youTubePlayerView : YouTubePlayerView = findViewById(R.id.youtubePlayerView)
         youTubePlayerView.initialize(YOUTUBE_API_KEY, object:YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(
                 provider: YouTubePlayer.Provider?,
