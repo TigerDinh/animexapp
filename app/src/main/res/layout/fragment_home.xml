@@ -44,16 +44,35 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/listitem_anime"/>
 
-    <TextView
-        android:id="@+id/textViewHomeRecommendations"
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Recommended For You"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:paddingBottom="2dp"
-        android:paddingLeft="5dp"
-        android:textStyle="bold"/>
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/textViewHomeRecommendations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recommended For You"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="5dp"
+            android:textStyle="bold"
+            android:paddingTop="6dp"/>
+
+        <ImageButton
+            android:id="@+id/refreshRecommendedAnimeForYouBtn"
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/textViewHomeRecommendations"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/refresh_icon_foreground" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/homeRecommendedForYouLayout"

@@ -2,6 +2,7 @@ package com.project24.animexapp.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.ViewFlipper
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +31,7 @@ import com.smarteist.autoimageslider.SliderView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Thread.sleep
 
 class HomeFragment : Fragment() {
 
@@ -50,8 +53,6 @@ class HomeFragment : Fragment() {
     private lateinit var trendingAdapter: SliderAdapter
 
     private lateinit var mainFlipper: ViewFlipper
-
-
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -86,12 +87,6 @@ class HomeFragment : Fragment() {
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
 
         trendingAnimeSV = binding.sliderViewHomeHeader
-        //trendingList = emptyList()
-        //trendingAdapter = SliderAdapter(trendingList)
-        //trendingAnimeSV.setSliderAdapter(trendingAdapter)
-        /*mainFlipper = binding.viewFlipperHome
-        mainFlipper.flipInterval = 2000 //2 seconds before flip
-        mainFlipper.isAutoStart = true //Autostart*/
 
         //Removed functionality
         recommendationsList = emptyList()
@@ -103,56 +98,35 @@ class HomeFragment : Fragment() {
         setRecommendedAnime()
         //setHeadAnime()
 
-
         val user = firebaseAuth.currentUser?.email.toString()
         if(user!="null")
             Toast.makeText(activity, "Logged in as $user", Toast.LENGTH_SHORT).show()
 
         if(isLoggedIn){
-            //Logged In View
-
-            /*
-            The function is a placeholder right now to showcase the working of the api.
-            The client will send a request for ongoing anime.
-            Play around with the params to get different kinds of anime results.
-            See the JikanApiService interface, at the JikanApiClient file for the options
-            See the api docs to see the possible values for the params.
-            */
             getOngoingAnime()
             getMyRecommendations(5114)
-            setRecommendedForYou()
-            //Log.d("ONGOING ANIME OUTSIDE",""+ongoingList.toString())
-            //getTrending()
-            /*
-            This function will be useful as a starting point for importing user favourites.
-            It takes in a userID (set to some random guy for now) and logs the favourite anime
-            of that user.
-            After implementing login, we can search for a user and add their favs to our acct.
-            */
-            //val username = "B_root" //Some random guy I found and decided to make our testing username lol
-            //logUserFavourites(username)
+            setupRefreshButtonForRecommendedForYou()
         }
         else{
             //Not Logged In View
-
-            /*
-            The function is a placeholder right now to showcase the working of the api.
-            The client will send a request for ongoing anime.
-            Play around with the params to get different kinds of anime results.
-            See the JikanApiService interface, at the JikanApiClient file for the options
-            See the api docs to see the possible values for the params.
-            */
             getOngoingAnime()
-            /*
-            This function will be useful as a starting point for importing user favourites.
-            It takes in a userID (set to some random guy for now) and logs the favourite anime
-            of that user.
-            After implementing login, we can search for a user and add their favs to our acct.
-            */
-            //val username = "B_root" //Some random guy I found and decided to make our testing username lol
-            //logUserFavourites(username)
         }
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(isLoggedIn) {
+            setRecommendedForYou()
+        }
+    }
+
+    private fun setupRefreshButtonForRecommendedForYou() {
+        val refreshBtn = binding.refreshRecommendedAnimeForYouBtn
+        refreshBtn.setOnClickListener(){
+            sleep(500) // Prevents api request overload
+            setRecommendedForYou()
+        }
     }
 
     override fun onDestroyView() {
@@ -246,20 +220,48 @@ class HomeFragment : Fragment() {
                 response: Response<RecommendationsByIDResponse>
             ) {
                 if(response.isSuccessful) {
+
+                    // Get random recommended anime
                     val recommendedAnimeDataList = response.body()!!.result
-                    val recommendedAnime = recommendedAnimeDataList.get(0).animeData
+                    val randomIndex = (0..(recommendedAnimeDataList.size - 1)).random()
+                    val randomRecommendedAnime = recommendedAnimeDataList.get(randomIndex).animeData
 
-                    binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
-                    binding.textViewHomeRecommendationsScore.text = recommendedAnime.score.toString()
-                    Glide.with(view!!).load(recommendedAnime.imageData!!.jpg!!.URL).centerCrop().into(binding.imageViewHomeRecommend)
+                    // Get the full information of the random recommended anime
+                    val client2 = JikanApiClient.apiService.getAnimeByID(randomRecommendedAnime.mal_id)
+                    client2.enqueue(object: Callback<AnimeSearchByIDResponse> {
+                        @RequiresApi(Build.VERSION_CODES.O)
+                        override fun onResponse(
+                            call: Call<AnimeSearchByIDResponse>,
+                            response: Response<AnimeSearchByIDResponse>
+                        ) {
+                            if(response.isSuccessful){
 
-                    // When recommended for you image is clicked, open anime detail page for that anime
-                    binding.imageViewHomeRecommend.setOnClickListener {
-                        val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
-                        showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
-                        requireActivity().startActivity(showAnimeIntent)
-                        startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
-                    }
+                                // Set the full information of the random recommended anime
+                                val recommendedAnime = response.body()!!.animeData
+                                // TODO title can be too long sometimes
+                                binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
+                                binding.textViewHomeRecommendationsSynopsis.text = recommendedAnime.synopsis
+                                if (recommendedAnime.score == null){
+                                    binding.textViewHomeRecommendationsScore.text = "Unrated"
+                                }
+                                else{
+                                    binding.textViewHomeRecommendationsScore.text = recommendedAnime.score.toString()
+                                }
+                                Glide.with(view!!).load(recommendedAnime.imageData!!.jpg!!.URL).centerCrop().into(binding.imageViewHomeRecommend)
+
+                                // When recommended for you image is clicked, open anime detail page for that anime
+                                binding.imageViewHomeRecommend.setOnClickListener {
+                                    val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
+                                    showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
+                                    requireActivity().startActivity(showAnimeIntent)
+                                    startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
+                                }
+                            }
+                        }
+                        override fun onFailure(call: Call<AnimeSearchByIDResponse>, t: Throwable) {
+                            Log.e("API FAIL",""+t.message)
+                        }
+                    })
                 }
             }
 
@@ -351,6 +353,48 @@ class HomeFragment : Fragment() {
         //TODO Implement anime header info here (only three can be displayed)
         val sliderView = binding.sliderViewHomeHeader
     }
-
-
 }
+
+// TODO, use or clean this dead code
+//trendingList = emptyList()
+//trendingAdapter = SliderAdapter(trendingList)
+//trendingAnimeSV.setSliderAdapter(trendingAdapter)
+/*mainFlipper = binding.viewFlipperHome
+mainFlipper.flipInterval = 2000 //2 seconds before flip
+mainFlipper.isAutoStart = true //Autostart*/
+
+//Logged In View
+
+/*
+The function is a placeholder right now to showcase the working of the api.
+The client will send a request for ongoing anime.
+Play around with the params to get different kinds of anime results.
+See the JikanApiService interface, at the JikanApiClient file for the options
+See the api docs to see the possible values for the params.
+*/
+
+//Log.d("ONGOING ANIME OUTSIDE",""+ongoingList.toString())
+//getTrending()
+/*
+This function will be useful as a starting point for importing user favourites.
+It takes in a userID (set to some random guy for now) and logs the favourite anime
+of that user.
+After implementing login, we can search for a user and add their favs to our acct.
+*/
+//val username = "B_root" //Some random guy I found and decided to make our testing username lol
+//logUserFavourites(username)
+/*
+The function is a placeholder right now to showcase the working of the api.
+The client will send a request for ongoing anime.
+Play around with the params to get different kinds of anime results.
+See the JikanApiService interface, at the JikanApiClient file for the options
+See the api docs to see the possible values for the params.
+*/
+/*
+This function will be useful as a starting point for importing user favourites.
+It takes in a userID (set to some random guy for now) and logs the favourite anime
+of that user.
+After implementing login, we can search for a user and add their favs to our acct.
+*/
+//val username = "B_root" //Some random guy I found and decided to make our testing username lol
+//logUserFavourites(username)
