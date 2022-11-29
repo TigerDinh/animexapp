@@ -16,7 +16,7 @@ import com.project24.animexapp.R
 
 class WelcomeScreenActivity : AppCompatActivity() {
 
-    private val timeToTransition: Long = 1000 // In milliseconds
+    private val timeToTransition: Long = 1100 // In milliseconds
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +43,8 @@ class WelcomeScreenActivity : AppCompatActivity() {
 
     private fun setupTransitionToMainActivity() {
         object : CountDownTimer(
-            timeToTransition + 1000,
-            1000
+            timeToTransition,
+            50
         ) {
             override fun onTick(l: Long) {}
             override fun onFinish() {

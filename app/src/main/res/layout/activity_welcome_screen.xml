@@ -4,28 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.LoadingScreens.WelcomeScreenActivity">
+    tools:context=".ui.LoadingScreens.WelcomeScreenActivity"
+    android:background="#757194">
 
     <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="125dp"
-        android:layout_height="114dp"
-        android:src="@drawable/anime_x_app_waifu_icon"
+        android:layout_width="233dp"
+        android:layout_height="201dp"
+        android:src="@drawable/purple_anime_app_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.554" />
+        app:layout_constraintVertical_bias="0.58" />
 
     <ImageView
         android:id="@+id/appTitleLogo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="369dp"
+        android:layout_height="298dp"
+        android:paddingTop="0dp"
         android:src="@drawable/anime_x_app_title_foreground"
-        app:layout_constraintBottom_toTopOf="@+id/logoImageView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
