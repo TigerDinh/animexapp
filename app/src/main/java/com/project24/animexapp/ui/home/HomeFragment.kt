@@ -31,6 +31,7 @@ import com.project24.animexapp.databinding.FragmentHomeBinding
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
+import dev.failsafe.RateLimiter
 import dev.failsafe.RetryPolicy
 import dev.failsafe.retrofit.FailsafeCall
 import retrofit2.Call

@@ -6,6 +6,7 @@ package com.project24.animexapp
 //import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import android.app.Dialog
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -26,10 +27,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.*
+import dev.failsafe.RetryPolicy
+import dev.failsafe.retrofit.FailsafeCall
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -66,8 +70,30 @@ class AnimeDetails : YouTubeBaseActivity() {
         }
 
         val client = JikanApiClient.apiService.getAnimeByID(animeID)
+
+        val retryPolicy = RetryPolicy.builder<Response<AnimeSearchByIDResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    val animeData = it.body()!!.animeData
+
+                    setAnimeDetails(animeData)
+                    SetUpStarsRating(animeData)
+                    setButtons(animeData)
+                    setReviewDialog(animeData)
+                    setReviewAdapter(animeData)
+                }
+            }
+        }
+        /*
         client.enqueue(object: Callback<AnimeSearchByIDResponse> {
-            @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(
                 call: Call<AnimeSearchByIDResponse>,
                 response: Response<AnimeSearchByIDResponse>
@@ -88,7 +114,27 @@ class AnimeDetails : YouTubeBaseActivity() {
             }
         })
 
+         */
+
         val client2 = JikanApiClient.apiService.getAnimeCharacterById(animeID)
+
+        val retryPolicy2 = RetryPolicy.builder<Response<AnimeCharacterSearchResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall2 = FailsafeCall.with(retryPolicy2).compose(client2)
+
+        val cFuture2 = failsafeCall2.executeAsync()
+        cFuture2.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    setAnimeCharacterDetails(it.body()!!.animeData)
+                }
+            }
+        }
+
+        /*
         client2.enqueue(object: Callback<AnimeCharacterSearchResponse> {
             override fun onResponse(
                 call: Call<AnimeCharacterSearchResponse>,
@@ -103,6 +149,8 @@ class AnimeDetails : YouTubeBaseActivity() {
                 Log.e("API FAIL",""+t.message)
             }
         })
+
+         */
 
 
     }
@@ -177,7 +225,6 @@ class AnimeDetails : YouTubeBaseActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setReviewDialog(animeData: Anime) {
         val submitAReview = findViewById<Button>(R.id.submitAReview)
         val reviewDialog = Dialog(this)

@@ -1,6 +1,7 @@
 package com.project24.animexapp.ui.dashboard
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -12,16 +13,22 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.project24.animexapp.AnimeDetails
 import com.project24.animexapp.Genre_Map.getItemGenreID
 import com.project24.animexapp.R
 import com.project24.animexapp.api.Anime
 import com.project24.animexapp.api.AnimeSearchResponse
 import com.project24.animexapp.api.JikanApiClient
+import com.project24.animexapp.api.RecommendationsByIDResponse
 import com.project24.animexapp.databinding.FragmentDashboardBinding
 import com.project24.animexapp.ui.home.AnimeRVAdapter
+import dev.failsafe.RetryPolicy
+import dev.failsafe.retrofit.FailsafeCall
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.Duration
 
 private lateinit var exploreAnimeList: List<Anime>
 private lateinit var exploreAnimeRV: RecyclerView
@@ -93,6 +100,30 @@ class DashboardFragment : Fragment() {
             limit = 24 //Custom for explore.
         )
 
+        val retryPolicy = RetryPolicy.builder<Response<AnimeSearchResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    exploreAnimeList = it.body()!!.result
+
+                    //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+
+                    exploreAnimeAdapter.animeList = exploreAnimeList
+                    exploreAnimeAdapter.notifyDataSetChanged()
+
+
+                    //Log.d("ONGOING ANIME",""+ongoingList.toString())
+                }
+            }
+        }
+        /*
         client.enqueue(object: Callback<AnimeSearchResponse> {
             override fun onResponse(
                 call: Call<AnimeSearchResponse>,
@@ -116,6 +147,8 @@ class DashboardFragment : Fragment() {
                 Log.e("EXPLORE ANIME API FAIL",""+t.message)
             }
         })
+
+         */
     }
 
     fun getFilter(){

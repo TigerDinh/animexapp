@@ -13,16 +13,22 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.project24.animexapp.AnimeDetails
 import com.project24.animexapp.LogInActivity
 import com.project24.animexapp.MainActivity
+import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentProfileBinding
+import dev.failsafe.RetryPolicy
+import dev.failsafe.retrofit.FailsafeCall
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.Duration
 
 class ProfileFragment : Fragment() {
 
@@ -216,6 +222,23 @@ class ProfileFragment : Fragment() {
     fun logUserFavourites(username: String){
         val client = JikanApiClient.apiService.requestUserFavourites(username = username)
 
+        val retryPolicy = RetryPolicy.builder<Response<UserFavouritesResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    val userFavs = it.body()!!.result
+                    Log.d("USER FAVS ANIME",""+userFavs.toString())
+                }
+            }
+        }
+        /*
         client.enqueue(object: Callback<UserFavouritesResponse> {
             override fun onResponse(
                 call: Call<UserFavouritesResponse>,
@@ -234,6 +257,8 @@ class ProfileFragment : Fragment() {
                 Log.e("USER FAVS API FAIL",""+t.message)
             }
         })
+
+         */
     }
 
     override fun onDestroyView() {
