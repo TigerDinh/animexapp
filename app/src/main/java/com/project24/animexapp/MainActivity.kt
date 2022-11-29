@@ -1,34 +1,29 @@
 package com.project24.animexapp
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract.Profile
 import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.Toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.local.BundleCache
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.ActivityMainBinding
-import com.project24.animexapp.ui.home.AnimeRVAdapter
-import com.project24.animexapp.ui.profile.ProfileFragment
+import com.project24.animexapp.ui.home.HomeViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = binding.navView
         val navAccount = binding.navAccount
         val currentUserID = firebaseAuth.currentUser?.uid.toString()
+        val userName = ""
+        Toast.makeText(this, userName, Toast.LENGTH_SHORT).show()
 
         if(firebaseAuth.currentUser !== null) {
             navAccount.text = "Welcome, " + firebaseAuth.currentUser?.email.toString()
@@ -64,5 +61,51 @@ class MainActivity : AppCompatActivity() {
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        //In an Async fashion, get all the info needed
+        //Trending Anime: Kitsu
+        //Ongoing Anime
+        //Recommended For You Details
+        //Explore Anime
+        /*
+        lifecycleScope.launch{
+            withContext(Dispatchers.IO){
+                Log.d("BEFORE","HERE")
+                getOngoingAnime()
+                Log.d("AFTER","HERE")
+                delay(1000)
+                Log.d("AFTER DELAY","HERE")
+            }
+        }
+
+         */
     }
+    /*
+    private fun getOngoingAnime(){
+        val client = JikanApiClient.apiService.requestAnime(status = "airing")
+
+        client.enqueue(object: Callback<AnimeSearchResponse> {
+            override fun onResponse(
+                call: Call<AnimeSearchResponse>,
+                response: Response<AnimeSearchResponse>
+            ){
+                if(response.isSuccessful){
+                    if(response.body() != null){
+                        ongoingList = response.body()!!.result
+
+                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+
+                        //ongoingAnimeAdapter.animeList = ongoingList
+                        //ongoingAnimeAdapter.notifyDataSetChanged()
+                        //viewModel.ongoingList.value = ongoingList
+
+                        //Log.d("ONGOING ANIME",""+ viewModel.ongoingList.value)
+                    }
+                }
+            }
+            override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
+                Log.e("ONGOING ANIME API FAIL",""+t.message)
+            }
+        })
+    }
+    */
 }

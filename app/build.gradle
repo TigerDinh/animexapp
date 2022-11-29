@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.project24.animexapp"
-        minSdk 21
+        minSdk 26
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -81,5 +81,9 @@ dependencies {
 
     //Sliderview
     implementation 'com.github.smarteist:autoimageslider:1.4.0'
+
+    //Failsafe
+    implementation("dev.failsafe:failsafe:3.3.0")
+    implementation("dev.failsafe:failsafe-retrofit:3.3.0")
 
 }

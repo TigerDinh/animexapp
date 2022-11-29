@@ -14,6 +14,8 @@ import android.widget.ViewFlipper
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -29,10 +31,14 @@ import com.project24.animexapp.databinding.FragmentHomeBinding
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
+import dev.failsafe.RetryPolicy
+import dev.failsafe.retrofit.FailsafeCall
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Thread.sleep
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
 
@@ -55,11 +61,21 @@ class HomeFragment : Fragment() {
 
     private lateinit var nologinLayout: LinearLayout
     private lateinit var loginLayout: LinearLayout
+    private lateinit var mainFlipper: ViewFlipper
+
 
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        firebaseAuth = FirebaseAuth.getInstance()
+        val db = Firebase.firestore
+
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -67,8 +83,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        firebaseAuth = FirebaseAuth.getInstance()
-        val db = Firebase.firestore
 
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -82,6 +96,7 @@ class HomeFragment : Fragment() {
         val currentUser = firebaseAuth.currentUser?.email
         isLoggedIn = firebaseAuth.currentUser !== null //thanks
 
+
         ongoingList = emptyList()
         ongoingAnimeRV = binding.recyclerViewHomeOngoing
         ongoingAnimeAdapter = AnimeRVAdapter(ongoingList, 0)
@@ -89,9 +104,19 @@ class HomeFragment : Fragment() {
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
 
+
+        /*
+        //Observe LiveData
+        viewModel.ongoingList.observe(viewLifecycleOwner, Observer { animeList ->
+            //Update the RV with the data here.
+            ongoingAnimeAdapter.animeList = animeList
+            ongoingAnimeAdapter.notifyDataSetChanged()
+        })
+
+         */
+
         trendingAnimeSV = binding.sliderViewHomeHeader
 
-        //Removed functionality
         recommendationsList = emptyList()
         //recommendedAnimeRV = binding.RecForYouRV
         recommendedAnimeAdapter = AnimeRVAdapter(recommendationsList, 0)
@@ -109,8 +134,8 @@ class HomeFragment : Fragment() {
             Toast.makeText(activity, "Logged in as $user", Toast.LENGTH_SHORT).show()
 
         if(isLoggedIn){
+            //Logged In View
             getOngoingAnime()
-            getMyRecommendations(5114)
             setRecommendedForYou()
             setupRefreshButtonForRecommendedForYou()
             nologinLayout.visibility = View.GONE
@@ -148,6 +173,30 @@ class HomeFragment : Fragment() {
     fun getMyRecommendations(id: Long){
         val client = JikanApiClient.apiService.getRecommendationsByID(id = id)
 
+        val retryPolicy = RetryPolicy.builder<Response<RecommendationsByIDResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    val animeEntries = it.body()!!.result
+                    for (animeEntry in animeEntries){
+                        recommendationsList = recommendationsList.plus(animeEntry.animeData)
+                    }
+
+                    //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+                    recommendedAnimeAdapter.animeList = recommendationsList
+                    recommendedAnimeAdapter.notifyDataSetChanged()
+
+                }
+            }
+        }
+        /*
         client.enqueue(object: Callback<RecommendationsByIDResponse> {
             override fun onResponse(
                 call: Call<RecommendationsByIDResponse>,
@@ -176,6 +225,8 @@ class HomeFragment : Fragment() {
                 Log.e("RECOMMENDED API FAIL",""+t.message)
             }
         })
+
+         */
     }
 
     private fun setRecommendedForYou() {
@@ -225,6 +276,37 @@ class HomeFragment : Fragment() {
 
     private fun setRecommendedForYouDetails(givenAnimeID: Long) {
         val client = JikanApiClient.apiService.getRecommendationsByID(givenAnimeID)
+
+        val retryPolicy = RetryPolicy.builder<Response<RecommendationsByIDResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    val recommendedAnimeDataList = it.body()!!.result
+                    val recommendedAnime = recommendedAnimeDataList.get(0).animeData
+
+                    binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
+                    binding.textViewHomeRecommendationsScore.text = recommendedAnime.score.toString()
+                    Glide.with(requireView()).load(recommendedAnime.imageData!!.jpg!!.URL).centerCrop().into(binding.imageViewHomeRecommend)
+
+                    // When recommended for you image is clicked, open anime detail page for that anime
+                    binding.imageViewHomeRecommend.setOnClickListener {
+                        val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
+                        showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
+                        requireActivity().startActivity(showAnimeIntent)
+                        startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
+                    }
+                }
+            }
+        }
+
+        /*
         client.enqueue(object: Callback<RecommendationsByIDResponse> {
             override fun onResponse(
                 call: Call<RecommendationsByIDResponse>,
@@ -280,6 +362,8 @@ class HomeFragment : Fragment() {
                 Log.e("API FAIL",""+t.message)
             }
         })
+
+         */
     }
 
     private fun startLoadingActivity(requireActivity: FragmentActivity) {
@@ -290,6 +374,24 @@ class HomeFragment : Fragment() {
     fun getOngoingAnime(){
         val client = JikanApiClient.apiService.requestAnime(status = "airing")
 
+        val retryPolicy = RetryPolicy.builder<Response<AnimeSearchResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    ongoingList = it.body()!!.result
+                    ongoingAnimeAdapter.animeList = ongoingList
+                    ongoingAnimeAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+        /*
         client.enqueue(object: Callback<AnimeSearchResponse> {
             override fun onResponse(
                 call: Call<AnimeSearchResponse>,
@@ -313,11 +415,39 @@ class HomeFragment : Fragment() {
                 Log.e("ONGOING ANIME API FAIL",""+t.message)
             }
         })
+
+         */
     }
 
     fun getTrending(){
         val client = KitsuApiClient.apiService.trendingAnime()
 
+        val retryPolicy = RetryPolicy.builder<Response<AnimeTrendingResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+
+                    trendingList = it.body()!!.animeData
+
+                    trendingAdapter = SliderAdapter(trendingList)
+                    trendingAnimeSV.setSliderAdapter(trendingAdapter)
+                    trendingAdapter.notifyDataSetChanged()
+                    trendingAnimeSV.scrollTimeInMillis = 5000
+                    trendingAnimeSV.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+                    trendingAnimeSV.setIndicatorAnimation(IndicatorAnimationType.SLIDE);
+                    trendingAnimeSV.startAutoCycle();
+                }
+            }
+        }
+
+        /*
         client.enqueue(object: Callback<AnimeTrendingResponse> {
             override fun onResponse(
                 call: Call<AnimeTrendingResponse>,
@@ -344,7 +474,8 @@ class HomeFragment : Fragment() {
             override fun onFailure(call: Call<AnimeTrendingResponse>, t: Throwable) {
                 Log.e("TRENDING ANIME API FAIL",""+t.message)
             }
-        })
+        })*/
+
     }
 
     fun setRecommendedAnime(){
