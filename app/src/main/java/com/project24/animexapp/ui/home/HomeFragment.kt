@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.annotation.RequiresApi
@@ -52,7 +53,9 @@ class HomeFragment : Fragment() {
     private lateinit var trendingAnimeSV: SliderView
     private lateinit var trendingAdapter: SliderAdapter
 
-    private lateinit var mainFlipper: ViewFlipper
+    private lateinit var nologinLayout: LinearLayout
+    private lateinit var loginLayout: LinearLayout
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -81,7 +84,7 @@ class HomeFragment : Fragment() {
 
         ongoingList = emptyList()
         ongoingAnimeRV = binding.recyclerViewHomeOngoing
-        ongoingAnimeAdapter = AnimeRVAdapter(ongoingList)
+        ongoingAnimeAdapter = AnimeRVAdapter(ongoingList, 0)
 
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         ongoingAnimeRV.adapter = ongoingAnimeAdapter
@@ -91,12 +94,15 @@ class HomeFragment : Fragment() {
         //Removed functionality
         recommendationsList = emptyList()
         //recommendedAnimeRV = binding.RecForYouRV
-        recommendedAnimeAdapter = AnimeRVAdapter(recommendationsList)
+        recommendedAnimeAdapter = AnimeRVAdapter(recommendationsList, 0)
         //recommendedAnimeRV.adapter = recommendedAnimeAdapter
 
         getTrending()
         setRecommendedAnime()
         //setHeadAnime()
+
+        nologinLayout = binding.layoutHomeNoLogin
+        loginLayout = binding.layoutHomeLogin
 
         val user = firebaseAuth.currentUser?.email.toString()
         if(user!="null")
@@ -105,11 +111,16 @@ class HomeFragment : Fragment() {
         if(isLoggedIn){
             getOngoingAnime()
             getMyRecommendations(5114)
+            setRecommendedForYou()
             setupRefreshButtonForRecommendedForYou()
+            nologinLayout.visibility = View.GONE
+            loginLayout.visibility  = View.VISIBLE
         }
         else{
             //Not Logged In View
             getOngoingAnime()
+            loginLayout.visibility = View.GONE
+            nologinLayout.visibility  = View.VISIBLE
         }
         return root
     }

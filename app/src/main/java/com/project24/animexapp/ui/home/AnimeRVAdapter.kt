@@ -14,11 +14,15 @@ import com.project24.animexapp.ui.LoadingScreens.LoadingBarActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 
-class AnimeRVAdapter(var animeList : List<Anime>): RecyclerView.Adapter<AnimeRVAdapter.MyViewHolder>() {
+class AnimeRVAdapter(var animeList : List<Anime>, var size: Int): RecyclerView.Adapter<AnimeRVAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.listitem_anime,parent,false)
+        lateinit var view: View
+        when(size) {
+            0 -> view = LayoutInflater.from(parent.context).inflate(R.layout.listitem_anime,parent,false)
+            1 -> view = LayoutInflater.from(parent.context).inflate(R.layout.listitem_explore_anime,parent,false)
+        }
         return MyViewHolder(view)
     }
 

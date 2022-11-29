@@ -50,9 +50,9 @@ class DashboardFragment : Fragment() {
 
         exploreAnimeList = emptyList()
         exploreAnimeRV = binding.ExploreRV
-        exploreAnimeAdapter = AnimeRVAdapter(exploreAnimeList)
+        exploreAnimeAdapter = AnimeRVAdapter(exploreAnimeList, 1)
 
-        exploreAnimeRV.layoutManager = GridLayoutManager(context, 4)
+        exploreAnimeRV.layoutManager = GridLayoutManager(context, 2)
         //animeAnimeRV.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
         exploreAnimeRV.adapter = exploreAnimeAdapter
 
@@ -233,7 +233,7 @@ class DashboardFragment : Fragment() {
             3 = type (ex: tv)
             4 = sortby (ex: score)
             5 = order (either desc or asc)
-            each element contains unique int index which coresponds with index of string.xml array
+            each element contains unique int index which corresponds with index of string.xml array
             note that genres is not mapped properly/does not contain all genres, will fix later*/
             getExploreAnime(
                 query = if(searchBar.text.toString()!="") searchBar.text.toString() else null,
