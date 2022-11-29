@@ -25,7 +25,7 @@
             android:maxLines="1"
             android:inputType="text"
             android:hint="Search"
-            android:imeOptions="actionSearch" />
+            android:imeOptions="actionSearch"/>
         <Button
             android:id="@+id/buttonExploreFilter"
             android:layout_width="wrap_content"
@@ -45,7 +45,8 @@
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="4"
-        tools:listitem="@layout/listitem_anime"/>
+        tools:listitem="@layout/listitem_anime"
+        android:paddingEnd="5dp"/>
 
 
 </LinearLayout>

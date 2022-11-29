@@ -19,6 +19,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.AnimeDetails
+import com.project24.animexapp.LogInActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
@@ -120,6 +121,11 @@ class HomeFragment : Fragment() {
 
         nologinLayout = binding.layoutHomeNoLogin
         loginLayout = binding.layoutHomeLogin
+
+        binding.buttonHomeLogin.setOnClickListener() {
+            val intent = Intent(activity, LogInActivity::class.java)
+            startActivity(intent)
+        }
 
         val user = firebaseAuth.currentUser?.email.toString()
         if(user!="null")

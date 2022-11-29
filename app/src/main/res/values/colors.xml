@@ -28,4 +28,6 @@
 
     <!-- Text Colors -->
     <color name="text_black">#303030</color>
+
+    <color name="back_tint_gray">#B0BDBDBD</color>
 </resources>
