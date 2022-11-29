@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.project24.animexapp.api.Anime
-import com.project24.animexapp.api.AnimeEntry
 
 class HomeViewModel : ViewModel() {
     private var firebaseAuth: FirebaseAuth

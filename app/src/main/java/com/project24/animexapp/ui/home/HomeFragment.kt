@@ -2,20 +2,15 @@ package com.project24.animexapp.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.ViewFlipper
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -24,22 +19,18 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.AnimeDetails
-import com.project24.animexapp.ui.LoadingScreens.LoadingBarActivity
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
+import com.project24.animexapp.ui.LoadingScreens.LoadingBarActivity
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
-import dev.failsafe.RateLimiter
 import dev.failsafe.RetryPolicy
 import dev.failsafe.retrofit.FailsafeCall
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Thread.sleep
 import java.time.Duration
-import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
 
