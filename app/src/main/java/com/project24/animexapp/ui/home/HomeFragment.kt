@@ -252,7 +252,7 @@ class HomeFragment : Fragment() {
     private fun setBecauseYouLike(favouriteAnimeTitle: String) {
         binding.textViewHomeRecommendationsBecauseTitle.text = favouriteAnimeTitle
     }
-
+    /*
     private fun grabAnimeInfo(animeID: Long) {
         if (animeID.toInt() == -1){
             return //Indicates the previous activity did not correctly pass the animeID
@@ -302,6 +302,8 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
+     */
 
 
     private fun setRecommendedForYouDetails(givenAnimeID: Long) {
@@ -362,7 +364,12 @@ class HomeFragment : Fragment() {
                                 binding.textViewHomeRecommendationsTitle.text =
                                     recommendedAnime.title
                                 binding.textViewHomeRecommendationsSynopsis.text =
-                                    recommendedAnime.synopsis
+                                    if (recommendedAnime.synopsis!!.length < 180){
+                                        recommendedAnime.synopsis.substring(0.. recommendedAnime.synopsis.length - 1)
+                                    }//max length 60charas
+                                    else{
+                                        recommendedAnime.synopsis.substring(0..180) + "..."
+                                    }
                                 if (recommendedAnime.score == null) {
                                     binding.textViewHomeRecommendationsScore.text = "Unrated"
                                 }
