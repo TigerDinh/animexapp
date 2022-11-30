@@ -169,7 +169,7 @@
                                 android:id="@+id/imageViewHomeRecommend"
                                 android:layout_width="match_parent"
                                 android:layout_height="200dp"
-                                android:src="@drawable/anime_x_app_waifu_icon"
+                                android:src="@drawable/purple_anime_app_icon"
                                 android:background="@color/black"
                                 android:foreground="@color/black_tint"
                                 android:tintMode="src_atop"/>

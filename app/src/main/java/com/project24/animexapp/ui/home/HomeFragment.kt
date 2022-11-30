@@ -32,12 +32,12 @@ import com.smarteist.autoimageslider.SliderView
 import dev.failsafe.RetryPolicy
 import dev.failsafe.retrofit.FailsafeCall
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
-import java.lang.Thread.sleep
+import java.security.SecureRandom
 import java.time.Duration
+import java.util.*
 
 class HomeFragment : Fragment() {
 
@@ -62,7 +62,9 @@ class HomeFragment : Fragment() {
     private lateinit var loginLayout: LinearLayout
     private lateinit var mainFlipper: ViewFlipper
 
-
+    companion object{
+        private val rand = SecureRandom()
+    }
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -154,17 +156,14 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(isLoggedIn) {
-            setRecommendedForYou()
-        }
+    private fun setupLanguageButton() {
+        // TODO, Tiger implement this
+        activity?.recreate()
     }
 
     private fun setupRefreshButtonForRecommendedForYou() {
         val refreshBtn = binding.refreshRecommendedAnimeForYouBtn
         refreshBtn.setOnClickListener(){
-            sleep(500) // Prevents api request overload
             setRecommendedForYou()
         }
     }
@@ -200,37 +199,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-        /*
-        client.enqueue(object: Callback<RecommendationsByIDResponse> {
-            override fun onResponse(
-                call: Call<RecommendationsByIDResponse>,
-                response: Response<RecommendationsByIDResponse>
-            ){
-                if(response.isSuccessful){
-                    if(response.body() != null){
-                        val animeEntries = response.body()!!.result
-                        for (animeEntry in animeEntries){
-                            recommendationsList = recommendationsList.plus(animeEntry.animeData)
-                        }
-
-                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
-                        recommendedAnimeAdapter.animeList = recommendationsList
-                        recommendedAnimeAdapter.notifyDataSetChanged()
-
-                        //ongoingAnimeAdapter.animeList = ongoingList
-                        //ongoingAnimeAdapter.notifyDataSetChanged()
-
-                    }else{
-                        Log.e("huh?","HUH")
-                    }
-                }
-            }
-            override fun onFailure(call: Call<RecommendationsByIDResponse>, t: Throwable) {
-                Log.e("RECOMMENDED API FAIL",""+t.message)
-            }
-        })
-
-         */
     }
 
     private fun setRecommendedForYou() {
@@ -241,7 +209,7 @@ class HomeFragment : Fragment() {
         // Checking if favourite list is empty
         favDocRef.get().addOnSuccessListener() {
             if(it.isEmpty) {
-                // TODO Matthew, implement what the user sees when he has no favourites
+                // TODO implement what the user sees when he has no favourites
 
             }
             else {
@@ -261,16 +229,23 @@ class HomeFragment : Fragment() {
                 for (document in favourite) {
                     favouriteList.add(document)
                 }
-                val randomFavouriteAnimeIndex = (0..(favouriteList.size - 1)).random()
 
-                val favouriteAnimeImage = favouriteList[randomFavouriteAnimeIndex].data.getValue("image_url") as String
-                // TODO Matthew, set favouriteAnimeImage (which is a string url) to an imageview for the "recommended for you" section
+                if (favouriteList.size > 0) {
+                    val randomFavouriteAnimeIndexList = List(1) { rand.nextInt((favouriteList.size - 1)) }
+                    val randomFavouriteAnimeIndex = randomFavouriteAnimeIndexList.get(0)
 
-                val favouriteAnimeTitle = favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
-                setBecauseYouLike(favouriteAnimeTitle)
+                    val favouriteAnimeImage =
+                        favouriteList[randomFavouriteAnimeIndex].data.getValue("image_url") as String
+                    // TODO Matthew, set favouriteAnimeImage (which is a string url) to an imageview for the "recommended for you" section
 
-                val randomFavouriteAnimeID = favouriteList[randomFavouriteAnimeIndex].data.getValue(("mal_id")) as Long
-                setRecommendedForYouDetails(randomFavouriteAnimeID)
+                    val favouriteAnimeTitle =
+                        favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
+                    setBecauseYouLike(favouriteAnimeTitle)
+
+                    val randomFavouriteAnimeID =
+                        favouriteList[randomFavouriteAnimeIndex].data.getValue(("mal_id")) as Long
+                    setRecommendedForYouDetails(randomFavouriteAnimeID)
+                }
             }
     }
 
@@ -326,32 +301,6 @@ class HomeFragment : Fragment() {
                 //Log.d("AFTER DELAY","HERE")
             }
         }
-
-        /*
-        val cFuture = failsafeCall.executeAsync()
-        cFuture.thenApply {
-            if(it.isSuccessful){
-                if(it.body() != null){
-                    Log.d("grabanimeInfo","here")
-                    val animeData = it.body()!!.animeData
-                    binding.textViewHomeRecommendationsScore.text = animeData.score.toString()
-                    binding.textViewHomeRecommendationsSynopsis.text =
-                        if (animeData.synopsis!!.length < 180){
-                            animeData.synopsis.substring(0.. animeData.synopsis.length - 1)
-                        }//max length 60charas
-                        else{
-                            animeData.synopsis.substring(0..180) + "..."
-                        }
-
-                    //setAnimeDetails(animeData)
-                    //SetUpStarsRating(animeData)
-                    //setButtons(animeData)
-                    //setReviewDialog(animeData)
-                    //setReviewAdapter(animeData)
-                }else{Log.d("grabanimeInfo","nullbody")}
-            }else{Log.d("grabanimeInfo","UNSUCCESSFUL")}
-        }
-        */
     }
 
 
@@ -367,62 +316,82 @@ class HomeFragment : Fragment() {
 
         val job = lifecycleScope.launch{
             withContext(Dispatchers.IO){
-                Log.d("setRecommended4YouDetails","HERE")
                 val response = failsafeCall.execute()
 
+                // Grab full information of "recommended for you" anime
                 if(response.isSuccessful){
                     if(response.body() != null){
                         val recommendedAnimeDataList = response.body()!!.result
-                        val recommendedAnime = recommendedAnimeDataList.random().animeData
+                        if (recommendedAnimeDataList.size > 0){
+                            val randomRecommendedAnimeIndexList = List(1) { rand.nextInt((recommendedAnimeDataList.size - 1)) }
+                            val randomRecommendedAnimeIndex = randomRecommendedAnimeIndexList.get(0)
+                            val recommendedAnime = recommendedAnimeDataList.get(randomRecommendedAnimeIndex).animeData
 
-                        withContext(Dispatchers.Main){
-                            binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
-                            binding.textViewHomeRecommendationsScore.text = recommendedAnime.score.toString()
-                            Glide.with(requireView()).load(recommendedAnime.imageData!!.jpg!!.URL).centerCrop().into(binding.imageViewHomeRecommend)
+                            withContext(Dispatchers.Main) {
+                                binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
+                                binding.textViewHomeRecommendationsScore.text =
+                                    recommendedAnime.score.toString()
+                                Glide.with(requireView()).load(recommendedAnime.imageData!!.jpg!!.URL)
+                                    .centerCrop().into(binding.imageViewHomeRecommend)
 
-                            // When recommended for you image is clicked, open anime detail page for that anime
-                            binding.imageViewHomeRecommend.setOnClickListener {
-                                val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
-                                showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
-                                requireActivity().startActivity(showAnimeIntent)
-                                startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
+                                if (recommendedAnimeDataList.size > 0){
+                                    val randomIndexList = List(1) { rand.nextInt((recommendedAnimeDataList.size - 1)) }
+                                    val randomIndex = randomIndexList.get(0)
+
+                                    val randomRecommendedAnime = recommendedAnimeDataList.get(randomIndex).animeData
+
+                                    // Get the full information of the random recommended anime
+                                    val client2 = JikanApiClient.apiService.getAnimeByID(randomRecommendedAnime.mal_id)
+                                    val retryPolicy2 = RetryPolicy.builder<Response<AnimeSearchByIDResponse>>()
+                                        .withDelay(Duration.ofSeconds(1))
+                                        .withMaxRetries(3)
+                                        .build()
+                                    val failsafeCall2 = FailsafeCall.with(retryPolicy2).compose(client2)
+                                    val cFuture2 = failsafeCall2.executeAsync()
+
+
+                                    cFuture2.thenApply {
+                                        if(it.isSuccessful) {
+                                            val recommendedAnime = it.body()!!.animeData
+
+                                            // Displaying "recommended for you" anime
+                                            binding.textViewHomeRecommendationsTitle.text =
+                                                recommendedAnime.title
+                                            binding.textViewHomeRecommendationsSynopsis.text =
+                                                recommendedAnime.synopsis
+                                            if (recommendedAnime.score == null) {
+                                                binding.textViewHomeRecommendationsScore.text = "Unrated"
+                                            }
+                                            else {
+                                                binding.textViewHomeRecommendationsScore.text =
+                                                    recommendedAnime.score.toString()
+                                            }
+                                            Glide.with(requireView())
+                                                .load(recommendedAnime.imageData!!.jpg!!.URL)
+                                                .centerCrop()
+                                                .into(binding.imageViewHomeRecommend)
+
+                                            // When recommended for you image is clicked, open anime detail page for that anime
+                                            binding.imageViewHomeRecommend.setOnClickListener {
+                                                val showAnimeIntent =
+                                                    Intent(requireActivity(), AnimeDetails::class.java)
+                                                showAnimeIntent.putExtra(
+                                                    getString(R.string.anime_id_key),
+                                                    recommendedAnime.mal_id
+                                                )
+                                                requireActivity().startActivity(showAnimeIntent)
+                                                startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
+                                            }
+                                        }
+                                    }
+                                }
                             }
-
                         }
-                    }else{Log.d("setRecommended4YouDetails","NULL")}
-                }
-                else{Log.d("setRecommended4YouDetails","UNSUCCESSFUL")}
-                //Log.d("AFTER","HERE")
-                //delay(1000)
-                //Log.d("AFTER DELAY","HERE")
-            }
-        }
-        grabAnimeInfo(givenAnimeID)
-        /*
-        val cFuture = failsafeCall.executeAsync()
-        cFuture.thenApply {
-            if(it.isSuccessful){
-                if(it.body() != null){
-                    val recommendedAnimeDataList = it.body()!!.result
-                    val recommendedAnime = recommendedAnimeDataList.random().animeData
-
-                    binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
-                    binding.textViewHomeRecommendationsScore.text = recommendedAnime.score.toString()
-                    Glide.with(requireView()).load(recommendedAnime.imageData!!.jpg!!.URL).centerCrop().into(binding.imageViewHomeRecommend)
-
-                    // When recommended for you image is clicked, open anime detail page for that anime
-                    binding.imageViewHomeRecommend.setOnClickListener {
-                        val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
-                        showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
-                        requireActivity().startActivity(showAnimeIntent)
-                        startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
                     }
-                    //grabAnimeInfo(givenAnimeID)//set the other details
                 }
             }
+        grabAnimeInfo(givenAnimeID)
         }
-        */
-
     }
 
     private fun startLoadingActivity(requireActivity: FragmentActivity) {
@@ -450,32 +419,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-        /*
-        client.enqueue(object: Callback<AnimeSearchResponse> {
-            override fun onResponse(
-                call: Call<AnimeSearchResponse>,
-                response: Response<AnimeSearchResponse>
-            ){
-                if(response.isSuccessful){
-                    if(response.body() != null){
-                        ongoingList = response.body()!!.result
-
-                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
-
-                        ongoingAnimeAdapter.animeList = ongoingList
-                        ongoingAnimeAdapter.notifyDataSetChanged()
-
-
-                        //Log.d("ONGOING ANIME",""+ongoingList.toString())
-                    }
-                }
-            }
-            override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
-                Log.e("ONGOING ANIME API FAIL",""+t.message)
-            }
-        })
-
-         */
     }
 
     fun getTrending(){
@@ -505,36 +448,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
-        /*
-        client.enqueue(object: Callback<AnimeTrendingResponse> {
-            override fun onResponse(
-                call: Call<AnimeTrendingResponse>,
-                response: Response<AnimeTrendingResponse>
-            ){
-                if(response.isSuccessful){
-                    if(response.body() != null){
-                        trendingList = response.body()!!.animeData
-
-                        trendingAdapter = SliderAdapter(trendingList)
-                        trendingAnimeSV.setSliderAdapter(trendingAdapter)
-                        trendingAdapter.notifyDataSetChanged()
-                        trendingAnimeSV.scrollTimeInMillis = 5000
-                        trendingAnimeSV.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
-                        trendingAnimeSV.setIndicatorAnimation(IndicatorAnimationType.SLIDE);
-                        trendingAnimeSV.startAutoCycle();
-
-                        //Log.d("TRENDING ANIME",""+trendingList.toString())
-                    }
-                }else{
-                    Log.e("TRENDING ANIME", response.message()+" "+call.request().url)
-                }
-            }
-            override fun onFailure(call: Call<AnimeTrendingResponse>, t: Throwable) {
-                Log.e("TRENDING ANIME API FAIL",""+t.message)
-            }
-        })*/
-
     }
 
     fun setRecommendedAnime(){
@@ -554,7 +467,7 @@ class HomeFragment : Fragment() {
         //TODO Implement anime header info here (only three can be displayed)
         val sliderView = binding.sliderViewHomeHeader
     }
-}
+        }
 
 // TODO, use or clean this dead code
 //trendingList = emptyList()
@@ -599,3 +512,158 @@ After implementing login, we can search for a user and add their favs to our acc
 */
 //val username = "B_root" //Some random guy I found and decided to make our testing username lol
 //logUserFavourites(username)
+
+/*
+       client.enqueue(object: Callback<RecommendationsByIDResponse> {
+           override fun onResponse(
+               call: Call<RecommendationsByIDResponse>,
+               response: Response<RecommendationsByIDResponse>
+           ){
+               if(response.isSuccessful){
+                   if(response.body() != null){
+                       val animeEntries = response.body()!!.result
+                       for (animeEntry in animeEntries){
+                           recommendationsList = recommendationsList.plus(animeEntry.animeData)
+                       }
+
+                       //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+                       recommendedAnimeAdapter.animeList = recommendationsList
+                       recommendedAnimeAdapter.notifyDataSetChanged()
+
+                       //ongoingAnimeAdapter.animeList = ongoingList
+                       //ongoingAnimeAdapter.notifyDataSetChanged()
+
+                   }else{
+                       Log.e("huh?","HUH")
+                   }
+               }
+           }
+           override fun onFailure(call: Call<RecommendationsByIDResponse>, t: Throwable) {
+               Log.e("RECOMMENDED API FAIL",""+t.message)
+           }
+       })
+
+        */
+
+/*
+        client.enqueue(object: Callback<AnimeTrendingResponse> {
+            override fun onResponse(
+                call: Call<AnimeTrendingResponse>,
+                response: Response<AnimeTrendingResponse>
+            ){
+                if(response.isSuccessful){
+                    if(response.body() != null){
+                        trendingList = response.body()!!.animeData
+
+                        trendingAdapter = SliderAdapter(trendingList)
+                        trendingAnimeSV.setSliderAdapter(trendingAdapter)
+                        trendingAdapter.notifyDataSetChanged()
+                        trendingAnimeSV.scrollTimeInMillis = 5000
+                        trendingAnimeSV.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+                        trendingAnimeSV.setIndicatorAnimation(IndicatorAnimationType.SLIDE);
+                        trendingAnimeSV.startAutoCycle();
+
+                        //Log.d("TRENDING ANIME",""+trendingList.toString())
+                    }
+                }else{
+                    Log.e("TRENDING ANIME", response.message()+" "+call.request().url)
+                }
+            }
+            override fun onFailure(call: Call<AnimeTrendingResponse>, t: Throwable) {
+                Log.e("TRENDING ANIME API FAIL",""+t.message)
+            }
+        })*/
+
+/*
+        client.enqueue(object: Callback<AnimeSearchResponse> {
+            override fun onResponse(
+                call: Call<AnimeSearchResponse>,
+                response: Response<AnimeSearchResponse>
+            ){
+                if(response.isSuccessful){
+                    if(response.body() != null){
+                        ongoingList = response.body()!!.result
+
+                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+
+                        ongoingAnimeAdapter.animeList = ongoingList
+                        ongoingAnimeAdapter.notifyDataSetChanged()
+
+
+                        //Log.d("ONGOING ANIME",""+ongoingList.toString())
+                    }
+                }
+            }
+            override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
+                Log.e("ONGOING ANIME API FAIL",""+t.message)
+            }
+        })
+         */
+/*
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    val recommendedAnimeDataList = it.body()!!.result
+                    val recommendedAnime = recommendedAnimeDataList.random().animeData
+
+                    binding.textViewHomeRecommendationsTitle.text = recommendedAnime.title
+                    binding.textViewHomeRecommendationsScore.text = recommendedAnime.score.toString()
+                    Glide.with(requireView()).load(recommendedAnime.imageData!!.jpg!!.URL).centerCrop().into(binding.imageViewHomeRecommend)
+
+                    // When recommended for you image is clicked, open anime detail page for that anime
+                    binding.imageViewHomeRecommend.setOnClickListener {
+                        val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
+                        showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
+                        requireActivity().startActivity(showAnimeIntent)
+                        startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
+                    }
+                    //grabAnimeInfo(givenAnimeID)//set the other details
+                                // When recommended for you image is clicked, open anime detail page for that anime
+                                binding.imageViewHomeRecommend.setOnClickListener {
+                                    val showAnimeIntent = Intent(requireActivity(), AnimeDetails::class.java)
+                                    showAnimeIntent.putExtra(getString(R.string.anime_id_key), recommendedAnime.mal_id)
+                                    requireActivity().startActivity(showAnimeIntent)
+                                    startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
+                                }
+                            }
+                        }
+                    }
+
+                    // TODO, figure out what to display if there are no recommended anime from givenAnimeID
+                    else{
+
+                    }
+                }
+            }
+        }
+        */
+
+/*
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+
+                    // Get random recommended anime from a favourite anime
+                    val recommendedAnimeDataList = it.body()!!.result
+                    Log.d("grabanimeInfo","here")
+                    val animeData = it.body()!!.animeData
+                    binding.textViewHomeRecommendationsScore.text = animeData.score.toString()
+                    binding.textViewHomeRecommendationsSynopsis.text =
+                        if (animeData.synopsis!!.length < 180){
+                            animeData.synopsis.substring(0.. animeData.synopsis.length - 1)
+                        }//max length 60charas
+                        else{
+                            animeData.synopsis.substring(0..180) + "..."
+                        }
+
+                    //setAnimeDetails(animeData)
+                    //SetUpStarsRating(animeData)
+                    //setButtons(animeData)
+                    //setReviewDialog(animeData)
+                    //setReviewAdapter(animeData)
+                }else{Log.d("grabanimeInfo","nullbody")}
+            }else{Log.d("grabanimeInfo","UNSUCCESSFUL")}
+        }
+        */
