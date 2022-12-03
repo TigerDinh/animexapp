@@ -10,6 +10,7 @@
     <string name="chosen_language_key">Chosen Language Key</string>
     <string name="english">English</string>
     <string name="japanese">japanese</string>
+    <string name="anime_id_kitsu">ANIME_ID_KITSU</string>
     <string-array name="genres">
         <item>Action</item>
         <item>Adventure</item>

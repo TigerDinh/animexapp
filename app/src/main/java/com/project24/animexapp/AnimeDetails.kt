@@ -1,21 +1,14 @@
 package com.project24.animexapp
 
-//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
-//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-//import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import android.app.Dialog
 import android.content.ContentValues.TAG
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -29,8 +22,6 @@ import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.api.*
 import dev.failsafe.RetryPolicy
 import dev.failsafe.retrofit.FailsafeCall
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -40,6 +31,7 @@ import kotlin.collections.ArrayList
 
 class AnimeDetails : YouTubeBaseActivity() {
     private var animeID : Long = -1
+    private var animeIDKitsu : String = ""
     private var YOUTUBE_API_KEY: String? = ""
     private lateinit var firebaseAuth: FirebaseAuth
     private var youTubePlayerView : YouTubePlayerView? = null
@@ -51,7 +43,13 @@ class AnimeDetails : YouTubeBaseActivity() {
         super.onCreate(savedInstanceState)
         val extras = intent.extras
         if(extras!=null) {
+            // Reset values
+            animeID = -1
+            animeIDKitsu = ""
+
+            // Extract values from extras
             animeID = extras.getLong(getString(R.string.anime_id_key), -1)
+            animeIDKitsu = extras.getString(getString(R.string.anime_id_kitsu), "No Title")
         }
 
         setContentView(R.layout.activity_anime_details)
@@ -65,94 +63,116 @@ class AnimeDetails : YouTubeBaseActivity() {
     }
 
     private fun grabAnimeInfo() {
-        if (animeID.toInt() == -1){
+        if (animeID.toInt() == -1 && animeIDKitsu == "No Title"){
             return //Indicates the previous activity did not correctly pass the animeID
         }
 
-        val client = JikanApiClient.apiService.getAnimeByID(animeID)
+        // If Jikan was used to provide the animeID to AnimeDetails
+        else if (animeID.toInt() != -1) {
+            val client = JikanApiClient.apiService.getAnimeByID(animeID)
 
-        val retryPolicy = RetryPolicy.builder<Response<AnimeSearchByIDResponse>>()
-            .withDelay(Duration.ofSeconds(1))
-            .withMaxRetries(3)
-            .build()
+            val retryPolicy = RetryPolicy.builder<Response<AnimeSearchByIDResponse>>()
+                .withDelay(Duration.ofSeconds(1))
+                .withMaxRetries(3)
+                .build()
 
-        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+            val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
 
-        val cFuture = failsafeCall.executeAsync()
-        cFuture.thenApply {
-            if(it.isSuccessful){
-                if(it.body() != null){
-                    val animeData = it.body()!!.animeData
+            val cFuture = failsafeCall.executeAsync()
+            cFuture.thenApply {
+                if (it.isSuccessful) {
+                    if (it.body() != null) {
+                        val animeData = it.body()!!.animeData
 
-                    setAnimeDetails(animeData)
-                    SetUpStarsRating(animeData)
-                    setButtons(animeData)
-                    setReviewDialog(animeData)
-                    setReviewAdapter(animeData)
-                }
-            }
-        }
-        /*
-        client.enqueue(object: Callback<AnimeSearchByIDResponse> {
-            override fun onResponse(
-                call: Call<AnimeSearchByIDResponse>,
-                response: Response<AnimeSearchByIDResponse>
-            ) {
-                if(response.isSuccessful){
-                    val animeData = response.body()!!.animeData
-
-                    setAnimeDetails(animeData)
-                    SetUpStarsRating(animeData)
-                    setButtons(animeData)
-                    setReviewDialog(animeData)
-                    setReviewAdapter(animeData)
+                        setAnimeDetails(animeData)
+                        SetUpStarsRating(animeData)
+                        setButtons(animeData)
+                        setReviewDialog(animeData)
+                        setReviewAdapter(animeData)
+                    }
                 }
             }
 
-            override fun onFailure(call: Call<AnimeSearchByIDResponse>, t: Throwable) {
-                Log.e("API FAIL",""+t.message)
-            }
-        })
+            val client2 = JikanApiClient.apiService.getAnimeCharacterById(animeID)
 
-         */
+            val retryPolicy2 = RetryPolicy.builder<Response<AnimeCharacterSearchResponse>>()
+                .withDelay(Duration.ofSeconds(1))
+                .withMaxRetries(3)
+                .build()
 
-        val client2 = JikanApiClient.apiService.getAnimeCharacterById(animeID)
+            val failsafeCall2 = FailsafeCall.with(retryPolicy2).compose(client2)
 
-        val retryPolicy2 = RetryPolicy.builder<Response<AnimeCharacterSearchResponse>>()
-            .withDelay(Duration.ofSeconds(1))
-            .withMaxRetries(3)
-            .build()
-
-        val failsafeCall2 = FailsafeCall.with(retryPolicy2).compose(client2)
-
-        val cFuture2 = failsafeCall2.executeAsync()
-        cFuture2.thenApply {
-            if(it.isSuccessful){
-                if(it.body() != null){
-                    setAnimeCharacterDetails(it.body()!!.animeData)
+            val cFuture2 = failsafeCall2.executeAsync()
+            cFuture2.thenApply {
+                if (it.isSuccessful) {
+                    if (it.body() != null) {
+                        setAnimeCharacterDetails(it.body()!!.animeData)
+                    }
                 }
             }
         }
 
-        /*
-        client2.enqueue(object: Callback<AnimeCharacterSearchResponse> {
-            override fun onResponse(
-                call: Call<AnimeCharacterSearchResponse>,
-                response: Response<AnimeCharacterSearchResponse>
-            ) {
-                if(response.isSuccessful){
-                    setAnimeCharacterDetails(response.body()!!.animeData)
+        // If Kitsu was used to provide animeID to AnimeDetails
+        else{
+            val animeTitleQuery = convertToQuery(animeIDKitsu)
+            val client = JikanApiClient.apiService.requestAnime(query = animeTitleQuery)
+
+            val retryPolicy = RetryPolicy.builder<Response<AnimeSearchResponse>>()
+                .withDelay(Duration.ofSeconds(1))
+                .withMaxRetries(3)
+                .build()
+
+            val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+            // Grab Anime details
+            val cFuture = failsafeCall.executeAsync()
+            cFuture.thenApply {
+                if (it.isSuccessful) {
+                    if (it.body() != null) {
+                        val animeData = it.body()!!.result.get(0)
+
+                        // Set Anime Details
+                        setAnimeDetails(animeData)
+                        SetUpStarsRating(animeData)
+                        setButtons(animeData)
+                        setReviewDialog(animeData)
+                        setReviewAdapter(animeData)
+
+                        // Set Character Details
+                        val newAnimeID = animeData.mal_id
+                        val client2 = JikanApiClient.apiService.getAnimeCharacterById(newAnimeID)
+                        val retryPolicy2 = RetryPolicy.builder<Response<AnimeCharacterSearchResponse>>()
+                            .withDelay(Duration.ofSeconds(1))
+                            .withMaxRetries(3)
+                            .build()
+                        val failsafeCall2 = FailsafeCall.with(retryPolicy2).compose(client2)
+                        val cFuture2 = failsafeCall2.executeAsync()
+                        cFuture2.thenApply {
+                            if (it.isSuccessful) {
+                                if (it.body() != null) {
+                                    setAnimeCharacterDetails(it.body()!!.animeData)
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        }
+    }
 
-            override fun onFailure(call: Call<AnimeCharacterSearchResponse>, t: Throwable) {
-                Log.e("API FAIL",""+t.message)
+    private fun convertToQuery(givenTitle: String): String {
+        var resultQuery = ""
+        val stringArr = givenTitle.split(" ").toTypedArray()
+        for (str in stringArr){
+            if (str == stringArr.get(stringArr.size - 1)){
+                resultQuery += str
             }
-        })
-
-         */
-
-
+            else{
+                resultQuery += str
+                resultQuery += ", "
+            }
+        }
+        return resultQuery
     }
 
     private fun setReviewAdapter(animeData: Anime) {
@@ -173,8 +193,6 @@ class AnimeDetails : YouTubeBaseActivity() {
 
         db.collection("Reviews").document(animeData.mal_id.toString()).collection("Reviews").get()
             .addOnSuccessListener { review ->
-                //Log.d("favorite",favourite.documents.)
-                //var idList = emptyList<Long>()
                 for (review in review) {
                     var reviewTitle: String = review.data.getValue("reviewTitle") as String
                     var reviewComment: String = review.data.getValue("reviewComment") as String
@@ -193,9 +211,6 @@ class AnimeDetails : YouTubeBaseActivity() {
                 } else {
                     noReviewsYet.visibility = View.GONE
                 }
-
-
-                //Log.d("MAL_IDFAV", idList.toString())
             }
     }
 

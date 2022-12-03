@@ -1,6 +1,7 @@
 package com.project24.animexapp.ui.home
 
-import android.util.Log
+import android.content.Context
+import android.content.Intent
 import com.project24.animexapp.R
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.project24.animexapp.AnimeDetails
 import com.project24.animexapp.api.*
+import com.project24.animexapp.ui.LoadingScreens.LoadingBarActivity
 import com.smarteist.autoimageslider.SliderViewAdapter
 
 
@@ -37,10 +40,27 @@ class SliderAdapter(var animeList : List<KitsuAnimeData>): SliderViewAdapter<Sli
         fun bindAnime(anime: KitsuAnimeData) {
             this.anime = anime
             this.imgURL = anime.attributes.coverImageData!!.original
-            //Log.d("HEADER IMG",""+imgURL)
             Glide.with(this.itemView).load(imgURL).centerCrop().dontAnimate().into(view.findViewById(R.id.slider_anime_image))
             view.findViewById<TextView>(R.id.slider_anime_title).text = anime.attributes.title
             view.findViewById<TextView>(R.id.slider_anime_synopsis).text = anime.attributes.synopsis
+
+            // Direct to anime detail page when clicked
+            val animeImageView =  view.findViewById<ImageView>(R.id.slider_anime_image)
+            animeImageView.setOnClickListener{
+                val showAnimeIntent =
+                    Intent(itemView.context, AnimeDetails::class.java)
+                showAnimeIntent.putExtra(
+                    itemView.context.getString(R.string.anime_id_kitsu),
+                    this.anime.attributes.title
+                )
+                itemView.context.startActivity(showAnimeIntent)
+                startLoadingActivity(itemView.context)
+            }
+        }
+
+        private fun startLoadingActivity(givenContext: Context) {
+            val intent = Intent(givenContext, LoadingBarActivity::class.java)
+            givenContext.startActivity(intent)
         }
     }
 
