@@ -68,7 +68,7 @@ class RegisterActivity : AppCompatActivity() {
                             startActivity(intent)
                             Toast.makeText(this, "Account successfully created", Toast.LENGTH_LONG).show()
                         } else {
-                            Toast.makeText(this, it.exception.toString(), Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "Email or username already exists. Try again.", Toast.LENGTH_LONG).show()
                         }
                     }
                 } else {

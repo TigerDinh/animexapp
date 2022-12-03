@@ -20,6 +20,7 @@ class LogInActivity : AppCompatActivity() {
         val db = Firebase.firestore
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         firebaseAuth = FirebaseAuth.getInstance()
         binding.signUpBtn.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
@@ -29,7 +30,6 @@ class LogInActivity : AppCompatActivity() {
         binding.logInBtn.setOnClickListener {
             val userEmail = binding.emailInput.text.toString()
             val userPass = binding.passwordInput.text.toString()
-
 
             if (userEmail.isNotEmpty() && userPass.isNotEmpty()) {
                 firebaseAuth.signInWithEmailAndPassword(userEmail, userPass).addOnCompleteListener {
@@ -41,14 +41,12 @@ class LogInActivity : AppCompatActivity() {
                         startActivity(intent)
 
                     } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Incorrect email or password. Please try again", Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {
                 Toast.makeText(this, "All fields must be filled", Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
 }

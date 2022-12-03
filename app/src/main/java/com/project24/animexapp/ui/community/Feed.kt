@@ -54,14 +54,11 @@ class Feed : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
         val db = Firebase.firestore
 
-
-
         db.collection("Posts").orderBy("time", Query.Direction.DESCENDING).addSnapshotListener { snapshot, error ->
             if( error != null) {
                 Log.e(TAG, "onEvent: ", error)
                 return@addSnapshotListener
             }
-
 
             postsList = emptyList()
             postsRV = binding.postsRecycler
@@ -121,9 +118,5 @@ class Feed : Fragment() {
         }
         userPost.text.clear()
 
-
     }
-
-
-
 }
