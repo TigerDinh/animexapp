@@ -16,6 +16,7 @@
     <color name="black_tint">#9F000000</color>
     <color name="radio_back">#4DB3B3B3</color>
     <color name="display_anime_black">#515151</color>
+    <color name="light_green">#32cd32</color>
 
     <!--Filter Colors-->
     <color name="filter_ok">#33A1FF00</color>

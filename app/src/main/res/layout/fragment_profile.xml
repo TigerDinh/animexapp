@@ -60,16 +60,45 @@
             android:orientation="vertical"
             android:layout_marginTop="20dp"
             >
-            <TextView
-                android:id="@+id/favouriteHeader"
-                android:text="Favourites"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:paddingLeft="5dp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:id="@+id/favouriteHeader"
+                    android:text="Favourites"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingLeft="5dp"
+                    android:layout_centerVertical="true"/>
+
+                <Button
+                    android:id="@+id/englishBtn"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/japaneseBtn"
+                    android:backgroundTint="@color/back_tint_gray"
+                    android:text="ENG"
+                    android:textSize="8sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/japaneseBtn"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <Button
+                    android:id="@+id/japaneseBtn"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="5dp"
+                    android:backgroundTint="@color/back_tint_gray"
+                    android:text="JAP"
+                    android:textSize="8sp" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/emptyFavText"

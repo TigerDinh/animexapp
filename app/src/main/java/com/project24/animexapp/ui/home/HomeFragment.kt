@@ -156,11 +156,6 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun setupLanguageButton() {
-        // TODO, Tiger implement this
-        activity?.recreate()
-    }
-
     private fun setupRefreshButtonForRecommendedForYou() {
         val refreshBtn = binding.refreshRecommendedAnimeForYouBtn
         refreshBtn.setOnClickListener(){
@@ -209,7 +204,7 @@ class HomeFragment : Fragment() {
         // Checking if favourite list is empty
         favDocRef.get().addOnSuccessListener() {
             if(it.isEmpty) {
-                // TODO implement what the user sees when he has no favourites
+                // TODO When user has no favourites, show either ongoing anime or top anime of the seasons
 
             }
             else {
@@ -231,12 +226,11 @@ class HomeFragment : Fragment() {
                 }
 
                 if (favouriteList.size > 0) {
-                    val randomFavouriteAnimeIndexList = List(1) { rand.nextInt((favouriteList.size - 1)) }
-                    val randomFavouriteAnimeIndex = randomFavouriteAnimeIndexList.get(0)
-
-                    val favouriteAnimeImage =
-                        favouriteList[randomFavouriteAnimeIndex].data.getValue("image_url") as String
-                    // TODO Matthew, set favouriteAnimeImage (which is a string url) to an imageview for the "recommended for you" section
+                    var randomFavouriteAnimeIndex = 0
+                    if (favouriteList.size != 1){
+                        val randomFavouriteAnimeIndexList = List(1) { rand.nextInt((favouriteList.size - 1)) }
+                        randomFavouriteAnimeIndex = randomFavouriteAnimeIndexList.get(0)
+                    }
 
                     val favouriteAnimeTitle =
                         favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
@@ -252,59 +246,6 @@ class HomeFragment : Fragment() {
     private fun setBecauseYouLike(favouriteAnimeTitle: String) {
         binding.textViewHomeRecommendationsBecauseTitle.text = favouriteAnimeTitle
     }
-    /*
-    private fun grabAnimeInfo(animeID: Long) {
-        if (animeID.toInt() == -1){
-            return //Indicates the previous activity did not correctly pass the animeID
-        }
-
-        val client = JikanApiClient.apiService.getAnimeByID(animeID)
-
-        val retryPolicy = RetryPolicy.builder<Response<AnimeSearchByIDResponse>>()
-            .withDelay(Duration.ofSeconds(2))
-            .withMaxRetries(4)
-            .build()
-
-        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
-
-        val job = lifecycleScope.launch{
-            withContext(Dispatchers.IO){
-                //Log.d("grabAnimeInfo","HERE")
-                val response = failsafeCall.execute()
-
-                if(response.isSuccessful){
-                    if(response.body() != null){
-
-                        Log.d("grabAnimeInfo","here")
-                        val animeData = response.body()!!.animeData
-
-                        withContext(Dispatchers.Main){
-                            binding.textViewHomeRecommendationsScore.text = animeData.score.toString()
-                            binding.textViewHomeRecommendationsSynopsis.text =
-                                if (animeData.synopsis!!.length < 180){
-                                    animeData.synopsis.substring(0.. animeData.synopsis.length - 1)
-                                }//max length 60charas
-                                else{
-                                    animeData.synopsis.substring(0..180) + "..."
-                                }
-                        }
-                        //setAnimeDetails(animeData)
-                        //SetUpStarsRating(animeData)
-                        //setButtons(animeData)
-                        //setReviewDialog(animeData)
-                        //setReviewAdapter(animeData)
-                    }else{Log.d("grabAnimeInfo","NULL")}
-                }
-                else{Log.d("grabAnimeInfo","UNSUCCESSFUL")}
-                //Log.d("AFTER","HERE")
-                //delay(1000)
-                //Log.d("AFTER DELAY","HERE")
-            }
-        }
-    }
-
-     */
-
 
     private fun setRecommendedForYouDetails(givenAnimeID: Long) {
         val client = JikanApiClient.apiService.getRecommendationsByID(givenAnimeID)
@@ -463,7 +404,7 @@ class HomeFragment : Fragment() {
         //TODO Implement anime header info here (only three can be displayed)
         val sliderView = binding.sliderViewHomeHeader
     }
-        }
+}
 
 // TODO, use or clean this dead code
 //trendingList = emptyList()
@@ -626,7 +567,7 @@ After implementing login, we can search for a user and add their favs to our acc
                         }
                     }
 
-                    // TODO, figure out what to display if there are no recommended anime from givenAnimeID
+
                     else{
 
                     }
@@ -663,3 +604,56 @@ After implementing login, we can search for a user and add their favs to our acc
             }else{Log.d("grabanimeInfo","UNSUCCESSFUL")}
         }
         */
+
+/*
+  private fun grabAnimeInfo(animeID: Long) {
+      if (animeID.toInt() == -1){
+          return //Indicates the previous activity did not correctly pass the animeID
+      }
+
+      val client = JikanApiClient.apiService.getAnimeByID(animeID)
+
+      val retryPolicy = RetryPolicy.builder<Response<AnimeSearchByIDResponse>>()
+          .withDelay(Duration.ofSeconds(2))
+          .withMaxRetries(4)
+          .build()
+
+      val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+      val job = lifecycleScope.launch{
+          withContext(Dispatchers.IO){
+              //Log.d("grabAnimeInfo","HERE")
+              val response = failsafeCall.execute()
+
+              if(response.isSuccessful){
+                  if(response.body() != null){
+
+                      Log.d("grabAnimeInfo","here")
+                      val animeData = response.body()!!.animeData
+
+                      withContext(Dispatchers.Main){
+                          binding.textViewHomeRecommendationsScore.text = animeData.score.toString()
+                          binding.textViewHomeRecommendationsSynopsis.text =
+                              if (animeData.synopsis!!.length < 180){
+                                  animeData.synopsis.substring(0.. animeData.synopsis.length - 1)
+                              }//max length 60charas
+                              else{
+                                  animeData.synopsis.substring(0..180) + "..."
+                              }
+                      }
+                      //setAnimeDetails(animeData)
+                      //SetUpStarsRating(animeData)
+                      //setButtons(animeData)
+                      //setReviewDialog(animeData)
+                      //setReviewAdapter(animeData)
+                  }else{Log.d("grabAnimeInfo","NULL")}
+              }
+              else{Log.d("grabAnimeInfo","UNSUCCESSFUL")}
+              //Log.d("AFTER","HERE")
+              //delay(1000)
+              //Log.d("AFTER DELAY","HERE")
+          }
+      }
+  }
+
+   */

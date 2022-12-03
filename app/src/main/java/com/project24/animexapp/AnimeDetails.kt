@@ -346,7 +346,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                     else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
                         Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
                     else {
-                        db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title))
+                        db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title, animeData.englishTitle, animeData.japaneseTitle))
                         db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))
                     }
                 }
@@ -369,7 +369,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                     else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
                         Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
                     else {
-                        db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title))
+                        db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title, animeData.englishTitle, animeData.japaneseTitle))
                         db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))
                     }
                 }
@@ -391,7 +391,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                     else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
                         Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
                     else {
-                        db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title))
+                        db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title, animeData.englishTitle, animeData.japaneseTitle))
                         db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))
                     }
                 }

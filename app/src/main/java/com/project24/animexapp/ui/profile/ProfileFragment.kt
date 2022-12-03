@@ -1,34 +1,35 @@
 package com.project24.animexapp.ui.profile
 
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.view.isGone
-import androidx.core.view.isInvisible
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.project24.animexapp.AnimeDetails
 import com.project24.animexapp.LogInActivity
-import com.project24.animexapp.MainActivity
 import com.project24.animexapp.R
-import com.project24.animexapp.api.*
+import com.project24.animexapp.api.JikanApiClient
+import com.project24.animexapp.api.LocalAnime
+import com.project24.animexapp.api.UserFavouritesResponse
 import com.project24.animexapp.databinding.FragmentProfileBinding
 import dev.failsafe.RetryPolicy
 import dev.failsafe.retrofit.FailsafeCall
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import java.time.Duration
+import java.util.ArrayList
+
 
 class ProfileFragment : Fragment() {
 
@@ -47,6 +48,8 @@ class ProfileFragment : Fragment() {
     private lateinit var watchingAnimeRV: RecyclerView
     private lateinit var watchingAnimeAdapter: LocalAnimeRVAdapter
 
+    private lateinit var profileViewModel : ProfileViewModel
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -58,7 +61,7 @@ class ProfileFragment : Fragment() {
     ): View {
         firebaseAuth = FirebaseAuth.getInstance()
         val db = Firebase.firestore
-        val profileViewModel =
+        profileViewModel =
             ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -74,6 +77,10 @@ class ProfileFragment : Fragment() {
         val profileLogoutButton = binding.profileLogoutButton
         val noAccountContent = binding.noAccountContent
         val profileLoginButton = binding.profileLoginButton
+        val englishBtn = binding.englishBtn
+        val japaneseBtn = binding.japaneseBtn
+        val chosenLanguagePreferences = requireActivity().getPreferences(MODE_PRIVATE)
+        var chosenLanguage = chosenLanguagePreferences.getString(getString(R.string.chosen_language_key), getString(R.string.english))
 
         profileLogoutButton.setOnClickListener {
             firebaseAuth.signOut()
@@ -85,6 +92,48 @@ class ProfileFragment : Fragment() {
             profileEmail.text = "Guest"
             profileLoginButton.isClickable
             activity?.recreate()
+        }
+
+        // Set language for entire app
+        englishBtn.setOnClickListener{
+            englishBtn.setBackgroundTintList(ContextCompat.getColorStateList(requireActivity(), R.color.light_green))
+            japaneseBtn.setBackgroundTintList(ContextCompat.getColorStateList(requireActivity(), R.color.back_tint_gray))
+
+            if (currentUserID != "null" && chosenLanguage == getString(R.string.japanese)){
+                updateFavourites(currentUserID, chosenLanguage)
+                updateWatchingLater(currentUserID, chosenLanguage)
+                updateCurrentlyWatching(currentUserID, chosenLanguage)
+            }
+
+            val prefsEditor = chosenLanguagePreferences.edit()
+            prefsEditor.clear()
+            prefsEditor.putString(getString(R.string.chosen_language_key), getString(R.string.english))
+            chosenLanguage = getString(R.string.english)
+            prefsEditor.apply()
+        }
+
+        japaneseBtn.setOnClickListener{
+            englishBtn.setBackgroundTintList(ContextCompat.getColorStateList(requireActivity(), R.color.back_tint_gray))
+            japaneseBtn.setBackgroundTintList(ContextCompat.getColorStateList(requireActivity(), R.color.main_color))
+
+            if (currentUserID != "null" && chosenLanguage == getString(R.string.english)){
+                updateFavourites(currentUserID, chosenLanguage)
+                updateWatchingLater(currentUserID, chosenLanguage)
+                updateCurrentlyWatching(currentUserID, chosenLanguage)
+            }
+
+            val prefsEditor = chosenLanguagePreferences.edit()
+            prefsEditor.clear()
+            prefsEditor.putString(getString(R.string.chosen_language_key), getString(R.string.japanese))
+            chosenLanguage = getString(R.string.japanese)
+            prefsEditor.apply()
+        }
+
+        if (chosenLanguage == getString(R.string.english)){
+            englishBtn.setBackgroundTintList(ContextCompat.getColorStateList(requireActivity(), R.color.light_green))
+        }
+        else {
+            japaneseBtn.setBackgroundTintList(ContextCompat.getColorStateList(requireActivity(), R.color.main_color))
         }
 
         profileEmail.text = if(currentUserEmail=="null") "Guest" else currentUserEmail
@@ -153,58 +202,9 @@ class ProfileFragment : Fragment() {
                 }
             }
 
-            db.collection("Users").document(currentUserID).collection("Favourites").get()
-                .addOnSuccessListener { favourite ->
-                    //Log.d("favorite",favourite.documents.)
-                    //var idList = emptyList<Long>()
-                    for (document in favourite) {
-                        var malID: Long = document.data.getValue("mal_id") as Long
-                        var imgURL: String = document.data.getValue("image_url") as String
-                        var animeTitle: String = document.data.getValue("anime_title") as String
-                        favoritesList = favoritesList + LocalAnime(malID, animeTitle, imgURL)
-                        favoritesAnimeAdapter.animeList = favoritesList
-                        favoritesAnimeAdapter.notifyDataSetChanged()
-                        //idList = idList.plus(malID)
-                        //Log.d("MAL_IDFAV", malID.toString())
-
-                    }
-                    //Log.d("MAL_IDFAV", idList.toString())
-                }
-
-            db.collection("Users").document(currentUserID).collection("WatchLater").get()
-                .addOnSuccessListener { watchLater ->
-                    //Log.d("favorite",favourite.documents.)
-                    //var idList = emptyList<Long>()
-                    for (document in watchLater) {
-                        var malID: Long = document.data.getValue("mal_id") as Long
-                        var imgURL: String = document.data.getValue("image_url") as String
-                        var animeTitle: String = document.data.getValue("anime_title") as String
-                        watchLaterList = watchLaterList + LocalAnime(malID, animeTitle, imgURL)
-                        watchLaterAnimeAdapter.animeList = watchLaterList
-                        watchLaterAnimeAdapter.notifyDataSetChanged()
-                        //idList = idList.plus(malID)
-                        //Log.d("MAL_IDFAV", malID.toString())
-
-                    }
-                    //Log.d("MAL_IDFAV", idList.toString())
-                }
-
-            db.collection("Users").document(currentUserID).collection("Watching").get()
-                .addOnSuccessListener { watching ->
-                    //Log.d("favorite",favourite.documents.)
-                    //var idList = emptyList<Long>()
-                    for (document in watching) {
-                        var malID: Long = document.data.getValue("mal_id") as Long
-                        var imgURL: String = document.data.getValue("image_url") as String
-                        var animeTitle: String = document.data.getValue("anime_title") as String
-                        watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
-                        watchingAnimeAdapter.animeList = watchingList
-                        watchingAnimeAdapter.notifyDataSetChanged()
-                        //idList = idList.plus(malID)
-                        //Log.d("MAL_IDFAV", malID.toString())
-                    }
-                    //Log.d("MAL_IDFAV", idList.toString())
-                }
+            updateFavourites(currentUserID, chosenLanguage)
+            updateWatchingLater(currentUserID, chosenLanguage)
+            updateCurrentlyWatching(currentUserID, chosenLanguage)
         } else {
             profileContent.visibility = View.GONE
             profileLogoutButton.visibility = View.GONE
@@ -219,6 +219,7 @@ class ProfileFragment : Fragment() {
 
         return root
     }
+
     fun logUserFavourites(username: String){
         val client = JikanApiClient.apiService.requestUserFavourites(username = username)
 
@@ -264,5 +265,163 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun updateFavourites(currentUserID: String, chosenLanguage: String?) {
+        val db = Firebase.firestore
+        favoritesList = emptyList()
+
+        db.collection("Users").document(currentUserID).collection("Favourites").get()
+            .addOnSuccessListener { favourite ->
+                //Log.d("favorite",favourite.documents.)
+                //var idList = emptyList<Long>()
+                for (document in favourite) {
+                    var malID: Long = document.data.getValue("mal_id") as Long
+                    var imgURL: String = document.data.getValue("image_url") as String
+
+                    // To prevent older version of database from crashing
+                    if (document.data.size > 3) {
+                        if (chosenLanguage == getString(R.string.english)
+                            && document.data.getValue("anime_english_title") != null
+                        ) {
+                            var animeTitle: String =
+                                document.data.getValue("anime_english_title") as String
+                            favoritesList =
+                                favoritesList + LocalAnime(malID, animeTitle, imgURL)
+                            // DELETE THIS
+                            Log.d("ARRR", favoritesList.toString())
+                        } else if (chosenLanguage == getString(R.string.japanese)
+                            && document.data.getValue("anime_japanese_title") != null
+                        ) {
+                            var animeTitle: String =
+                                document.data.getValue("anime_japanese_title") as String
+                            favoritesList =
+                                favoritesList + LocalAnime(malID, animeTitle, imgURL)
+                        } else {
+                            var animeTitle: String =
+                                document.data.getValue("anime_title") as String
+                            favoritesList =
+                                favoritesList + LocalAnime(malID, animeTitle, imgURL)
+                        }
+                    }
+                    else{
+                        var animeTitle: String =
+                            document.data.getValue("anime_title") as String
+                        favoritesList =
+                            favoritesList + LocalAnime(malID, animeTitle, imgURL)
+                    }
+                    favoritesAnimeAdapter.animeList = favoritesList
+                    // TODO Tiger, learn how to observe live data with recyclerview adapter
+                    /*
+                    profileViewModel.items = favoritesList
+                    profileViewModel.nameToShow.observe(requireActivity(), Observer { it ->
+                        favoritesAnimeAdapter.clear()
+                        favoritesAnimeAdapter.addAll(it)
+                        favoritesAnimeAdapter.notifyDataSetChanged()
+                    })
+                     */
+                    favoritesAnimeAdapter.notifyDataSetChanged()
+                    //idList = idList.plus(malID)
+                    //Log.d("MAL_IDFAV", malID.toString())
+
+                }
+                //Log.d("MAL_IDFAV", idList.toString())
+            }
+    }
+
+    private fun updateWatchingLater(currentUserID: String, chosenLanguage: String?) {
+        val db = Firebase.firestore
+        watchLaterList = emptyList()
+
+        db.collection("Users").document(currentUserID).collection("WatchLater").get()
+            .addOnSuccessListener { watchLater ->
+                //Log.d("favorite",favourite.documents.)
+                //var idList = emptyList<Long>()
+                for (document in watchLater) {
+                    var malID: Long = document.data.getValue("mal_id") as Long
+                    var imgURL: String = document.data.getValue("image_url") as String
+
+                    // To prevent older version of database from crashing
+                    if (document.data.size > 3) {
+                        if (chosenLanguage == getString(R.string.english)
+                            && document.data.getValue("anime_english_title")  != null
+                        ) {
+                            var animeTitle: String =
+                                document.data.getValue("anime_english_title") as String
+                            watchLaterList =
+                                watchLaterList + LocalAnime(malID, animeTitle, imgURL)
+                        } else if (chosenLanguage == getString(R.string.japanese)
+                            && document.data.getValue("anime_japanese_title") != null
+                        ) {
+                            var animeTitle: String =
+                                document.data.getValue("anime_japanese_title") as String
+                            watchLaterList =
+                                watchLaterList + LocalAnime(malID, animeTitle, imgURL)
+                        } else {
+                            var animeTitle: String =
+                                document.data.getValue("anime_title") as String
+                            watchLaterList =
+                                watchLaterList + LocalAnime(malID, animeTitle, imgURL)
+                        }
+                    }
+                    else{
+                        var animeTitle: String =
+                            document.data.getValue("anime_title") as String
+                        watchLaterList =
+                            watchLaterList + LocalAnime(malID, animeTitle, imgURL)
+                    }
+                    watchLaterAnimeAdapter.animeList = watchLaterList
+                    watchLaterAnimeAdapter.notifyDataSetChanged()
+                    //idList = idList.plus(malID)
+                    //Log.d("MAL_IDFAV", malID.toString())
+
+                }
+                //Log.d("MAL_IDFAV", idList.toString())
+            }
+    }
+
+    private fun updateCurrentlyWatching(currentUserID: String, chosenLanguage: String?) {
+        val db = Firebase.firestore
+        watchingList = emptyList()
+        db.collection("Users").document(currentUserID).collection("Watching").get()
+            .addOnSuccessListener { watching ->
+                //Log.d("favorite",favourite.documents.)
+                //var idList = emptyList<Long>()
+                for (document in watching) {
+                    var malID: Long = document.data.getValue("mal_id") as Long
+                    var imgURL: String = document.data.getValue("image_url") as String
+
+                    // To prevent older version of database from crashing
+                    if (document.data.size > 3) {
+                        if (chosenLanguage == getString(R.string.english)
+                            && document.data.getValue("anime_english_title") != null
+                        ) {
+                            var animeTitle: String =
+                                document.data.getValue("anime_english_title") as String
+                            watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
+                        } else if (chosenLanguage == getString(R.string.japanese)
+                            && document.data.getValue("anime_japanese_title") != null
+                        ) {
+                            var animeTitle: String =
+                                document.data.getValue("anime_japanese_title") as String
+                            watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
+                        } else {
+                            var animeTitle: String =
+                                document.data.getValue("anime_title") as String
+                            watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
+                        }
+                    }
+                    else {
+                        var animeTitle: String =
+                            document.data.getValue("anime_title") as String
+                        watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
+                    }
+                    watchingAnimeAdapter.animeList = watchingList
+                    watchingAnimeAdapter.notifyDataSetChanged()
+                    //idList = idList.plus(malID)
+                    //Log.d("MAL_IDFAV", malID.toString())
+                }
+                //Log.d("MAL_IDFAV", idList.toString())
+            }
     }
 }

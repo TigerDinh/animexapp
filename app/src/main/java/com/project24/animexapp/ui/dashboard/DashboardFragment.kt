@@ -58,7 +58,6 @@ class DashboardFragment : Fragment() {
         exploreAnimeRV.adapter = exploreAnimeAdapter
 
         getExploreAnime()
-
         getFilter()
 
         return root
@@ -68,7 +67,6 @@ class DashboardFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 
     fun getExploreAnime(
         query:String? = null, //search entry

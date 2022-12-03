@@ -57,7 +57,12 @@ class LocalAnimeRVAdapter(var animeList : List<LocalAnime>): RecyclerView.Adapte
         }
     }
 
+    fun addAll(givenAnimeList : List<LocalAnime>){
+        animeList = givenAnimeList
+    }
 
-
+    fun clear() {
+        animeList = emptyList()
+    }
 
 }

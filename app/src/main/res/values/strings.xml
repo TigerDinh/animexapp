@@ -7,6 +7,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="anime_id_key">ANIME_ID</string>
+    <string name="chosen_language_key">Chosen Language Key</string>
+    <string name="english">English</string>
+    <string name="japanese">japanese</string>
     <string-array name="genres">
         <item>Action</item>
         <item>Adventure</item>
