@@ -108,177 +108,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <!--Currently Watching-->
+                <!--Recommendations-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/textViewHomeCurrently"
+                        android:id="@+id/recommendations_heading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="2dp"
-                        android:text="Currently Watching"
+                        android:text="Recommended For You"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewHomeCurrently"
+                        android:id="@+id/recommendations_RV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/listitem_anime"/>
-
                 </LinearLayout>
-                <!--Recommended-->
-                <LinearLayout
+                <!--Discover-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/discover_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/discover_item"/>
 
-                        <TextView
-                            android:id="@+id/textViewHomeRecommendations"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Recommended For You"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:paddingBottom="2dp"
-                            android:textStyle="bold"
-                            android:paddingTop="6dp"/>
+            </LinearLayout>
 
-                        <ImageButton
-                            android:id="@+id/refreshRecommendedAnimeForYouBtn"
-                            android:layout_width="35dp"
-                            android:layout_height="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_toRightOf="@+id/textViewHomeRecommendations"
-                            android:backgroundTint="@color/transparent"
-                            android:src="@drawable/refresh_icon_foreground" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/by_genre_title_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="2dp"
+                    android:text="Genre"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
 
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="15dp">
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:cardCornerRadius="10dp">
-
-                            <ImageView
-                                android:id="@+id/imageViewHomeRecommend"
-                                android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:src="@drawable/purple_anime_app_icon"
-                                android:background="@color/black"
-                                android:foreground="@color/black_tint"
-                                android:tintMode="src_atop"/>
-                            <LinearLayout
-                                android:layout_width="200dp"
-                                android:layout_height="wrap_content"
-                                android:paddingStart="10dp"
-                                android:paddingTop="15dp"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:id="@+id/textViewHomeRecommendationsTitle"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Title"
-                                    android:textColor="@color/white"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold"
-                                    android:maxLines="2"
-                                    android:ellipsize="end"
-                                    android:singleLine="false"/>
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-                                    <TextView
-                                        android:id="@+id/textViewHomeRecommendationsScore"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="0"
-                                        android:textColor="@color/white"/>
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="/10"
-                                        android:textColor="@color/white"/>
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="120dp"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:paddingEnd="10dp"
-                                android:paddingTop="18dp"
-                                android:layout_gravity="end">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="end"
-                                    android:text="Because You Like:"
-                                    android:textColor="@color/white"
-                                    android:textStyle="bold"
-                                    android:textSize="12sp"
-                                    android:textAlignment="textEnd"/>
-                                <TextView
-                                    android:id="@+id/textViewHomeRecommendationsBecauseTitle"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="end"
-                                    android:text="Anime Title"
-                                    android:textColor="@color/white"
-                                    android:textSize="11sp"
-                                    android:maxLines="3"
-                                    android:ellipsize="end"
-                                    android:singleLine="false"
-                                    android:textAlignment="textEnd"/>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="100dp"
-                                android:orientation="vertical"
-                                android:paddingHorizontal="10dp"
-                                android:layout_gravity="bottom">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Synopsis"
-                                    android:textColor="@color/white"
-                                    android:textStyle="bold"
-                                    android:textSize="15sp"/>
-                                <TextView
-                                    android:id="@+id/textViewHomeRecommendationsSynopsis"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:paddingBottom="5dp"
-                                    android:layout_gravity="bottom"
-                                    android:text="Description"
-                                    android:textColor="@color/white"
-                                    android:textStyle="italic"
-                                    android:textSize="12sp"
-                                    android:maxLines="5"
-                                    android:ellipsize="end"
-                                    android:singleLine="false"
-                                    android:justificationMode="inter_word"/>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-                    </RelativeLayout>
-                </LinearLayout>
-
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/by_genre_RV_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/listitem_anime"/>
             </LinearLayout>
 
         </LinearLayout>

@@ -48,9 +48,10 @@ interface KitsuApiService{
     //https://kitsu.io/api/edge/anime?filter[seasonYear]=2022&filter[season]=fall&sort=-averageRating
     @GET("anime")
     fun requestAnime(
-        @Query("filter[seasonYear]") year:String? = null, //Year of the Anime
+        @Query("filter[seasonYear]") year:String? = null, //Year of the Anime. If multiple go for eg: 2015..2018
         @Query("filter[season]") season:String? = null, //Season of the Anime
         @Query("sort") sort:String? = null, //Sort preference as a comma seperated list if multiple. eg sort=-averageRating. The minus makes it desc.
+        @Query("categories") categories:String? = null, //Sort preference as a comma seperated list if multiple
     )    : Call<KitsuAnimeResponse>
 
 }

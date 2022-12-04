@@ -2,6 +2,7 @@ package com.project24.animexapp.ui.home
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +57,7 @@ class AnimeCardRVAdapter(var animeList : List<KitsuAnimeData>): RecyclerView.Ada
         }
 
         fun bindAnime(anime: KitsuAnimeData) {
+            //Log.d("BIND",anime.toString())
             this.anime = anime
             this.imgURL = anime.attributes.coverImageData!!.original
             Glide.with(this.itemView).load(imgURL).centerCrop().dontAnimate().into(view.findViewById(R.id.card_img))

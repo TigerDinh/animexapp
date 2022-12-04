@@ -62,7 +62,7 @@ interface JikanApiService{
         @Query("sort") sort:String? = null, //Options: desc, asc
         //Defaulted Params:
         @Query("sfw") sfw:Boolean = true, //Don't want inappropriate stuff
-        @Query("limit") limit:Int = 10 //switch to null when testing function calls in depth.
+        @Query("limit") limit:Int = 25 //switch to null when testing function calls in depth.
     ) : Call<AnimeSearchResponse>
 
 
