@@ -3,6 +3,7 @@ package com.project24.animexapp.ui.home
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -139,6 +140,7 @@ class HomeFragment : Fragment() {
             getOngoingAnime()
             setRecommendedForYou()
             setupRefreshButtonForRecommendedForYou()
+            //newThisSeason()
             nologinLayout.visibility = View.GONE
             loginLayout.visibility  = View.VISIBLE
         }
@@ -151,22 +153,13 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun setupRefreshButtonForRecommendedForYou() {
-        val refreshBtn = binding.refreshRecommendedAnimeForYouBtn
-        refreshBtn.setOnClickListener(){
-            setRecommendedForYou()
-        }
-    }
+    private fun newThisSeason(){
+        //Use Kitsu api call
+        //To get top this season, use : https://kitsu.io/api/edge/anime?filter[seasonYear]=2022&filter[season]=fall&sort=-averageRating
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+        val client = KitsuApiClient.apiService.requestAnime("2022","fall","-averageRating")
 
-    fun getMyRecommendations(id: Long){
-        val client = JikanApiClient.apiService.getRecommendationsByID(id = id)
-
-        val retryPolicy = RetryPolicy.builder<Response<RecommendationsByIDResponse>>()
+        val retryPolicy = RetryPolicy.builder<Response<KitsuAnimeResponse>>()
             .withDelay(Duration.ofSeconds(1))
             .withMaxRetries(3)
             .build()
@@ -177,38 +170,38 @@ class HomeFragment : Fragment() {
         cFuture.thenApply {
             if(it.isSuccessful){
                 if(it.body() != null){
-                    val animeEntries = it.body()!!.result
-                    for (animeEntry in animeEntries){
-                        recommendationsList = recommendationsList.plus(animeEntry.animeData)
-                    }
 
-                    //PASS THE LIST TO THE ADAPTER AND REFRESH IT
-                    recommendedAnimeAdapter.animeList = recommendationsList
-                    recommendedAnimeAdapter.notifyDataSetChanged()
+                    //Log.d("NEW THIS SZN", it.body()!!.animeData.toString())
 
+
+                    /*
+                    trendingList = it.body()!!.animeData
+
+                    trendingAdapter = SliderAdapter(trendingList)
+                    trendingAnimeSV.setSliderAdapter(trendingAdapter)
+                    trendingAdapter.notifyDataSetChanged()
+                    trendingAnimeSV.scrollTimeInMillis = 5000
+                    trendingAnimeSV.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+                    trendingAnimeSV.setIndicatorAnimation(IndicatorAnimationType.SLIDE);
+                    trendingAnimeSV.startAutoCycle();
+
+                     */
                 }
             }
         }
     }
 
-    private fun setRecommendedForYou() {
-        val db = Firebase.firestore
-        val currentUserID = firebaseAuth.currentUser?.uid.toString()
-        val favDocRef = db.collection("Users").document(currentUserID).collection("Favourites")
-
-        // Checking if favourite list is empty
-        favDocRef.get().addOnSuccessListener() {
-            if(it.isEmpty) {
-                // TODO When user has no favourites, show either ongoing anime or top anime of the seasons
-
-            }
-            else {
-                getRecommendedForYou()
-            }
-        }
-    }
 
     private fun getRecommendedForYou() {
+        /*
+        Changes:
+            Get from kitsu now, but how:
+                Get a random faovurite
+                Use jikan call too get reccs for that anime
+                Use kitsu to get image lol
+         */
+
+
         val db = Firebase.firestore
         val currentUserID = firebaseAuth.currentUser?.uid.toString()
 
@@ -236,10 +229,6 @@ class HomeFragment : Fragment() {
                     setRecommendedForYouDetails(randomFavouriteAnimeID)
                 }
             }
-    }
-
-    private fun setBecauseYouLike(favouriteAnimeTitle: String) {
-        binding.textViewHomeRecommendationsBecauseTitle.text = favouriteAnimeTitle
     }
 
     private fun setRecommendedForYouDetails(givenAnimeID: Long) {
@@ -326,6 +315,100 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+    private fun getDiscoverAnime(){
+        //Discover anime Specs:
+        /*
+            Anime from 5-10 years ago
+            Should be all highly rated (min_score)
+            random order
+            From kitsu
+
+
+         */
+
+
+
+
+
+    }
+
+    private fun getGenreAnime(genreID: Int){
+        /*
+        Get a list of anime for a genre/category.
+         */
+    }
+
+
+
+
+
+
+
+
+    private fun setupRefreshButtonForRecommendedForYou() {
+        val refreshBtn = binding.refreshRecommendedAnimeForYouBtn
+        refreshBtn.setOnClickListener(){
+            setRecommendedForYou()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    fun getMyRecommendations(id: Long){
+        val client = JikanApiClient.apiService.getRecommendationsByID(id = id)
+
+        val retryPolicy = RetryPolicy.builder<Response<RecommendationsByIDResponse>>()
+            .withDelay(Duration.ofSeconds(1))
+            .withMaxRetries(3)
+            .build()
+
+        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
+
+        val cFuture = failsafeCall.executeAsync()
+        cFuture.thenApply {
+            if(it.isSuccessful){
+                if(it.body() != null){
+                    val animeEntries = it.body()!!.result
+                    for (animeEntry in animeEntries){
+                        recommendationsList = recommendationsList.plus(animeEntry.animeData)
+                    }
+
+                    //PASS THE LIST TO THE ADAPTER AND REFRESH IT
+                    recommendedAnimeAdapter.animeList = recommendationsList
+                    recommendedAnimeAdapter.notifyDataSetChanged()
+
+                }
+            }
+        }
+    }
+
+    private fun setRecommendedForYou() {
+        val db = Firebase.firestore
+        val currentUserID = firebaseAuth.currentUser?.uid.toString()
+        val favDocRef = db.collection("Users").document(currentUserID).collection("Favourites")
+
+        // Checking if favourite list is empty
+        favDocRef.get().addOnSuccessListener() {
+            if(it.isEmpty) {
+                // TODO When user has no favourites, show either ongoing anime or top anime of the seasons
+
+            }
+            else {
+                getRecommendedForYou()
+            }
+        }
+    }
+
+
+    private fun setBecauseYouLike(favouriteAnimeTitle: String) {
+        binding.textViewHomeRecommendationsBecauseTitle.text = favouriteAnimeTitle
+    }
+
+
     private fun startLoadingActivity(requireActivity: FragmentActivity) {
         val intent = Intent(requireActivity, LoadingBarActivity::class.java)
         requireActivity.startActivity(intent)
@@ -356,7 +439,7 @@ class HomeFragment : Fragment() {
     fun getTrending(){
         val client = KitsuApiClient.apiService.trendingAnime()
 
-        val retryPolicy = RetryPolicy.builder<Response<AnimeTrendingResponse>>()
+        val retryPolicy = RetryPolicy.builder<Response<KitsuAnimeResponse>>()
             .withDelay(Duration.ofSeconds(1))
             .withMaxRetries(3)
             .build()

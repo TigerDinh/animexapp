@@ -6,7 +6,6 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 object KitsuApiClient {
@@ -43,6 +42,15 @@ interface KitsuApiService{
 
     // https://kitsu.io/api/edge/trending/anime
     @GET("trending/anime")
-    fun trendingAnime(): Call<AnimeTrendingResponse>
+    fun trendingAnime(): Call<KitsuAnimeResponse>
+
+    //https://kitsu.io/api/edge/anime
+    //https://kitsu.io/api/edge/anime?filter[seasonYear]=2022&filter[season]=fall&sort=-averageRating
+    @GET("anime")
+    fun requestAnime(
+        @Query("filter[seasonYear]") year:String? = null, //Year of the Anime
+        @Query("filter[season]") season:String? = null, //Season of the Anime
+        @Query("sort") sort:String? = null, //Sort preference as a comma seperated list if multiple. eg sort=-averageRating. The minus makes it desc.
+    )    : Call<KitsuAnimeResponse>
 
 }

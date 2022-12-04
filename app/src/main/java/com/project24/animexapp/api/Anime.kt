@@ -178,7 +178,7 @@ data class AnimeCharacterSearchResponse(
     val animeData : List<Character>,
 )
 
-data class AnimeTrendingResponse(
+data class KitsuAnimeResponse(
     @Json(name = "data")
     val animeData: List<KitsuAnimeData>
 )
