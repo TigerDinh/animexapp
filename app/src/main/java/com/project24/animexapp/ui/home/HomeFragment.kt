@@ -54,6 +54,10 @@ class HomeFragment : Fragment() {
     private lateinit var trendingAnimeSV: SliderView
     private lateinit var trendingAdapter: SliderAdapter
 
+    private lateinit var newAnimeList: List<KitsuAnimeData>
+    private lateinit var newAnimeRV: RecyclerView
+    private lateinit var newAnimeAdapter: AnimeCardRVAdapter
+
     private lateinit var nologinLayout: LinearLayout
     private lateinit var loginLayout: LinearLayout
     private lateinit var mainFlipper: ViewFlipper
@@ -92,6 +96,13 @@ class HomeFragment : Fragment() {
         // get current user's email
         val currentUser = firebaseAuth.currentUser?.email
         isLoggedIn = firebaseAuth.currentUser !== null //thanks
+
+        newAnimeList = emptyList()
+        newAnimeRV = binding.newAnimeRv
+        newAnimeAdapter = AnimeCardRVAdapter(newAnimeList)
+
+        newAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        newAnimeRV.adapter = newAnimeAdapter
 
 
         ongoingList = emptyList()
@@ -135,12 +146,13 @@ class HomeFragment : Fragment() {
         if(user!="null")
             Toast.makeText(activity, "Logged in as $user", Toast.LENGTH_SHORT).show()
 
+        getNewThisSeason()
+
         if(isLoggedIn){
             //Logged In View
             getOngoingAnime()
             setRecommendedForYou()
             setupRefreshButtonForRecommendedForYou()
-            //newThisSeason()
             nologinLayout.visibility = View.GONE
             loginLayout.visibility  = View.VISIBLE
         }
@@ -153,7 +165,7 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun newThisSeason(){
+    private fun getNewThisSeason(){
         //Use Kitsu api call
         //To get top this season, use : https://kitsu.io/api/edge/anime?filter[seasonYear]=2022&filter[season]=fall&sort=-averageRating
 
@@ -172,20 +184,9 @@ class HomeFragment : Fragment() {
                 if(it.body() != null){
 
                     //Log.d("NEW THIS SZN", it.body()!!.animeData.toString())
-
-
-                    /*
-                    trendingList = it.body()!!.animeData
-
-                    trendingAdapter = SliderAdapter(trendingList)
-                    trendingAnimeSV.setSliderAdapter(trendingAdapter)
-                    trendingAdapter.notifyDataSetChanged()
-                    trendingAnimeSV.scrollTimeInMillis = 5000
-                    trendingAnimeSV.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
-                    trendingAnimeSV.setIndicatorAnimation(IndicatorAnimationType.SLIDE);
-                    trendingAnimeSV.startAutoCycle();
-
-                     */
+                    newAnimeList = it.body()!!.animeData
+                    newAnimeAdapter = AnimeCardRVAdapter(newAnimeList)
+                    newAnimeAdapter.notifyDataSetChanged()
                 }
             }
         }

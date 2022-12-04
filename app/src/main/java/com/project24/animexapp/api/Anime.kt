@@ -131,7 +131,11 @@ data class KitsuAttribute(
     val title: String,
 
     @Json(name = "coverImage")
-    val coverImageData: KitsuImageData?
+    val coverImageData: KitsuImageData?,
+
+    @Json(name = "averageRating")
+    val rating: String?
+
 )
 
 data class KitsuAnimeData(
