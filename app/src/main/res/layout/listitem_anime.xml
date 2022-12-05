@@ -20,11 +20,12 @@
     </androidx.cardview.widget.CardView>
     <TextView
         android:id = "@+id/anime_title"
-        android:layout_width="@dimen/_115sdp"
+        android:layout_width="@dimen/_95sdp"
         android:layout_height="wrap_content"
         android:text="This is a test title"
         android:textAlignment="center"
         android:gravity="center_horizontal"
+        android:layout_gravity="center"
         android:maxLines="2"
         android:ellipsize="end"
         android:singleLine="false"

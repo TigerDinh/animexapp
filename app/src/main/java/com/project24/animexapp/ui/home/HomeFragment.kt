@@ -15,7 +15,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.project24.animexapp.Genre_Map
 import com.project24.animexapp.LogInActivity
+import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
@@ -172,8 +174,16 @@ class HomeFragment : Fragment() {
 
         getNewThisSeason()
         getDiscoverAnime()
-        getGenreAnime(4, 1)
-        getGenreAnime(10, 2)
+
+        val genreArray = resources.getStringArray(R.array.genres)
+        var GenreRandom = List(2) { rand.nextInt((genreArray.size - 1)) }
+
+        binding.textViewHomeGenre1.text = genreArray[GenreRandom[0]]
+        binding.textViewHomeGenre2.text = genreArray[GenreRandom[1]]
+
+        println("DEBUG: ${GenreRandom[0]} ${GenreRandom[1]}")
+        getGenreAnime(Genre_Map.getItemGenreID(genreArray[GenreRandom[0]]), 1)
+        getGenreAnime(Genre_Map.getItemGenreID(genreArray[GenreRandom[1]]), 2)
 
         if(isLoggedIn){
             //Logged In View
@@ -282,7 +292,8 @@ class HomeFragment : Fragment() {
                      */
 
                     val randomFavouriteAnimeID =
-                        favouriteList[randomFavouriteAnimeIndex].data.getValue(("mal_id")) as Long
+                        favouriteList[randomFavouriteAnimeIndex].data.getValue("mal_id") as Long
+                    binding.textViewHomeRecommendedTitle.text = favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
                     setRecommendedForYouDetails(randomFavouriteAnimeID)
                 }
             }
