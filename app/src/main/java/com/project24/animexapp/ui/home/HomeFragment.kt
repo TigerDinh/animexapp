@@ -181,7 +181,6 @@ class HomeFragment : Fragment() {
         binding.textViewHomeGenre1.text = genreArray[GenreRandom[0]]
         binding.textViewHomeGenre2.text = genreArray[GenreRandom[1]]
 
-        println("DEBUG: ${GenreRandom[0]} ${GenreRandom[1]}")
         getGenreAnime(Genre_Map.getItemGenreID(genreArray[GenreRandom[0]]), 1)
         getGenreAnime(Genre_Map.getItemGenreID(genreArray[GenreRandom[1]]), 2)
 
