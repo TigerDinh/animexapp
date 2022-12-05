@@ -107,7 +107,7 @@ class HomeFragment : Fragment() {
         isLoggedIn = firebaseAuth.currentUser !== null //thanks
 
         newAnimeList = emptyList()
-        newAnimeRV = binding.newAnimeRv
+        newAnimeRV = binding.recyclerViewHomeNewThisSeason
         newAnimeAdapter = AnimeCardRVAdapter(newAnimeList)
 
         newAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
@@ -115,30 +115,31 @@ class HomeFragment : Fragment() {
 
 
         discoverAnimeList = emptyList()
-        discoverAnimeRV = binding.discoverRv
+        discoverAnimeRV = binding.recyclerViewHomeDiscoverModernClassics
         discoverAnimeAdapter = AnimeCardRVAdapter(discoverAnimeList)
 
         discoverAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         discoverAnimeRV.adapter = discoverAnimeAdapter
 
 
-        ongoingList = emptyList()
+        //No longer used
+        /*ongoingList = emptyList()
         ongoingAnimeRV = binding.recyclerViewHomeOngoing
         ongoingAnimeAdapter = AnimeRVAdapter(ongoingList, 0)
 
         ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-        ongoingAnimeRV.adapter = ongoingAnimeAdapter
+        ongoingAnimeRV.adapter = ongoingAnimeAdapter*/
 
 
         animeByGenreList1 = emptyList()
-        animeByGenreRV1 = binding.byGenreRV1
+        animeByGenreRV1 = binding.recyclerViewHomeGenre1
         animeByGenreAdapter1 = AnimeRVAdapter(animeByGenreList1, 0)
 
         animeByGenreRV1.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         animeByGenreRV1.adapter = animeByGenreAdapter1
 
         animeByGenreList2 = emptyList()
-        animeByGenreRV2 = binding.byGenreRV2
+        animeByGenreRV2 = binding.recyclerViewHomeGenre2
         animeByGenreAdapter2 = AnimeRVAdapter(animeByGenreList2, 0)
 
         animeByGenreRV2.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
@@ -158,18 +159,15 @@ class HomeFragment : Fragment() {
         trendingAnimeSV = binding.sliderViewHomeHeader
 
         recommendationsList = emptyList()
-        recommendedAnimeRV = binding.recommendationsRV
+        recommendedAnimeRV = binding.recyclerViewHomeRecommendedForYou
         recommendedAnimeAdapter = AnimeRVAdapter(recommendationsList, 0)
 
-        ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        /*ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)*/
         recommendedAnimeRV.adapter = recommendedAnimeAdapter
 
         getTrending()
         //setRecommendedAnime()
         //setHeadAnime()
-
-        nologinLayout = binding.layoutHomeNoLogin
-        loginLayout = binding.layoutHomeLogin
 
         binding.buttonHomeLogin.setOnClickListener() {
             val intent = Intent(activity, LogInActivity::class.java)
@@ -181,24 +179,22 @@ class HomeFragment : Fragment() {
             Toast.makeText(activity, "Logged in as $user", Toast.LENGTH_SHORT).show()
 
         getNewThisSeason()
+        getDiscoverAnime()
+        getGenreAnime(4, 1)
+        getGenreAnime(10, 2)
 
         if(isLoggedIn){
             //Logged In View
-            getOngoingAnime()
             setRecommendedForYou()
-            getDiscoverAnime()
-            //setupRefreshButtonForRecommendedForYou()
-            nologinLayout.visibility = View.GONE
-            loginLayout.visibility  = View.VISIBLE
+
+            binding.linerLayoutHomePleaseLogin.visibility = View.GONE
+            binding.linearLayoutHomeRecommendedForYou.visibility = View.VISIBLE
         }
         else{
             //Not Logged In View
-            getOngoingAnime()
-            loginLayout.visibility = View.GONE
-            nologinLayout.visibility  = View.VISIBLE
+            binding.linearLayoutHomeRecommendedForYou.visibility = View.GONE
+            binding.linerLayoutHomePleaseLogin.visibility = View.VISIBLE
         }
-        getGenreAnime(4, 1)
-        getGenreAnime(10, 2)
         return root
     }
 
@@ -317,7 +313,6 @@ class HomeFragment : Fragment() {
             if(response.isSuccessful){
                 if(response.body() != null){
                     val recommendedAnimeDataList = response.body()!!.result
-
                     if (recommendedAnimeDataList.isNotEmpty()){
 
                         /*
@@ -567,7 +562,8 @@ class HomeFragment : Fragment() {
         requireActivity.startActivity(intent)
     }
 
-    fun getOngoingAnime(){
+    //No longer used
+    /*fun getOngoingAnime(){
         val client = JikanApiClient.apiService.requestAnime(status = "airing")
 
         val retryPolicy = RetryPolicy.builder<Response<AnimeSearchResponse>>()
@@ -588,7 +584,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
+*/
     fun getTrending(){
         val client = KitsuApiClient.apiService.trendingAnime()
 

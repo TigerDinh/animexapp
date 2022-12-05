@@ -60,10 +60,10 @@ class AnimeCardRVAdapter(var animeList : List<KitsuAnimeData>): RecyclerView.Ada
             //Log.d("BIND",anime.toString())
             this.anime = anime
             this.imgURL = anime.attributes.coverImageData!!.original
-            Glide.with(this.itemView).load(imgURL).centerCrop().dontAnimate().into(view.findViewById(R.id.card_img))
+            Glide.with(this.itemView).load(imgURL).centerCrop().into(view.findViewById(R.id.card_img))
             view.findViewById<TextView>(R.id.card_title).text = anime.attributes.title
             view.findViewById<TextView>(R.id.card_synopsis).text = anime.attributes.synopsis
-            view.findViewById<TextView>(R.id.card_score).text = anime.attributes.synopsis
+            view.findViewById<TextView>(R.id.card_score).text = anime.attributes.rating
             /*
             view.findViewById<TextView>(R.id.card_score).text = (anime.attributes.rating?.toDouble()
                 ?.div(10)).toString()

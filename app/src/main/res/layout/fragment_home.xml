@@ -37,141 +37,151 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="5dp">
+            android:paddingHorizontal="5dp"
+            android:paddingTop="5dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/new_anime_rv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/carditem_anime"/>
-
-            <!--No Login-->
+            <!--New This Season-->
             <LinearLayout
-                android:id="@+id/layoutHomeNoLogin"
+                android:id="@+id/linearLayoutHomeNewThisSeason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <!--Ongoing-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/textViewHomeOngoing"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="2dp"
-                        android:text="Ongoing"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewHomeOngoing"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/listitem_anime"/>
-                </LinearLayout>
-                <!--Login-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="5dp">
-
-                    <TextView
-                        android:layout_width="170dp"
-                        android:layout_height="wrap_content"
-                        android:text="Login to get personalized recommendations based on the anime you love."
-                        android:layout_gravity="center"
-                        android:gravity="center"/>
-                    <Button
-                        android:id="@+id/buttonHomeLogin"
-                        android:layout_width="170dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Login"
-                        app:cornerRadius="10dp"/>
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!--Login-->
-            <LinearLayout
-                android:id="@+id/layoutHomeLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <!--Recommendations-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/recommendations_heading"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="2dp"
-                        android:text="Recommended For You"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recommendations_RV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/listitem_anime"/>
-                </LinearLayout>
-                <!--Discover-->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/discover_rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/discover_item"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="5dp">
                 <TextView
-                    android:id="@+id/by_genre_title_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="2dp"
-                    android:text="Genre"
-                    android:textColor="@color/black"
+                    android:text="New This Season"
                     android:textSize="18sp"
-                    android:textStyle="bold"/>
-
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:paddingBottom="3dp"/>
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/by_genre_RV_1"
+                    android:id="@+id/recyclerViewHomeNewThisSeason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
+                    android:paddingEnd="5dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/carditem_anime"/>
+            </LinearLayout>
+
+            <!--Recommended For You (LOGGED IN)-->
+            <LinearLayout
+                android:id="@+id/linearLayoutHomeRecommendedForYou"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recommended For You"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:paddingBottom="3dp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewHomeRecommendedForYou"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="5dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/listitem_anime"/>
+            </LinearLayout>
 
+            <!--PLEASE LOG IN-->
+            <LinearLayout
+                android:id="@+id/linerLayoutHomePleaseLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="5dp">
+                <TextView
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:text="Login to get personalized recommendations based on the anime you love."
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+                <Button
+                    android:id="@+id/buttonHomeLogin"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Login"
+                    app:cornerRadius="10dp"/>
+            </LinearLayout>
+
+            <!--Discover Modern Classics-->
+            <LinearLayout
+                android:id="@+id/linearLayoutHomeDiscoverModernClassics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Discover Modern Classics"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:paddingBottom="3dp"/>
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/by_genre_RV_2"
+                    android:id="@+id/recyclerViewHomeDiscoverModernClassics"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
+                    android:paddingEnd="5dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/carditem_anime"/>
+            </LinearLayout>
+
+            <!--Genre 1-->
+            <LinearLayout
+                android:id="@+id/linearLayoutHomeGenre1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Genre 1"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:paddingBottom="3dp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewHomeGenre1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="5dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/listitem_anime"/>
+            </LinearLayout>
+
+            <!--Genre 2-->
+            <LinearLayout
+                android:id="@+id/linearLayoutHomeGenre2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Genre 2"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:paddingBottom="3dp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewHomeGenre2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="5dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/listitem_anime"/>
