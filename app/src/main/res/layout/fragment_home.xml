@@ -166,6 +166,15 @@
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/listitem_anime"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/by_genre_RV_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/listitem_anime"/>
             </LinearLayout>
 
         </LinearLayout>

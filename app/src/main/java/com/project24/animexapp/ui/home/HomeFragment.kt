@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.project24.animexapp.Genre_Map
 import com.project24.animexapp.LogInActivity
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
@@ -62,6 +61,10 @@ class HomeFragment : Fragment() {
     private lateinit var animeByGenreList1: List<Anime>
     private lateinit var animeByGenreRV1: RecyclerView
     private lateinit var animeByGenreAdapter1: AnimeRVAdapter
+
+    private lateinit var animeByGenreList2: List<Anime>
+    private lateinit var animeByGenreRV2: RecyclerView
+    private lateinit var animeByGenreAdapter2: AnimeRVAdapter
 
 
     private lateinit var nologinLayout: LinearLayout
@@ -134,6 +137,13 @@ class HomeFragment : Fragment() {
         animeByGenreRV1.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         animeByGenreRV1.adapter = animeByGenreAdapter1
 
+        animeByGenreList2 = emptyList()
+        animeByGenreRV2 = binding.byGenreRV2
+        animeByGenreAdapter2 = AnimeRVAdapter(animeByGenreList2, 0)
+
+        animeByGenreRV2.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        animeByGenreRV2.adapter = animeByGenreAdapter2
+
 
         /*
         //Observe LiveData
@@ -187,7 +197,8 @@ class HomeFragment : Fragment() {
             loginLayout.visibility = View.GONE
             nologinLayout.visibility  = View.VISIBLE
         }
-        getGenreAnime(4)
+        getGenreAnime(4, 1)
+        getGenreAnime(10, 2)
         return root
     }
 
@@ -433,7 +444,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun getGenreAnime(genreID: Int){
+    private fun getGenreAnime(genreID: Int,rvNum: Int){
         /*
         Get a list of anime for a genre/category. Genre is Random for now.
          */
@@ -458,10 +469,19 @@ class HomeFragment : Fragment() {
                             tmpList.add(anime)
                         }
                     }
-                    animeByGenreList1 = tmpList //it.body()!!.animeData
-                    animeByGenreAdapter1.animeList = animeByGenreList1
-                    animeByGenreRV1.adapter = animeByGenreAdapter1
-                    animeByGenreAdapter1.notifyDataSetChanged()
+                    if(rvNum == 1){
+                        animeByGenreList1 = tmpList //it.body()!!.animeData
+                        animeByGenreAdapter1.animeList = animeByGenreList1
+                        animeByGenreRV1.adapter = animeByGenreAdapter1
+                        animeByGenreAdapter1.notifyDataSetChanged()
+                    }
+                    else if(rvNum == 2){
+                        animeByGenreList2 = tmpList //it.body()!!.animeData
+                        animeByGenreAdapter2.animeList = animeByGenreList2
+                        animeByGenreRV2.adapter = animeByGenreAdapter2
+                        animeByGenreAdapter2.notifyDataSetChanged()
+                    }
+
 
                 }
             }
