@@ -17,7 +17,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.Genre_Map
 import com.project24.animexapp.LogInActivity
-import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
@@ -175,14 +174,18 @@ class HomeFragment : Fragment() {
         getNewThisSeason()
         getDiscoverAnime()
 
-        val genreArray = resources.getStringArray(R.array.genres)
-        var GenreRandom = List(2) { rand.nextInt((genreArray.size - 1)) }
+        //set genre 1
+        val genrePair1 = Genre_Map.getRandomGenrePair()
+        binding.titleGenre1.text = genrePair1.first
+        getGenreAnime(genrePair1.second, 1)
 
-        binding.textViewHomeGenre1.text = genreArray[GenreRandom[0]]
-        binding.textViewHomeGenre2.text = genreArray[GenreRandom[1]]
-
-        getGenreAnime(Genre_Map.getItemGenreID(genreArray[GenreRandom[0]]), 1)
-        getGenreAnime(Genre_Map.getItemGenreID(genreArray[GenreRandom[1]]), 2)
+        //set genre 2
+        var genrePair2 = Genre_Map.getRandomGenrePair()
+        while(genrePair1.toString() == genrePair2.toString()) {
+            genrePair2 = Genre_Map.getRandomGenrePair()
+        }
+        binding.titleGenre2.text = genrePair2.first
+        getGenreAnime(genrePair2.second, 2)
 
         if(isLoggedIn){
             //Logged In View
