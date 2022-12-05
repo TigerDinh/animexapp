@@ -61,7 +61,24 @@ class AnimeCardRVAdapter(var animeList : List<KitsuAnimeData>): RecyclerView.Ada
             this.anime = anime
             this.imgURL = anime.attributes.coverImageData!!.original
             Glide.with(this.itemView).load(imgURL).centerCrop().into(view.findViewById(R.id.card_img))
-            view.findViewById<TextView>(R.id.card_title).text = anime.attributes.title
+
+            // Setting language for title
+           val chosenLanguagePreferences = view.context.getSharedPreferences(view.context.getString(R.string.shared_preference_language_key),Context.MODE_PRIVATE)
+            val chosenLanguage =
+                chosenLanguagePreferences.getString(view.context.getString(R.string.chosen_language_key), view.context.getString(R.string.english))!!
+
+            if (chosenLanguage == view.context.getString(R.string.english) && anime.attributes.otherTitles != null){
+                if (anime.attributes.otherTitles.englishTitle != null){
+                    view.findViewById<TextView>(R.id.card_title).text = anime.attributes.otherTitles.englishTitle
+                }
+                else{
+                    view.findViewById<TextView>(R.id.card_title).text = anime.attributes.title
+                }
+            }
+            else{
+                view.findViewById<TextView>(R.id.card_title).text = anime.attributes.title
+            }
+
             view.findViewById<TextView>(R.id.card_synopsis).text = anime.attributes.synopsis
             view.findViewById<TextView>(R.id.card_score).text = anime.attributes.rating
             /*

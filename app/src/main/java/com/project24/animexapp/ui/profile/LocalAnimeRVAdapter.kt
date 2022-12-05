@@ -1,6 +1,9 @@
 package com.project24.animexapp.ui.profile
 
+
+import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.project24.animexapp.AnimeDetails
 import com.project24.animexapp.R
 import com.project24.animexapp.api.*
+
 
 class LocalAnimeRVAdapter(var animeList : List<LocalAnime>): RecyclerView.Adapter<LocalAnimeRVAdapter.MyViewHolder>() {
 
@@ -56,13 +60,4 @@ class LocalAnimeRVAdapter(var animeList : List<LocalAnime>): RecyclerView.Adapte
             private val ANIME_ID = "ANIME_ID"
         }
     }
-
-    fun addAll(givenAnimeList : List<LocalAnime>){
-        animeList = givenAnimeList
-    }
-
-    fun clear() {
-        animeList = emptyList()
-    }
-
 }

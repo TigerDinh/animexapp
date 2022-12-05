@@ -3,15 +3,15 @@ package com.project24.animexapp.ui.profile
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +28,6 @@ import dev.failsafe.RetryPolicy
 import dev.failsafe.retrofit.FailsafeCall
 import retrofit2.Response
 import java.time.Duration
-import java.util.ArrayList
 
 
 class ProfileFragment : Fragment() {
@@ -50,6 +49,9 @@ class ProfileFragment : Fragment() {
 
     private lateinit var profileViewModel : ProfileViewModel
 
+    private lateinit var currentUserID : String
+    private lateinit var chosenLanguage : String
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -69,7 +71,7 @@ class ProfileFragment : Fragment() {
 
         val profileEmail = binding.profileEmail
         val currentUserEmail = firebaseAuth.currentUser?.email.toString()
-        var currentUserID = firebaseAuth.currentUser?.uid.toString()
+        currentUserID = firebaseAuth.currentUser?.uid.toString()
         val favEmptyText = binding.emptyFavText
         val watchingEmptyText = binding.emptyWatchingText
         val watchLaterEmptyText = binding.emptyWatchLaterText
@@ -79,8 +81,9 @@ class ProfileFragment : Fragment() {
         val profileLoginButton = binding.profileLoginButton
         val englishBtn = binding.englishBtn
         val japaneseBtn = binding.japaneseBtn
-        val chosenLanguagePreferences = requireActivity().getPreferences(MODE_PRIVATE)
-        var chosenLanguage = chosenLanguagePreferences.getString(getString(R.string.chosen_language_key), getString(R.string.english))
+        val chosenLanguagePreferences = requireActivity().getSharedPreferences(getString(R.string.shared_preference_language_key), MODE_PRIVATE)
+        chosenLanguage =
+            chosenLanguagePreferences.getString(getString(R.string.chosen_language_key), getString(R.string.english))!!
 
         profileLogoutButton.setOnClickListener {
             firebaseAuth.signOut()
@@ -100,10 +103,19 @@ class ProfileFragment : Fragment() {
             japaneseBtn.setBackgroundTintList(ContextCompat.getColorStateList(requireActivity(), R.color.back_tint_gray))
 
             if (currentUserID != "null" && chosenLanguage == getString(R.string.japanese)){
-                updateFavourites(currentUserID, chosenLanguage)
-                updateWatchingLater(currentUserID, chosenLanguage)
-                updateCurrentlyWatching(currentUserID, chosenLanguage)
+                val updateUiThread = Thread(){
+                    val handler = Handler(Looper.getMainLooper())
+                    val myRunnable = Runnable {
+                        updateFavourites(currentUserID, chosenLanguage)
+                        updateWatchingLater(currentUserID, chosenLanguage)
+                        updateCurrentlyWatching(currentUserID, chosenLanguage)
+                    }
+                    handler.post(myRunnable)
+                }
+                updateUiThread.start()
+                updateUiThread.join()
             }
+
 
             val prefsEditor = chosenLanguagePreferences.edit()
             prefsEditor.clear()
@@ -117,9 +129,17 @@ class ProfileFragment : Fragment() {
             japaneseBtn.setBackgroundTintList(ContextCompat.getColorStateList(requireActivity(), R.color.main_color))
 
             if (currentUserID != "null" && chosenLanguage == getString(R.string.english)){
-                updateFavourites(currentUserID, chosenLanguage)
-                updateWatchingLater(currentUserID, chosenLanguage)
-                updateCurrentlyWatching(currentUserID, chosenLanguage)
+                val updateUiThread = Thread(){
+                    val handler = Handler(Looper.getMainLooper())
+                    val myRunnable = Runnable {
+                        updateFavourites(currentUserID, chosenLanguage)
+                        updateWatchingLater(currentUserID, chosenLanguage)
+                        updateCurrentlyWatching(currentUserID, chosenLanguage)
+                    }
+                    handler.post(myRunnable)
+                }
+                updateUiThread.start()
+                updateUiThread.join()
             }
 
             val prefsEditor = chosenLanguagePreferences.edit()
@@ -169,7 +189,7 @@ class ProfileFragment : Fragment() {
         )
         watchingAnimeRV.adapter = watchingAnimeAdapter
 
-        if(currentUserID!=="null") {
+        if (currentUserID != "null") {
 
             val favDocRef = db.collection("Users").document(currentUserID).collection("Favourites")
             val watchLaterDocRef = db.collection("Users").document(currentUserID).collection("WatchLater")
@@ -215,9 +235,25 @@ class ProfileFragment : Fragment() {
 
             }
         }
-
-
         return root
+    }
+
+    override fun onResume() {
+        if (currentUserID!=="null") {
+            val updateUiThread = Thread(){
+                val handler = Handler(Looper.getMainLooper())
+                val myRunnable = Runnable {
+                    updateFavourites(currentUserID, chosenLanguage)
+                    updateWatchingLater(currentUserID, chosenLanguage)
+                    updateCurrentlyWatching(currentUserID, chosenLanguage)
+                }
+                handler.post(myRunnable)
+            }
+            updateUiThread.start()
+            updateUiThread.join()
+        }
+
+        super.onResume()
     }
 
     fun logUserFavourites(username: String){
@@ -239,27 +275,6 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
-        /*
-        client.enqueue(object: Callback<UserFavouritesResponse> {
-            override fun onResponse(
-                call: Call<UserFavouritesResponse>,
-                response: Response<UserFavouritesResponse>
-            ){
-                if(response.isSuccessful){
-                    if(response.body() != null){
-                        val userFavs = response.body()!!.result
-                        Log.d("USER FAVS ANIME",""+userFavs.toString())
-                    }
-                }else{
-                    Log.e("USER FAVS ANIME", response.message()+" "+call.request().url)
-                }
-            }
-            override fun onFailure(call: Call<UserFavouritesResponse>, t: Throwable) {
-                Log.e("USER FAVS API FAIL",""+t.message)
-            }
-        })
-
-         */
     }
 
     override fun onDestroyView() {
@@ -273,8 +288,6 @@ class ProfileFragment : Fragment() {
 
         db.collection("Users").document(currentUserID).collection("Favourites").get()
             .addOnSuccessListener { favourite ->
-                //Log.d("favorite",favourite.documents.)
-                //var idList = emptyList<Long>()
                 for (document in favourite) {
                     var malID: Long = document.data.getValue("mal_id") as Long
                     var imgURL: String = document.data.getValue("image_url") as String
@@ -290,13 +303,6 @@ class ProfileFragment : Fragment() {
                                 favoritesList + LocalAnime(malID, animeTitle, imgURL)
                             // DELETE THIS
                             Log.d("ARRR", favoritesList.toString())
-                        } else if (chosenLanguage == getString(R.string.japanese)
-                            && document.data.getValue("anime_japanese_title") != null
-                        ) {
-                            var animeTitle: String =
-                                document.data.getValue("anime_japanese_title") as String
-                            favoritesList =
-                                favoritesList + LocalAnime(malID, animeTitle, imgURL)
                         } else {
                             var animeTitle: String =
                                 document.data.getValue("anime_title") as String
@@ -310,22 +316,10 @@ class ProfileFragment : Fragment() {
                         favoritesList =
                             favoritesList + LocalAnime(malID, animeTitle, imgURL)
                     }
-                    favoritesAnimeAdapter.animeList = favoritesList
-                    // TODO Tiger, learn how to observe live data with recyclerview adapter
-                    /*
-                    profileViewModel.items = favoritesList
-                    profileViewModel.nameToShow.observe(requireActivity(), Observer { it ->
-                        favoritesAnimeAdapter.clear()
-                        favoritesAnimeAdapter.addAll(it)
-                        favoritesAnimeAdapter.notifyDataSetChanged()
-                    })
-                     */
-                    favoritesAnimeAdapter.notifyDataSetChanged()
-                    //idList = idList.plus(malID)
-                    //Log.d("MAL_IDFAV", malID.toString())
 
+                    favoritesAnimeAdapter.animeList = favoritesList
+                    favoritesAnimeAdapter.notifyDataSetChanged()
                 }
-                //Log.d("MAL_IDFAV", idList.toString())
             }
     }
 
@@ -335,8 +329,6 @@ class ProfileFragment : Fragment() {
 
         db.collection("Users").document(currentUserID).collection("WatchLater").get()
             .addOnSuccessListener { watchLater ->
-                //Log.d("favorite",favourite.documents.)
-                //var idList = emptyList<Long>()
                 for (document in watchLater) {
                     var malID: Long = document.data.getValue("mal_id") as Long
                     var imgURL: String = document.data.getValue("image_url") as String
@@ -350,14 +342,8 @@ class ProfileFragment : Fragment() {
                                 document.data.getValue("anime_english_title") as String
                             watchLaterList =
                                 watchLaterList + LocalAnime(malID, animeTitle, imgURL)
-                        } else if (chosenLanguage == getString(R.string.japanese)
-                            && document.data.getValue("anime_japanese_title") != null
-                        ) {
-                            var animeTitle: String =
-                                document.data.getValue("anime_japanese_title") as String
-                            watchLaterList =
-                                watchLaterList + LocalAnime(malID, animeTitle, imgURL)
-                        } else {
+                        }
+                        else {
                             var animeTitle: String =
                                 document.data.getValue("anime_title") as String
                             watchLaterList =
@@ -372,11 +358,7 @@ class ProfileFragment : Fragment() {
                     }
                     watchLaterAnimeAdapter.animeList = watchLaterList
                     watchLaterAnimeAdapter.notifyDataSetChanged()
-                    //idList = idList.plus(malID)
-                    //Log.d("MAL_IDFAV", malID.toString())
-
                 }
-                //Log.d("MAL_IDFAV", idList.toString())
             }
     }
 
@@ -399,13 +381,8 @@ class ProfileFragment : Fragment() {
                             var animeTitle: String =
                                 document.data.getValue("anime_english_title") as String
                             watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
-                        } else if (chosenLanguage == getString(R.string.japanese)
-                            && document.data.getValue("anime_japanese_title") != null
-                        ) {
-                            var animeTitle: String =
-                                document.data.getValue("anime_japanese_title") as String
-                            watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
-                        } else {
+                        }
+                        else {
                             var animeTitle: String =
                                 document.data.getValue("anime_title") as String
                             watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
@@ -418,10 +395,7 @@ class ProfileFragment : Fragment() {
                     }
                     watchingAnimeAdapter.animeList = watchingList
                     watchingAnimeAdapter.notifyDataSetChanged()
-                    //idList = idList.plus(malID)
-                    //Log.d("MAL_IDFAV", malID.toString())
                 }
-                //Log.d("MAL_IDFAV", idList.toString())
             }
     }
 }

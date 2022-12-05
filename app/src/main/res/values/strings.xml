@@ -11,6 +11,7 @@
     <string name="english">English</string>
     <string name="japanese">japanese</string>
     <string name="anime_id_kitsu">ANIME_ID_KITSU</string>
+    <string name="shared_preference_language_key">Shared Preference Language Key</string>
     <string-array name="genres">
         <item>Action</item>
         <item>Adventure</item>

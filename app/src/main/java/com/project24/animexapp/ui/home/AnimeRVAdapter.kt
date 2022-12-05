@@ -2,6 +2,7 @@ package com.project24.animexapp.ui.home
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +61,18 @@ class AnimeRVAdapter(var animeList : List<Anime>, var size: Int): RecyclerView.A
         fun bindAnime(anime: Anime) {
             this.anime = anime
             Glide.with(view.context).load(anime.imageData!!.jpg!!.URL).centerCrop().into(view.findViewById<ImageView>(R.id.anime_image))
-            view.findViewById<TextView>(R.id.anime_title).text = anime.title
+
+            // Setting language for title
+            val chosenLanguagePreferences = view.context.getSharedPreferences(view.context.getString(R.string.shared_preference_language_key),Context.MODE_PRIVATE)
+            val chosenLanguage =
+                chosenLanguagePreferences.getString(view.context.getString(R.string.chosen_language_key), view.context.getString(R.string.english))!!
+
+            if (chosenLanguage == view.context.getString(R.string.english) && anime.englishTitle != null){
+                view.findViewById<TextView>(R.id.anime_title).text = anime.englishTitle
+            }
+            else{
+                view.findViewById<TextView>(R.id.anime_title).text = anime.title
+            }
         }
 
 

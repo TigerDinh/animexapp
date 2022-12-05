@@ -30,7 +30,6 @@ class WelcomeScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome_screen)
 
         getWeebWords()
-
         setupAnimation()
         setupTransitionToMainActivity()
     }

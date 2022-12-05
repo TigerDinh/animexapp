@@ -2,6 +2,7 @@ package com.project24.animexapp
 
 import android.app.Dialog
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -432,15 +433,28 @@ class AnimeDetails : YouTubeBaseActivity() {
     }
 
     private fun setAnimeDetails(animeData: Anime) {
-        setAnimeTitle(animeData.title)
+        setAnimeTitle(animeData)
         setAnimeTrailer(animeData.trailerData?.youtubeID, animeData.imageData?.jpg)
         setAnimeSynopsis(animeData.synopsis)
         setAnimeScore(animeData.score.toString())
     }
 
-    private fun setAnimeTitle(givenTitle: String) {
+    private fun setAnimeTitle(animeData: Anime) {
         val txt = findViewById<TextView>(R.id.textViewAnimeDetailsTitle)
-        txt.text = givenTitle
+
+        val chosenLanguagePreferences = getSharedPreferences(getString(
+            R.string.shared_preference_language_key), Context.MODE_PRIVATE)
+        val chosenLanguage =
+            chosenLanguagePreferences.getString(getString(R.string.chosen_language_key), getString(R.string.english))!!
+
+        if (chosenLanguage == getString(R.string.english)
+            && animeData.englishTitle != null
+        ) {
+            txt.text = animeData.englishTitle
+        }
+        else{
+            txt.text = animeData.title
+        }
     }
 
     private fun setAnimeScore(givenScore: String) {

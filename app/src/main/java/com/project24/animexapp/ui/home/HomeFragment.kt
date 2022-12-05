@@ -1,6 +1,7 @@
 package com.project24.animexapp.ui.home
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +20,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.Genre_Map
 import com.project24.animexapp.LogInActivity
+import com.project24.animexapp.R
 import com.project24.animexapp.api.*
 import com.project24.animexapp.databinding.FragmentHomeBinding
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
@@ -295,7 +298,21 @@ class HomeFragment : Fragment() {
 
                     val randomFavouriteAnimeID =
                         favouriteList[randomFavouriteAnimeIndex].data.getValue("mal_id") as Long
-                    binding.textViewHomeRecommendedTitle.text = favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
+
+                    val chosenLanguagePreferences = requireActivity().getSharedPreferences(getString(
+                        R.string.shared_preference_language_key), Context.MODE_PRIVATE)
+                    val chosenLanguage =
+                        chosenLanguagePreferences.getString(getString(R.string.chosen_language_key), getString(R.string.english))!!
+
+                    if (chosenLanguage == getString(R.string.english)
+                        && favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_english_title") != null
+                    ) {
+                        binding.textViewHomeRecommendedTitle.text = favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_english_title") as String
+                    }
+                    else{
+                        binding.textViewHomeRecommendedTitle.text = favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
+                    }
+
                     setRecommendedForYouDetails(randomFavouriteAnimeID)
                 }
             }

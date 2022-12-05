@@ -125,7 +125,7 @@ data class KitsuAttribute(
     val synopsis: String,
 
     @Json(name = "titles")
-    val otherTitles: KitsuTitle,
+    val otherTitles: KitsuTitle?,
 
     @Json(name = "canonicalTitle")
     val title: String,

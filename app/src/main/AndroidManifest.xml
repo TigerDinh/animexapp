@@ -23,14 +23,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Feed"
+            android:name=".ui.community.Feed"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ExploreActivity"
+            android:name=".ui.dashboard.ExploreFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -44,14 +44,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ProfileViewModel"
+            android:name=".ui.profile.ProfileViewModel"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ProfileFragment"
+            android:name=".ui.profile.ProfileFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
