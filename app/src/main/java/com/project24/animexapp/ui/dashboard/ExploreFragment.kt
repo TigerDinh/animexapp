@@ -29,7 +29,7 @@ private lateinit var exploreAnimeRV: RecyclerView
 private lateinit var exploreAnimeAdapter: AnimeRVAdapter
 private var filterSettings = mutableListOf("", "", "", "", "", "desc")
 
-class DashboardFragment : Fragment() {
+class ExploreFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
 
@@ -104,43 +104,11 @@ class DashboardFragment : Fragment() {
             if(it.isSuccessful){
                 if(it.body() != null){
                     exploreAnimeList = it.body()!!.result
-
-                    //PASS THE LIST TO THE ADAPTER AND REFRESH IT
-
                     exploreAnimeAdapter.animeList = exploreAnimeList
                     exploreAnimeAdapter.notifyDataSetChanged()
-
-
-                    //Log.d("ONGOING ANIME",""+ongoingList.toString())
                 }
             }
         }
-        /*
-        client.enqueue(object: Callback<AnimeSearchResponse> {
-            override fun onResponse(
-                call: Call<AnimeSearchResponse>,
-                response: Response<AnimeSearchResponse>
-            ){
-                if(response.isSuccessful){
-                    if(response.body() != null){
-                        exploreAnimeList = response.body()!!.result
-
-                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
-
-                        exploreAnimeAdapter.animeList = exploreAnimeList
-                        exploreAnimeAdapter.notifyDataSetChanged()
-
-
-                        //Log.d("ONGOING ANIME",""+ongoingList.toString())
-                    }
-                }
-            }
-            override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
-                Log.e("EXPLORE ANIME API FAIL",""+t.message)
-            }
-        })
-
-         */
     }
 
     fun getFilter(){
