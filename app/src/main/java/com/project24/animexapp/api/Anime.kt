@@ -187,4 +187,16 @@ data class KitsuAnimeResponse(
     val animeData: List<KitsuAnimeData>
 )
 
+data class QuotesResponse(
+    @Json(name = "quote")
+    val quote:String,
+
+    @Json(name = "character")
+    val character:String,
+
+    @Json(name = "anime")
+    val anime:String
+)
+
+
 
