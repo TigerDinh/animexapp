@@ -40,10 +40,6 @@ class HomeFragment : Fragment() {
 
     private var isLoggedIn: Boolean = false //Integrate with firebase value
 
-    private lateinit var ongoingList: List<Anime>
-    private lateinit var ongoingAnimeRV: RecyclerView
-    private lateinit var ongoingAnimeAdapter: AnimeRVAdapter
-
     private lateinit var recommendationsList: List<Anime>
     private lateinit var recommendedAnimeRV: RecyclerView
     private lateinit var recommendedAnimeAdapter: AnimeRVAdapter
@@ -68,9 +64,6 @@ class HomeFragment : Fragment() {
     private lateinit var animeByGenreRV2: RecyclerView
     private lateinit var animeByGenreAdapter2: AnimeRVAdapter
 
-
-    private lateinit var nologinLayout: LinearLayout
-    private lateinit var loginLayout: LinearLayout
 
     companion object{
         private val rand = SecureRandom()
@@ -119,15 +112,6 @@ class HomeFragment : Fragment() {
         discoverAnimeRV.adapter = discoverAnimeAdapter
 
 
-        //No longer used
-        /*ongoingList = emptyList()
-        ongoingAnimeRV = binding.recyclerViewHomeOngoing
-        ongoingAnimeAdapter = AnimeRVAdapter(ongoingList, 0)
-
-        ongoingAnimeRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-        ongoingAnimeRV.adapter = ongoingAnimeAdapter*/
-
-
         animeByGenreList1 = emptyList()
         animeByGenreRV1 = binding.recyclerViewHomeGenre1
         animeByGenreAdapter1 = AnimeRVAdapter(animeByGenreList1, 0)
@@ -143,15 +127,6 @@ class HomeFragment : Fragment() {
         animeByGenreRV2.adapter = animeByGenreAdapter2
 
 
-        /*
-        //Observe LiveData
-        viewModel.ongoingList.observe(viewLifecycleOwner, Observer { animeList ->
-            //Update the RV with the data here.
-            ongoingAnimeAdapter.animeList = animeList
-            ongoingAnimeAdapter.notifyDataSetChanged()
-        })
-
-         */
 
         trendingAnimeSV = binding.sliderViewHomeHeader
 
@@ -163,10 +138,8 @@ class HomeFragment : Fragment() {
         recommendedAnimeRV.adapter = recommendedAnimeAdapter
 
         getTrending()
-        //setRecommendedAnime()
-        //setHeadAnime()
 
-        binding.buttonHomeLogin.setOnClickListener() {
+        binding.buttonHomeLogin.setOnClickListener {
             val intent = Intent(activity, LogInActivity::class.java)
             startActivity(intent)
         }
@@ -244,7 +217,6 @@ class HomeFragment : Fragment() {
             if(it.isSuccessful){
                 if(it.body() != null){
 
-                    //Log.d("NEW THIS SZN", it.body()!!.animeData.toString())
                     val tmpList = mutableListOf<KitsuAnimeData>()
                     for(anime in it.body()!!.animeData)
                     {
@@ -289,12 +261,6 @@ class HomeFragment : Fragment() {
                         val randomFavouriteAnimeIndexList = List(1) { rand.nextInt((favouriteList.size - 1)) }
                         randomFavouriteAnimeIndex = randomFavouriteAnimeIndexList[0]
                     }
-                    /*
-                    val favouriteAnimeTitle =
-                        favouriteList[randomFavouriteAnimeIndex].data.getValue("anime_title") as String
-                    setBecauseYouLike(favouriteAnimeTitle)
-
-                     */
 
                     val randomFavouriteAnimeID =
                         favouriteList[randomFavouriteAnimeIndex].data.getValue("mal_id") as Long
@@ -349,62 +315,6 @@ class HomeFragment : Fragment() {
                         recommendedAnimeRV.adapter = recommendedAnimeAdapter
                         recommendedAnimeAdapter.notifyDataSetChanged()
 
-                        /*
-                        val randomIndexList = List(1) { rand.nextInt((recommendedAnimeDataList.size - 1)) }
-                        val randomIndex = randomIndexList.get(0)
-
-                        val randomRecommendedAnime = recommendedAnimeDataList.get(randomIndex).animeData
-
-                        // Get the full information of the random recommended anime
-                        val client2 = JikanApiClient.apiService.getAnimeByID(randomRecommendedAnime.mal_id)
-                        val retryPolicy2 = RetryPolicy.builder<Response<AnimeSearchByIDResponse>>()
-                            .withDelay(Duration.ofSeconds(1))
-                            .withMaxRetries(3)
-                            .build()
-                        val failsafeCall2 = FailsafeCall.with(retryPolicy2).compose(client2)
-                        val cFuture2 = failsafeCall2.executeAsync()
-
-                        cFuture2.thenApply {
-                            if(it.isSuccessful) {
-                                val recommendedAnime = it.body()!!.animeData
-
-                                // Displaying "recommended for you" anime
-                                binding.textViewHomeRecommendationsTitle.text =
-                                    recommendedAnime.title
-                                binding.textViewHomeRecommendationsSynopsis.text =
-                                    if (recommendedAnime.synopsis!!.length < 180){
-                                        recommendedAnime.synopsis.substring(0.. recommendedAnime.synopsis.length - 1)
-                                    }//max length 60charas
-                                    else{
-                                        recommendedAnime.synopsis.substring(0..180) + "..."
-                                    }
-                                if (recommendedAnime.score == null) {
-                                    binding.textViewHomeRecommendationsScore.text = "Unrated"
-                                }
-                                else {
-                                    binding.textViewHomeRecommendationsScore.text =
-                                        recommendedAnime.score.toString()
-                                }
-                                Glide.with(requireView())
-                                    .load(recommendedAnime.imageData!!.jpg!!.URL)
-                                    .centerCrop()
-                                    .into(binding.imageViewHomeRecommend)
-
-                                // When recommended for you image is clicked, open anime detail page for that anime
-                                binding.imageViewHomeRecommend.setOnClickListener {
-                                    val showAnimeIntent =
-                                        Intent(requireActivity(), AnimeDetails::class.java)
-                                    showAnimeIntent.putExtra(
-                                        getString(R.string.anime_id_key),
-                                        recommendedAnime.mal_id
-                                    )
-                                    requireActivity().startActivity(showAnimeIntent)
-                                    startLoadingActivity(requireActivity()) // Activities are placed in "First In Last Out" stack
-                                }
-                            }
-                        }
-
-                         */
                     }
                 }
             }
@@ -505,53 +415,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-
-
-
-
-
-    /*
-    private fun setupRefreshButtonForRecommendedForYou() {
-        val refreshBtn = binding.refreshRecommendedAnimeForYouBtn
-        refreshBtn.setOnClickListener(){
-            setRecommendedForYou()
-        }
-    }
-
-     */
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun getMyRecommendations(id: Long){
-        val client = JikanApiClient.apiService.getRecommendationsByID(id = id)
-
-        val retryPolicy = RetryPolicy.builder<Response<RecommendationsByIDResponse>>()
-            .withDelay(Duration.ofSeconds(1))
-            .withMaxRetries(3)
-            .build()
-
-        val failsafeCall = FailsafeCall.with(retryPolicy).compose(client)
-
-        val cFuture = failsafeCall.executeAsync()
-        cFuture.thenApply {
-            if(it.isSuccessful){
-                if(it.body() != null){
-                    val animeEntries = it.body()!!.result
-                    for (animeEntry in animeEntries){
-                        recommendationsList = recommendationsList.plus(animeEntry.animeData)
-                    }
-
-                    //PASS THE LIST TO THE ADAPTER AND REFRESH IT
-                    recommendedAnimeAdapter.animeList = recommendationsList
-                    recommendedAnimeAdapter.notifyDataSetChanged()
-
-                }
-            }
-        }
     }
 
     private fun setRecommendedForYou() {

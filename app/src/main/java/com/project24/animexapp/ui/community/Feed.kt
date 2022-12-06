@@ -39,9 +39,6 @@ class Feed : Fragment() {
         _binding = FragmentFeedBinding.inflate(inflater, container, false)
         val root: View = binding.root
         val communityPostButton = binding.communityPostButton
-        val communityUserPost = binding.communityUserPost.text.toString()
-        val setTagsButton = binding.setTagsButton
-        val linkAnimeButton = binding.linkAnimeButton
 
         communityPostButton.setOnClickListener {
             createPost()
@@ -83,7 +80,6 @@ class Feed : Fragment() {
                     notifyDataSetChanged()
                 }
             }
-//            Log.d(TAG, "Current names: $posts")
         }
     }
 
@@ -100,7 +96,6 @@ class Feed : Fragment() {
         val currentTime = sdf.format(Date())
         val sdfDate = SimpleDateFormat("MM/dd/yyyy")
         val currentDate = sdfDate.format(Date())
-        var postId: Int
 
         if(userPost.text.isEmpty()) {
                 Toast.makeText(activity, "You need to write something before posting", Toast.LENGTH_SHORT).show()

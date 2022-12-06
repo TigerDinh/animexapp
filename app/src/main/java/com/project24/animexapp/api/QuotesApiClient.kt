@@ -6,21 +6,11 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 object QuotesApiClient {
     private val BASE_URL = "https://animechan.vercel.app/api/"
 
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-
-    /* --- Don't currently need this level of logging.
-
-    private val logging = HttpLoggingInterceptor()
-    logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-
-    val httpClient = OkHttpClient.Builder()
-    httpClient.addInterceptor(logging)
-     */
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()

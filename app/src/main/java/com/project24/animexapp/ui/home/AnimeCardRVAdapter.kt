@@ -83,12 +83,6 @@ class AnimeCardRVAdapter(var animeList : List<KitsuAnimeData>): RecyclerView.Ada
 
             view.findViewById<TextView>(R.id.card_synopsis).text = anime.attributes.synopsis
             view.findViewById<TextView>(R.id.card_score).text = anime.attributes.rating
-            /*
-            view.findViewById<TextView>(R.id.card_score).text = (anime.attributes.rating?.toDouble()
-                ?.div(10)).toString()
-
-
-             */
         }
 
 

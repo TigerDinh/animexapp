@@ -194,13 +194,13 @@ class AnimeDetails : YouTubeBaseActivity() {
 
 
         db.collection("Reviews").document(animeData.mal_id.toString()).collection("Reviews").get()
-            .addOnSuccessListener { review ->
-                for (review in review) {
-                    var reviewTitle: String = review.data.getValue("reviewTitle") as String
-                    var reviewComment: String = review.data.getValue("reviewComment") as String
-                    var reviewUser: String = review.data.getValue("username") as String
-                    var reviewSpoiler: String = review.data.getValue("reviewSpoilers") as String
-                    var reviewDate: String = review.data.getValue("reviewDate") as String
+            .addOnSuccessListener { reviews ->
+                for (review in reviews) {
+                    val reviewTitle: String = review.data.getValue("reviewTitle") as String
+                    val reviewComment: String = review.data.getValue("reviewComment") as String
+                    val reviewUser: String = review.data.getValue("username") as String
+                    val reviewSpoiler: String = review.data.getValue("reviewSpoilers") as String
+                    val reviewDate: String = review.data.getValue("reviewDate") as String
                     reviewsList = reviewsList + Reviews(animeData.mal_id, reviewTitle, reviewComment, reviewSpoiler, reviewUser, reviewDate)
                     reviewsAnimeAdapter.reviewList = reviewsList
                     reviewsAnimeAdapter.notifyDataSetChanged()
@@ -217,7 +217,7 @@ class AnimeDetails : YouTubeBaseActivity() {
     }
 
     private fun SetUpStarsRating(animeData: Anime) {
-        var starButtons = ArrayList<ImageButton>()
+        val starButtons = ArrayList<ImageButton>()
         starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar1))
         starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar2))
         starButtons.add(findViewById(R.id.imageButtonAnimeDetailsStar3))
@@ -284,9 +284,9 @@ class AnimeDetails : YouTubeBaseActivity() {
                     val userReviewTitle = reviewAnimeTitle.text.toString()
                     val sdf = SimpleDateFormat("MM/dd/yyyy")
                     val currentDate = sdf.format(Date())
-                    var spoilers = if(reviewSpoilersCheckbox.isChecked) { "yes" } else { "no" }
+                    val spoilers = if(reviewSpoilersCheckbox.isChecked) { "yes" } else { "no" }
 
-                    var docRef = db.collection("Users").document(currentUserID!!)
+                    val docRef = db.collection("Users").document(currentUserID)
                     docRef.get()
                         .addOnSuccessListener { document ->
                             if (document != null) {
@@ -313,13 +313,13 @@ class AnimeDetails : YouTubeBaseActivity() {
         val currentUserID = firebaseAuth.currentUser?.uid
 
         var favourite = 0; var watchlater = 0; var watching = 0;
-        var favouriteButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsFavourite)
-        var watchLaterButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatchLater)
-        var watcthingButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatching)
+        val favouriteButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsFavourite)
+        val watchLaterButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatchLater)
+        val watcthingButton = findViewById<ImageButton>(R.id.imageButtonAnimeDetailsWatching)
 
-        var favDocRef = db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString())
-        var watchLaterDocRef = db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString())
-        var watchingDocRef = db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString())
+        val favDocRef = db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString())
+        val watchLaterDocRef = db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString())
+        val watchingDocRef = db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString())
 
 
         // keep buttons selected if clicked, else gray
@@ -427,7 +427,7 @@ class AnimeDetails : YouTubeBaseActivity() {
     private fun setAnimeCharacterDetails(characterList: List<Character>) {
         val characterRV = findViewById<RecyclerView>(R.id.recyclerViewAnimeDetailsCharacters)
 
-        var characterAdapter = CharacterRVAdapter(characterList)
+        val characterAdapter = CharacterRVAdapter(characterList)
 
         characterRV.layoutManager = LinearLayoutManager(this,
             LinearLayoutManager.HORIZONTAL,false)
@@ -471,7 +471,7 @@ class AnimeDetails : YouTubeBaseActivity() {
 
         if (youtubeID == null){
             youTubePlayerView.visibility = View.GONE
-            Glide.with(this)
+            Glide.with(applicationContext)
                 .load(givenJPG!!.URL)
                 .fitCenter()
                 .into(animeDetailsImageView)
@@ -481,14 +481,13 @@ class AnimeDetails : YouTubeBaseActivity() {
             animeDetailsImageView.visibility = View.GONE
         }
 
-        val youtubeTrailerID = youtubeID
         youTubePlayerView.initialize(YOUTUBE_API_KEY, object:YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(
                 provider: YouTubePlayer.Provider?,
                 player: YouTubePlayer?,
                 bln: Boolean
             ) {
-                player?.cueVideo(youtubeTrailerID)
+                player?.cueVideo(youtubeID)
                 player?.play()
             }
 
@@ -506,7 +505,7 @@ class AnimeDetails : YouTubeBaseActivity() {
             return
         }
 
-        var syn = findViewById<TextView>(R.id.textViewAnimeDetailsSynopsis)
+        val syn = findViewById<TextView>(R.id.textViewAnimeDetailsSynopsis)
         syn.text = synopsis.dropLast(25)
     }
 }

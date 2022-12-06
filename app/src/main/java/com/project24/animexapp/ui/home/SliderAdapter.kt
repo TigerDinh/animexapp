@@ -49,7 +49,6 @@ class SliderAdapter(var animeList : List<KitsuAnimeData>): SliderViewAdapter<Sli
             val animeImageView =  view.findViewById<ImageView>(R.id.slider_anime_image)
             animeImageView.setOnClickListener{
                 val japnTitle = this.anime.attributes.otherTitles?.enJapTitle
-                //Log.d("JAPNTTITLE",""+japnTitle)
                 val showAnimeIntent =
                     Intent(itemView.context, AnimeDetails::class.java)
                 showAnimeIntent.putExtra(

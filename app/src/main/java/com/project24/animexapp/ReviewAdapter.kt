@@ -3,11 +3,8 @@ package com.project24.animexapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.project24.animexapp.api.LocalAnime
 
 
 class ReviewAdapter(var reviewList : List<Reviews>): RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
@@ -20,7 +17,7 @@ class ReviewAdapter(var reviewList : List<Reviews>): RecyclerView.Adapter<Review
     override fun getItemCount(): Int {
         return reviewList.size
     }
-    override fun onBindViewHolder(holder: ReviewAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val reviewItemAnime = reviewList[position]
         holder.bindAnime(reviewItemAnime)
     }

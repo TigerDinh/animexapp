@@ -38,61 +38,8 @@ class MainActivity : AppCompatActivity() {
             navAccount.text = ""
         }
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-//        val appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-//            )
-//        )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        //In an Async fashion, get all the info needed
-        //Trending Anime: Kitsu
-        //Ongoing Anime
-        //Recommended For You Details
-        //Explore Anime
-        /*
-        lifecycleScope.launch{
-            withContext(Dispatchers.IO){
-                Log.d("BEFORE","HERE")
-                getOngoingAnime()
-                Log.d("AFTER","HERE")
-                delay(1000)
-                Log.d("AFTER DELAY","HERE")
-            }
-        }
-
-         */
     }
-    /*
-    private fun getOngoingAnime(){
-        val client = JikanApiClient.apiService.requestAnime(status = "airing")
 
-        client.enqueue(object: Callback<AnimeSearchResponse> {
-            override fun onResponse(
-                call: Call<AnimeSearchResponse>,
-                response: Response<AnimeSearchResponse>
-            ){
-                if(response.isSuccessful){
-                    if(response.body() != null){
-                        ongoingList = response.body()!!.result
-
-                        //PASS THE LIST TO THE ADAPTER AND REFRESH IT
-
-                        //ongoingAnimeAdapter.animeList = ongoingList
-                        //ongoingAnimeAdapter.notifyDataSetChanged()
-                        //viewModel.ongoingList.value = ongoingList
-
-                        //Log.d("ONGOING ANIME",""+ viewModel.ongoingList.value)
-                    }
-                }
-            }
-            override fun onFailure(call: Call<AnimeSearchResponse>, t: Throwable) {
-                Log.e("ONGOING ANIME API FAIL",""+t.message)
-            }
-        })
-    }
-    */
 }

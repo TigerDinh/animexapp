@@ -15,9 +15,6 @@ object Genre_Map {
         val random = Random(System.currentTimeMillis())
         val randEntry = genreMap.entries.elementAt(random.nextInt(genreMap.size))
         return randEntry.toPair()
-        //val keys = genreMap.keys
-        //val randKey = keys.random()
-        //return Pair(randKey,genreMap[randKey]!!)
     }
 
 }

@@ -1,6 +1,5 @@
 package com.project24.animexapp
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.project24.animexapp.api.Anime
-import com.project24.animexapp.api.CharacterData
 
 class CharacterRVAdapter(var characterList : List<com.project24.animexapp.api.Character>): RecyclerView.Adapter<CharacterRVAdapter.MyViewHolder>() {
 
@@ -37,10 +34,6 @@ class CharacterRVAdapter(var characterList : List<com.project24.animexapp.api.Ch
         }
 
         override fun onClick(v: View) {
-            /*val context = itemView.context
-            val showAnimeIntent = Intent(context,AnimeDetails::class.java)
-            showAnimeIntent.putExtra(ANIME_ID,anime.mal_id)
-            context.startActivity(showAnimeIntent)*/
         }
 
         fun bindCharacter(character: com.project24.animexapp.api.Character) {

@@ -42,8 +42,6 @@ class ExploreFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        /*val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)*/
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -54,7 +52,6 @@ class ExploreFragment : Fragment() {
         exploreAnimeAdapter = AnimeRVAdapter(exploreAnimeList, 1)
 
         exploreAnimeRV.layoutManager = GridLayoutManager(context, 2)
-        //animeAnimeRV.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
         exploreAnimeRV.adapter = exploreAnimeAdapter
 
         getExploreAnime()
@@ -136,8 +133,8 @@ class ExploreFragment : Fragment() {
 
         //Get Resources Genre
         val genreList = genreDialog.findViewById<ListView>(R.id.listViewFilterGenre)
-        var filterGenre = Array(stringGenreArray.size) {i -> 0}
-        var buttonGenreAccept = genreDialog.findViewById<Button>(R.id.buttonFilterGenreAccept)
+        val filterGenre = Array(stringGenreArray.size) { i -> 0}
+        val buttonGenreAccept = genreDialog.findViewById<Button>(R.id.buttonFilterGenreAccept)
 
         //Open filter dialog
         searchFilter.setOnClickListener() {
@@ -151,8 +148,8 @@ class ExploreFragment : Fragment() {
 
 
         //When genre item is clicked
-        genreList.setOnItemClickListener() {
-            parent, view, position, id ->
+        genreList.setOnItemClickListener {
+                _, view, position, _ ->
 
             //filterGenre is a int array with each element representing a genre
             //if the value is 0, the item is neutral
@@ -177,11 +174,11 @@ class ExploreFragment : Fragment() {
             }
         }
 
-        buttonGenreAccept.setOnClickListener() {
+        buttonGenreAccept.setOnClickListener {
 
             //Check the status of each genre filter
             //if 1 or 2, filter in or our respectfully
-            for (i in 0..filterGenre.size-1) {
+            for (i in filterGenre.indices) {
                 when(filterGenre[i]) {
                     //Function to map genre string to mal_id is called for each
                     1-> filterSettings[0] = filterSettings[0]+getItemGenreID(stringGenreArray[i])+","

@@ -105,19 +105,6 @@ data class KitsuTitle(
 data class KitsuImageData(
     @Json(name = "original")
     val original: String?,
-    /*
-    @Json(name = "tiny")
-    val tiny: String?,
-
-    @Json(name = "small")
-    val small: String?,
-
-    @Json(name = "medium")
-    val medium: String?,
-
-    @Json(name = "large")
-    val large: String?,
-     */
 )
 
 data class KitsuAttribute(

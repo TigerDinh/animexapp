@@ -13,14 +13,6 @@ object KitsuApiClient {
 
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-    /* --- Don't currently need this level of logging.
-
-    private val logging = HttpLoggingInterceptor()
-    logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-
-    val httpClient = OkHttpClient.Builder()
-    httpClient.addInterceptor(logging)
-     */
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
