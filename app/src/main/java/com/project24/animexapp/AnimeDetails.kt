@@ -171,7 +171,7 @@ class AnimeDetails : YouTubeBaseActivity() {
             }
             else{
                 resultQuery += str
-                resultQuery += ", "
+                resultQuery += ","
             }
         }
         return resultQuery
@@ -358,6 +358,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                 0 ->
                 {
                     favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
+
                     if(db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).equals(animeID.toString()))
                         Toast.makeText(this, "Already favourite", Toast.LENGTH_LONG).show()
                     else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
