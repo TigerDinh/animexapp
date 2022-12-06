@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.project24.animexapp.databinding.FragmentCommunityBinding
-import com.project24.animexapp.ui.CommunityTabAdapter
 
 
 class CommunityFragment : Fragment() {

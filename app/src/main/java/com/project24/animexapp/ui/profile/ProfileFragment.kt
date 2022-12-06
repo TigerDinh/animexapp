@@ -322,8 +322,6 @@ class ProfileFragment : Fragment() {
                                     document.data.getValue("anime_english_title") as String
                                 favoritesList =
                                     favoritesList + LocalAnime(malID, animeTitle, imgURL)
-                                // DELETE THIS
-                                Log.d("ARRR", favoritesList.toString())
                             } else {
                                 var animeTitle: String =
                                     document.data.getValue("anime_title") as String

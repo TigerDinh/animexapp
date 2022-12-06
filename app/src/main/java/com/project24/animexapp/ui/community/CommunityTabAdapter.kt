@@ -1,4 +1,4 @@
-package com.project24.animexapp.ui
+package com.project24.animexapp.ui.community
 
 import android.content.Context
 import androidx.fragment.app.Fragment

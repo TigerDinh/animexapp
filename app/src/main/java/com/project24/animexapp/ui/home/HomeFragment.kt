@@ -427,11 +427,7 @@ class HomeFragment : Fragment() {
 
         // Checking if favourite list is empty
         favDocRef.get().addOnSuccessListener() {
-            if(it.isEmpty) {
-                // TODO When user has no favourites, show either ongoing anime or top anime of the seasons
-
-            }
-            else {
+            if(!it.isEmpty) {
                 getRecommendedForYou()
             }
         }
