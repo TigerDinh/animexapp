@@ -26,23 +26,17 @@ class LoadingBarActivity : AppCompatActivity() {
         val desiredLoadingTimeInMilliseconds = 1000.toLong()
 
         // Set Timer
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val timer = object : CountDownTimer(desiredLoadingTimeInMilliseconds, 250) {
-                override fun onTick(millisUntilFinished: Long) {
-                    val progress = (((desiredLoadingTimeInMilliseconds - millisUntilFinished).toDouble()/desiredLoadingTimeInMilliseconds)*100.00).toInt()
-                    pbTimeRemaining.setProgress(progress, true)
-                }
-
-                override fun onFinish() {
-                    finish()
-                }
+        val timer = object : CountDownTimer(desiredLoadingTimeInMilliseconds, 250) {
+            override fun onTick(millisUntilFinished: Long) {
+                val progress = (((desiredLoadingTimeInMilliseconds - millisUntilFinished).toDouble()/desiredLoadingTimeInMilliseconds)*100.00).toInt()
+                pbTimeRemaining.setProgress(progress, true)
             }
-            timer.start()
+
+            override fun onFinish() {
+                finish()
+            }
         }
-        else {
-            sleep(desiredLoadingTimeInMilliseconds)
-            finish()
-        }
+        timer.start()
     }
 
     // Disable back button while loading to prevent overloading api request

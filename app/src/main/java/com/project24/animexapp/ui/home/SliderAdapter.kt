@@ -2,6 +2,7 @@ package com.project24.animexapp.ui.home
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.project24.animexapp.R
 import android.view.LayoutInflater
 import android.view.View
@@ -47,11 +48,13 @@ class SliderAdapter(var animeList : List<KitsuAnimeData>): SliderViewAdapter<Sli
             // Direct to anime detail page when clicked
             val animeImageView =  view.findViewById<ImageView>(R.id.slider_anime_image)
             animeImageView.setOnClickListener{
+                val japnTitle = this.anime.attributes.otherTitles?.enJapTitle
+                //Log.d("JAPNTTITLE",""+japnTitle)
                 val showAnimeIntent =
                     Intent(itemView.context, AnimeDetails::class.java)
                 showAnimeIntent.putExtra(
                     itemView.context.getString(R.string.anime_id_kitsu),
-                    this.anime.attributes.title
+                    japnTitle ?: this.anime.attributes.title
                 )
                 itemView.context.startActivity(showAnimeIntent)
                 startLoadingActivity(itemView.context)

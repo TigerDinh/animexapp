@@ -32,7 +32,7 @@ import kotlin.collections.ArrayList
 
 class AnimeDetails : YouTubeBaseActivity() {
     private var animeID : Long = -1
-    private var animeIDKitsu : String = ""
+    private var animeTitleKitsu : String = ""
     private var YOUTUBE_API_KEY: String? = ""
     private lateinit var firebaseAuth: FirebaseAuth
     private var youTubePlayerView : YouTubePlayerView? = null
@@ -46,11 +46,11 @@ class AnimeDetails : YouTubeBaseActivity() {
         if(extras!=null) {
             // Reset values
             animeID = -1
-            animeIDKitsu = ""
+            animeTitleKitsu = ""
 
             // Extract values from extras
             animeID = extras.getLong(getString(R.string.anime_id_key), -1)
-            animeIDKitsu = extras.getString(getString(R.string.anime_id_kitsu), "No Title")
+            animeTitleKitsu = extras.getString(getString(R.string.anime_id_kitsu), "No Title")
         }
 
         setContentView(R.layout.activity_anime_details)
@@ -64,7 +64,7 @@ class AnimeDetails : YouTubeBaseActivity() {
     }
 
     private fun grabAnimeInfo() {
-        if (animeID.toInt() == -1 && animeIDKitsu == "No Title"){
+        if (animeID.toInt() == -1 && animeTitleKitsu == "No Title"){
             return //Indicates the previous activity did not correctly pass the animeID
         }
 
@@ -115,7 +115,7 @@ class AnimeDetails : YouTubeBaseActivity() {
 
         // If Kitsu was used to provide animeID to AnimeDetails
         else{
-            val animeTitleQuery = convertToQuery(animeIDKitsu)
+            val animeTitleQuery = convertToQuery(animeTitleKitsu)
             val client = JikanApiClient.apiService.requestAnime(query = animeTitleQuery)
 
             val retryPolicy = RetryPolicy.builder<Response<AnimeSearchResponse>>()
@@ -131,6 +131,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                 if (it.isSuccessful) {
                     if (it.body() != null) {
                         val animeData = it.body()!!.result.get(0)
+                        animeID = animeData.mal_id
 
                         // Set Anime Details
                         setAnimeDetails(animeData)

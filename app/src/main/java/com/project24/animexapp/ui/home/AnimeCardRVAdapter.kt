@@ -43,9 +43,11 @@ class AnimeCardRVAdapter(var animeList : List<KitsuAnimeData>): RecyclerView.Ada
         override fun onClick(v: View) {
             val showAnimeIntent =
                 Intent(itemView.context, AnimeDetails::class.java)
+            val japnTitle = this.anime.attributes.otherTitles?.enJapTitle
+            //Log.d("JAPNTTITLE",""+japnTitle)
             showAnimeIntent.putExtra(
                 itemView.context.getString(R.string.anime_id_kitsu),
-                this.anime.attributes.title
+                japnTitle ?: this.anime.attributes.title
             )
             itemView.context.startActivity(showAnimeIntent)
             startLoadingActivity(itemView.context)
