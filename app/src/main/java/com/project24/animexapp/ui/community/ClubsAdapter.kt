@@ -210,15 +210,19 @@ class ClubsAdapter(var clubsList: List<ClubsData>): RecyclerView.Adapter<ClubsAd
         }
 
         override fun onClick(v: View) {
-            val context = itemView.context
-            val showClubDetailsIntent = Intent(context, ClubDetails::class.java)
-            showClubDetailsIntent.putExtra("clubName", clubs.clubName.toString())
-            showClubDetailsIntent.putExtra("clubMemberCount", clubs.clubMemberCount.toString())
-            showClubDetailsIntent.putExtra("clubLongDesc", clubs.clubLongDesc.toString())
-            showClubDetailsIntent.putExtra("clubDate", clubs.clubDate.toString())
-            showClubDetailsIntent.putExtra("clubId", clubs.clubId.toString())
-            showClubDetailsIntent.putExtra("clubAccess", clubs.clubAccess.toString())
-            context.startActivity(showClubDetailsIntent)
+            if(currentUserId == null) {
+                Toast.makeText(context, "You must be logged in to do that.", Toast.LENGTH_SHORT).show()
+            } else {
+                val context = itemView.context
+                val showClubDetailsIntent = Intent(context, ClubDetails::class.java)
+                showClubDetailsIntent.putExtra("clubName", clubs.clubName.toString())
+                showClubDetailsIntent.putExtra("clubMemberCount", clubs.clubMemberCount.toString())
+                showClubDetailsIntent.putExtra("clubLongDesc", clubs.clubLongDesc.toString())
+                showClubDetailsIntent.putExtra("clubDate", clubs.clubDate.toString())
+                showClubDetailsIntent.putExtra("clubId", clubs.clubId.toString())
+                showClubDetailsIntent.putExtra("clubAccess", clubs.clubAccess.toString())
+                context.startActivity(showClubDetailsIntent)
+            }
 //            startLoadingActivity(itemView.context) // Activities are placed in "First In Last Out" stack
         }
     }
