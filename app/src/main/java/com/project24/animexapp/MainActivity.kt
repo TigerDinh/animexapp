@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         val navAccount = binding.navAccount
         val currentUserID = firebaseAuth.currentUser?.uid.toString()
         val userName = ""
-        Toast.makeText(this, userName, Toast.LENGTH_SHORT).show()
 
         if(firebaseAuth.currentUser !== null) {
             navAccount.text = "Welcome, " + firebaseAuth.currentUser?.email.toString()

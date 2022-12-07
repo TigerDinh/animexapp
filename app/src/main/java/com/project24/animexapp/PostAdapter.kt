@@ -124,7 +124,6 @@ class PostAdapter(var postList : List<Posts>): RecyclerView.Adapter<PostAdapter.
             view.findViewById<TextView>(R.id.postText).text = postItem.postText
             view.findViewById<TextView>(R.id.postUsername).text = postItem.username
             view.findViewById<TextView>(R.id.postLikesCount).text = postItem.likes.toString()
-            view.findViewById<TextView>(R.id.postCommentsCount).text = postItem.commentsNum.toString()
             view.findViewById<TextView>(R.id.postDate).text = postItem.date.toString()
         }
 

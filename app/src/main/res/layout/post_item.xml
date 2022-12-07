@@ -76,18 +76,6 @@
             android:layout_height="match_parent"
             android:text="0"
             android:layout_marginLeft="2dp"/>
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/ic_baseline_mode_comment_24"
-            android:layout_marginLeft="10dp"/>
-        <TextView
-            android:id="@+id/postCommentsCount"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="2"
-            android:layout_marginLeft="2dp"/>
     </LinearLayout>
 </LinearLayout>
 

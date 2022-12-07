@@ -55,6 +55,17 @@ class AnimeDetails : YouTubeBaseActivity() {
 
         setContentView(R.layout.activity_anime_details)
 
+        firebaseAuth = FirebaseAuth.getInstance()
+        val currentUserEmail = firebaseAuth.currentUser?.email
+        val nav_account = findViewById<TextView>(R.id.nav_account)
+
+
+        if(currentUserEmail == null) {
+            nav_account.text = " "
+        } else {
+            nav_account.text = "Welcome, $currentUserEmail"
+        }
+
         YOUTUBE_API_KEY = this.packageManager.getApplicationInfo(
             this.packageName,
             PackageManager.GET_META_DATA
@@ -291,7 +302,6 @@ class AnimeDetails : YouTubeBaseActivity() {
                         .addOnSuccessListener { document ->
                             if (document != null) {
                                 currentUsername = document.data?.get("username").toString()
-                                Toast.makeText(this, currentUsername, Toast.LENGTH_SHORT).show()
                                 db.collection("Reviews").document(animeData.mal_id.toString()).collection("Reviews").add(Reviews(animeData.mal_id, userReviewTitle, userReviewComment, spoilers, currentUsername, currentDate))
                             } else {
                                 Log.d(TAG, "No such document")
@@ -360,9 +370,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                     favouriteButton.setColorFilter(resources.getColor(R.color.main_color))
 
                     if(db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).equals(animeID.toString()))
-                        Toast.makeText(this, "Already favourite", Toast.LENGTH_LONG).show()
                     else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
-                        Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
                     else {
                         db.collection("Users").document(currentUserID.toString()).collection("Favourites").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title, animeData.englishTitle, animeData.japaneseTitle))
                         db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))
@@ -383,9 +391,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                 {
                     watchLaterButton.setColorFilter(resources.getColor(R.color.main_color))
                     if(db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString()).equals(animeID.toString()))
-                        Toast.makeText(this, "Already in watch later", Toast.LENGTH_LONG).show()
-                    else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
-                        Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
+                         if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
                     else {
                         db.collection("Users").document(currentUserID.toString()).collection("WatchLater").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title, animeData.englishTitle, animeData.japaneseTitle))
                         db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))
@@ -405,9 +411,7 @@ class AnimeDetails : YouTubeBaseActivity() {
                 {
                     watcthingButton.setColorFilter(resources.getColor(R.color.main_color))
                     if(db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString()).equals(animeID.toString()))
-                        Toast.makeText(this, "Already in watching", Toast.LENGTH_LONG).show()
                     else if(db.collection("AnimeData").document(animeData.mal_id.toString()).equals(animeData.mal_id.toString()))
-                        Toast.makeText(this, "Already in AnimeData DB", Toast.LENGTH_LONG).show()
                     else {
                         db.collection("Users").document(currentUserID.toString()).collection("Watching").document(animeID.toString()).set(Favourite(animeData.mal_id, animeData.imageData!!.jpg!!.URL, animeData.title, animeData.englishTitle, animeData.japaneseTitle))
                         db.collection("AnimeData").document(animeData.mal_id.toString()).set(LocalAnime(animeData.mal_id, animeData.title, animeData.imageData!!.jpg!!.URL, animeData.synopsis, animeData.score, animeData.trailerData))

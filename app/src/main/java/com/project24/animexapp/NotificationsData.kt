@@ -9,5 +9,4 @@ data class NotificationsData(
     val requesterUsername: String? = null,
     val clubId: String? = null,
     val time: String? = null
-
 )

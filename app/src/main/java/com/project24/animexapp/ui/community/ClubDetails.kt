@@ -54,6 +54,7 @@ class ClubDetails : AppCompatActivity() {
         val db = Firebase.firestore
         firebaseAuth = FirebaseAuth.getInstance()
         val currentUserId = firebaseAuth.currentUser?.uid
+        val currentUserEmail = firebaseAuth.currentUser?.email
 
 
         if(extras!=null) {
@@ -73,6 +74,14 @@ class ClubDetails : AppCompatActivity() {
         updateClubButtons()
         postButton.setOnClickListener {
             createPost()
+        }
+
+        val nav_account = findViewById<TextView>(R.id.nav_account)
+
+        if(currentUserEmail == null) {
+            nav_account.text = " "
+        } else {
+            nav_account.text = "Welcome, $currentUserEmail"
         }
 
         setClubPostsAdapter()
