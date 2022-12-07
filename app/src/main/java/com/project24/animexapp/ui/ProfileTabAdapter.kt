@@ -1,25 +1,24 @@
-package com.project24.animexapp.ui.community
+package com.project24.animexapp.ui
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.project24.animexapp.ui.community.Events
-import com.project24.animexapp.ui.community.Feed
-import com.project24.animexapp.ui.community.Games
-import com.project24.animexapp.ui.community.News
+import com.project24.animexapp.ui.community.Clubs
+import com.project24.animexapp.ui.profile.PlaylistsFragment
 
-internal class CommunityTabAdapter(var context: Context, fm: FragmentManager, var totalTabs: Int): FragmentPagerAdapter(fm) {
+internal class ProfileTabAdapter(var context: Context, fm: FragmentManager, var totalTabs: Int): FragmentPagerAdapter(fm) {
 
 
     override fun getItem(position: Int): Fragment {
         return when(position) {
             0 -> {
-                Feed()
+                PlaylistsFragment()
             }
             1 -> {
                 Clubs()
             }
+
             else -> getItem(position)
         }
     }

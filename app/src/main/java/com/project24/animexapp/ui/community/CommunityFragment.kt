@@ -33,9 +33,7 @@ class CommunityFragment : Fragment() {
         viewPager = binding.communityViewPager
 
         tabLayout.addTab(tabLayout.newTab().setText("Feed"))
-        tabLayout.addTab(tabLayout.newTab().setText("News"))
-        tabLayout.addTab(tabLayout.newTab().setText("Events"))
-        tabLayout.addTab(tabLayout.newTab().setText("Games"))
+        tabLayout.addTab(tabLayout.newTab().setText("Clubs"))
         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
 
         val adapter = CommunityTabAdapter(requireContext(), childFragmentManager, tabLayout.tabCount)
