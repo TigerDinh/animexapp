@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="100dp"
+    android:layout_width="100dp"
+    android:orientation="vertical"
+    android:gravity="center">
+    <ImageView
+        android:id="@+id/userProfileImg"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/roundborder"/>
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="username"
+        android:layout_marginTop="5dp"
+        android:gravity="center"/>
+
+</LinearLayout>

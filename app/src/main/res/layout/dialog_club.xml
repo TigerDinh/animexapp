@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/custom_dialog_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create a Club"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Club Name"
+        android:textColor="@color/text_black"
+        android:layout_marginBottom="5dp"
+        android:textStyle="bold"/>
+
+
+    <EditText
+        android:id="@+id/clubName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/customborder"
+        android:overScrollMode="always"
+        android:lines="1"
+        android:textSize="12dp"
+        android:textColor="@color/black"
+        android:gravity="top"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:scrollHorizontally="false"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Club Short Description"
+        android:textColor="@color/text_black"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"/>
+
+
+    <EditText
+        android:id="@+id/clubShortDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/customborder"
+        android:overScrollMode="always"
+        android:lines="1"
+        android:textSize="12dp"
+        android:textColor="@color/black"
+        android:gravity="top"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:scrollHorizontally="false"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="10dp"
+        android:hint="Provide a short description of your club"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Club Description"
+        android:layout_marginBottom="5dp"
+        android:textStyle="bold"
+        android:textColor="@color/text_black"
+        />
+
+    <EditText
+        android:id="@+id/clubLongDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/customborder"
+        android:overScrollMode="always"
+        android:lines="6"
+        android:textSize="12dp"
+        android:textColor="@color/black"
+        android:gravity="top"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:scrollHorizontally="false"
+        android:inputType="textMultiLine"
+        android:hint="How would you describe your club? What can users expect when they join your club?"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Who can join your club?"
+        android:textStyle="bold"
+        android:textColor="@color/text_black"
+        android:layout_marginTop="10dp"
+        />
+
+    <RadioGroup
+        android:id="@+id/clubAccessRadio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/clubAnyoneRadio"
+            android:layout_width="111dp"
+            android:layout_height="match_parent"
+            android:text="Anyone"
+            android:layout_marginTop="5dp"/>
+
+        <RadioButton
+            android:id="@+id/clubReqPermissionRadio"
+            android:layout_width="181dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:text="Require permission" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/createClubDialogButton"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="Create Club"
+            android:background="@drawable/button_background"
+            android:backgroundTint="@color/main_color"
+            android:textColor="@color/white"
+            />
+    </LinearLayout>
+
+</LinearLayout>

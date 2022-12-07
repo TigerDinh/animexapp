@@ -1,0 +1,155 @@
+Index: app/src/main/res/navigation/mobile_navigation.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<navigation xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:id=\"@+id/mobile_navigation\"\r\n    app:startDestination=\"@+id/navigation_home\">\r\n\r\n    <fragment\r\n        android:id=\"@+id/navigation_home\"\r\n        android:name=\"com.project24.animexapp.ui.home.HomeFragment\"\r\n        android:label=\"@string/title_home\"\r\n        tools:layout=\"@layout/fragment_home\" />\r\n\r\n    <fragment\r\n        android:id=\"@+id/navigation_dashboard\"\r\n        android:name=\"com.project24.animexapp.ui.dashboard.ExploreFragment\"\r\n        android:label=\"@string/title_dashboard\"\r\n        tools:layout=\"@layout/fragment_dashboard\" />\r\n\r\n    <fragment\r\n        android:id=\"@+id/navigation_notifications\"\r\n        android:name=\"com.project24.animexapp.ui.community.CommunityFragment\"\r\n        android:label=\"@string/title_notifications\"\r\n        tools:layout=\"@layout/fragment_community\" />\r\n\r\n    <fragment\r\n        android:id=\"@+id/navigation_profile\"\r\n        android:name=\"com.project24.animexapp.ui.profile.ProfileFragment\"\r\n        android:label=\"@string/title_profile\"\r\n        tools:layout=\"@layout/fragment_profile\" />\r\n</navigation>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/navigation/mobile_navigation.xml b/app/src/main/res/navigation/mobile_navigation.xml
+--- a/app/src/main/res/navigation/mobile_navigation.xml	(revision 6227d9e2381d9818490e305caca48d33522e4b26)
++++ b/app/src/main/res/navigation/mobile_navigation.xml	(date 1670372946958)
+@@ -28,4 +28,10 @@
+         android:name="com.project24.animexapp.ui.profile.ProfileFragment"
+         android:label="@string/title_profile"
+         tools:layout="@layout/fragment_profile" />
++
++    <fragment
++        android:id="@+id/navigation_notifs"
++        android:name="com.project24.animexapp.ui.notifications.NotificationsFragment"
++        android:label="@string/title_profile"
++        tools:layout="@layout/fragment_notifications" />
+ </navigation>
+\ No newline at end of file
+Index: app/src/main/res/menu/bottom_nav_menu.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<menu xmlns:android=\"http://schemas.android.com/apk/res/android\">\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_home\"\r\n        android:icon=\"@drawable/ic_home_black_24dp\"\r\n        android:title=\"@string/title_home\" />\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_dashboard\"\r\n        android:icon=\"@drawable/ic_dashboard_black_24dp\"\r\n        android:title=\"@string/title_dashboard\" />\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_notifications\"\r\n        android:icon=\"@drawable/ic_baseline_newspaper_24\"\r\n        android:title=\"@string/title_notifications\" />\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_profile\"\r\n        android:icon=\"@drawable/ic_baseline_person_24\"\r\n        android:title=\"@string/title_profile\" />\r\n\r\n</menu>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/menu/bottom_nav_menu.xml b/app/src/main/res/menu/bottom_nav_menu.xml
+--- a/app/src/main/res/menu/bottom_nav_menu.xml	(revision 6227d9e2381d9818490e305caca48d33522e4b26)
++++ b/app/src/main/res/menu/bottom_nav_menu.xml	(date 1670373069981)
+@@ -21,4 +21,9 @@
+         android:icon="@drawable/ic_baseline_person_24"
+         android:title="@string/title_profile" />
+ 
++    <item
++        android:id="@+id/navigation_notifs"
++        android:icon="@drawable/ic_notifications_black_24dp"
++        android:title="Notifications" />
++
+ </menu>
+\ No newline at end of file
+Index: app/src/main/java/com/project24/animexapp/ui/community/CommunityFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.project24.animexapp.ui.community\r\n\r\nimport android.os.Bundle\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.viewpager.widget.ViewPager\r\nimport com.google.android.material.tabs.TabLayout\r\nimport com.project24.animexapp.databinding.FragmentCommunityBinding\r\n\r\n\r\nclass CommunityFragment : Fragment() {\r\n\r\n    private var _binding: FragmentCommunityBinding? = null\r\n    private lateinit var tabLayout: TabLayout\r\n    private lateinit var viewPager: ViewPager\r\n\r\n    // This property is only valid between onCreateView and\r\n    // onDestroyView.\r\n    private val binding get() = _binding!!\r\n\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater,\r\n        container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View {\r\n\r\n        _binding = FragmentCommunityBinding.inflate(inflater, container, false)\r\n        val root: View = binding.root\r\n\r\n        tabLayout = binding.communityTabLayout\r\n        viewPager = binding.communityViewPager\r\n\r\n        tabLayout.addTab(tabLayout.newTab().setText(\"Feed\"))\r\n        tabLayout.addTab(tabLayout.newTab().setText(\"News\"))\r\n        tabLayout.addTab(tabLayout.newTab().setText(\"Events\"))\r\n        tabLayout.addTab(tabLayout.newTab().setText(\"Games\"))\r\n        tabLayout.tabGravity = TabLayout.GRAVITY_FILL\r\n\r\n        val adapter = CommunityTabAdapter(requireContext(), childFragmentManager, tabLayout.tabCount)\r\n        viewPager.adapter = adapter\r\n\r\n        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))\r\n        tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{\r\n            override fun onTabSelected(tab: TabLayout.Tab?) {\r\n                viewPager.currentItem = tab!!.position\r\n            }\r\n\r\n            override fun onTabUnselected(tab: TabLayout.Tab?) {}\r\n\r\n            override fun onTabReselected(tab: TabLayout.Tab?) {\r\n                viewPager.currentItem = tab!!.position\r\n            }\r\n\r\n        })\r\n\r\n\r\n        return root\r\n    }\r\n\r\n    override fun onDestroyView() {\r\n        super.onDestroyView()\r\n        _binding = null\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/project24/animexapp/ui/community/CommunityFragment.kt b/app/src/main/java/com/project24/animexapp/ui/community/CommunityFragment.kt
+--- a/app/src/main/java/com/project24/animexapp/ui/community/CommunityFragment.kt	(revision 6227d9e2381d9818490e305caca48d33522e4b26)
++++ b/app/src/main/java/com/project24/animexapp/ui/community/CommunityFragment.kt	(date 1670372356050)
+@@ -33,9 +33,7 @@
+         viewPager = binding.communityViewPager
+ 
+         tabLayout.addTab(tabLayout.newTab().setText("Feed"))
+-        tabLayout.addTab(tabLayout.newTab().setText("News"))
+-        tabLayout.addTab(tabLayout.newTab().setText("Events"))
+-        tabLayout.addTab(tabLayout.newTab().setText("Games"))
++        tabLayout.addTab(tabLayout.newTab().setText("Clubs"))
+         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
+ 
+         val adapter = CommunityTabAdapter(requireContext(), childFragmentManager, tabLayout.tabCount)
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@drawable/purple_anime_app_icon\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.AnimeXApp\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".ui.LoadingScreens.LoadingBarActivity\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".ui.community.Feed\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".ui.dashboard.ExploreFragment\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".AnimeDetails\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".ui.profile.ProfileViewModel\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".ui.profile.ProfileFragment\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".RegisterActivity\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".LogInActivity\"\r\n            android:exported=\"false\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\"\r\n            android:label=\"@string/app_name\">\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n        <activity\r\n            android:name=\".ui.LoadingScreens.WelcomeScreenActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n\r\n            <meta-data\r\n                android:name=\"android.app.lib_name\"\r\n                android:value=\"\" />\r\n        </activity>\r\n\r\n        <meta-data\r\n            android:name=\"com.project24.animexapp.YoutubeKey\"\r\n            android:value=\"${YT_KEY}\" />\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision 6227d9e2381d9818490e305caca48d33522e4b26)
++++ b/app/src/main/AndroidManifest.xml	(date 1670372783487)
+@@ -65,6 +65,13 @@
+                 android:value="" />
+         </activity>
+         <activity
++            android:name=".ui.community.ClubDetails"
++            android:exported="false">
++            <meta-data
++                android:name="android.app.lib_name"
++                android:value="" />
++        </activity>
++        <activity
+             android:name=".LogInActivity"
+             android:exported="false">
+             <meta-data
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_8\" default=\"true\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 6227d9e2381d9818490e305caca48d33522e4b26)
++++ b/.idea/misc.xml	(date 1670371845305)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+Index: app/src/main/java/com/project24/animexapp/ui/community/CommunityTabAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.project24.animexapp.ui.community\r\n\r\nimport android.content.Context\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.fragment.app.FragmentManager\r\nimport androidx.fragment.app.FragmentPagerAdapter\r\nimport com.project24.animexapp.ui.community.Events\r\nimport com.project24.animexapp.ui.community.Feed\r\nimport com.project24.animexapp.ui.community.Games\r\nimport com.project24.animexapp.ui.community.News\r\n\r\ninternal class CommunityTabAdapter(var context: Context, fm: FragmentManager, var totalTabs: Int): FragmentPagerAdapter(fm) {\r\n\r\n\r\n    override fun getItem(position: Int): Fragment {\r\n        return when(position) {\r\n            0 -> {\r\n                Feed()\r\n            }\r\n\r\n            1 -> {\r\n                News()\r\n            }\r\n\r\n            2 -> {\r\n                Events()\r\n            }\r\n\r\n            3 -> {\r\n                Games()\r\n            }\r\n            else -> getItem(position)\r\n        }\r\n    }\r\n\r\n    override fun getCount(): Int {\r\n        return totalTabs\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/project24/animexapp/ui/community/CommunityTabAdapter.kt b/app/src/main/java/com/project24/animexapp/ui/community/CommunityTabAdapter.kt
+--- a/app/src/main/java/com/project24/animexapp/ui/community/CommunityTabAdapter.kt	(revision 6227d9e2381d9818490e305caca48d33522e4b26)
++++ b/app/src/main/java/com/project24/animexapp/ui/community/CommunityTabAdapter.kt	(date 1670372250668)
+@@ -17,17 +17,8 @@
+             0 -> {
+                 Feed()
+             }
+-
+             1 -> {
+-                News()
+-            }
+-
+-            2 -> {
+-                Events()
+-            }
+-
+-            3 -> {
+-                Games()
++                Clubs()
+             }
+             else -> getItem(position)
+         }
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"CompilerConfiguration\">\r\n    <bytecodeTargetLevel target=\"1.8\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+--- a/.idea/compiler.xml	(revision 6227d9e2381d9818490e305caca48d33522e4b26)
++++ b/.idea/compiler.xml	(date 1670371845309)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="1.8" />
++    <bytecodeTargetLevel target="11" />
+   </component>
+ </project>
+\ No newline at end of file

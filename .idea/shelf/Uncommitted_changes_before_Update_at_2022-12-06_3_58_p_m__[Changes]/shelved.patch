@@ -1,0 +1,394 @@
+Index: app/src/main/java/com/project24/animexapp/ui/community/Feed.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.project24.animexapp.ui.community\r\n\r\nimport android.content.ContentValues.TAG\r\nimport android.content.Context\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.Toast\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.recyclerview.widget.LinearLayoutManager\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport com.google.firebase.auth.FirebaseAuth\r\nimport com.google.firebase.firestore.Query\r\nimport com.google.firebase.firestore.ktx.firestore\r\nimport com.google.firebase.ktx.Firebase\r\nimport com.project24.animexapp.*\r\nimport com.project24.animexapp.databinding.FragmentFeedBinding\r\nimport java.text.SimpleDateFormat\r\nimport java.util.*\r\n\r\nclass Feed : Fragment() {\r\n    private var _binding: FragmentFeedBinding? = null\r\n    private lateinit var firebaseAuth: FirebaseAuth\r\n    private val binding get() = _binding!!\r\n    private lateinit var postsList: List<Posts>\r\n    private lateinit var postsRV: RecyclerView\r\n    private lateinit var postsAdapter: PostAdapter\r\n    private var mContext: Context? = null\r\n\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater, container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View? {\r\n        firebaseAuth = FirebaseAuth.getInstance()\r\n        val db = Firebase.firestore\r\n\r\n        _binding = FragmentFeedBinding.inflate(inflater, container, false)\r\n        val root: View = binding.root\r\n        val communityPostButton = binding.communityPostButton\r\n        val communityUserPost = binding.communityUserPost.text.toString()\r\n        val setTagsButton = binding.setTagsButton\r\n        val linkAnimeButton = binding.linkAnimeButton\r\n\r\n        communityPostButton.setOnClickListener {\r\n            createPost()\r\n        }\r\n        setPostsAdapter()\r\n        return root\r\n    }\r\n\r\n    private fun setPostsAdapter() {\r\n        firebaseAuth = FirebaseAuth.getInstance()\r\n        val db = Firebase.firestore\r\n\r\n        db.collection(\"Posts\").orderBy(\"time\", Query.Direction.DESCENDING).addSnapshotListener { snapshot, error ->\r\n            if( error != null) {\r\n                Log.e(TAG, \"onEvent: \", error)\r\n                return@addSnapshotListener\r\n            }\r\n\r\n            postsList = emptyList()\r\n            postsRV = binding.postsRecycler\r\n            postsAdapter = PostAdapter(postsList)\r\n            postsRV.layoutManager = LinearLayoutManager (mContext?.applicationContext,\r\n                LinearLayoutManager.VERTICAL, false\r\n            )\r\n\r\n            postsRV.adapter = postsAdapter\r\n\r\n            for(doc in snapshot!!) {\r\n                val postUser = doc.getString(\"username\")\r\n                val postText = doc.getString(\"postText\")\r\n                val postTime = doc.getString(\"time\")\r\n                val postDate = doc.getString(\"date\")\r\n                val postLikesCount = doc.getLong(\"likes\")\r\n                val postCommentsCount = doc.getLong(\"commentsNum\")\r\n                val postId = doc.getString(\"postId\")\r\n                postsList = postsList + Posts(postText, \"\", \"\", \"\", postUser, postTime, postDate, postLikesCount?.toInt(), postCommentsCount?.toInt(), postId)\r\n                postsAdapter.postList = postsList\r\n                postsAdapter.run {\r\n                    notifyDataSetChanged()\r\n                }\r\n            }\r\n//            Log.d(TAG, \"Current names: $posts\")\r\n        }\r\n    }\r\n\r\n    private fun createPost() {\r\n        firebaseAuth = FirebaseAuth.getInstance()\r\n        val db = Firebase.firestore\r\n        postsRV.adapter = postsAdapter\r\n\r\n        val currentUserID = firebaseAuth.currentUser?.uid\r\n        val communityUserPost = binding.communityUserPost.text.toString()\r\n        val userPost = binding.communityUserPost\r\n        var currentUsername: String\r\n        val sdf = SimpleDateFormat(\"MM/dd/yyyy hh:mm:ss\")\r\n        val currentTime = sdf.format(Date())\r\n        val sdfDate = SimpleDateFormat(\"MM/dd/yyyy\")\r\n        val currentDate = sdfDate.format(Date())\r\n        var postId: Int\r\n\r\n        if(userPost.text.isEmpty()) {\r\n                Toast.makeText(activity, \"You need to write something before posting\", Toast.LENGTH_SHORT).show()\r\n        }\r\n        else {\r\n            val docRef = db.collection(\"Users\").document(currentUserID!!)\r\n            docRef.get().addOnSuccessListener { document ->\r\n                if(document!=null) {\r\n                    currentUsername = document.data?.get(\"username\").toString()\r\n                    db.collection(\"Posts\").document(postsList.size.toString()).set(Posts(communityUserPost, \"\", \"\", \"\", currentUsername, currentTime, currentDate,0, 0, postsList.size.toString()))\r\n\r\n                }\r\n            }\r\n\r\n        }\r\n        userPost.text.clear()\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/project24/animexapp/ui/community/Feed.kt b/app/src/main/java/com/project24/animexapp/ui/community/Feed.kt
+--- a/app/src/main/java/com/project24/animexapp/ui/community/Feed.kt	
++++ b/app/src/main/java/com/project24/animexapp/ui/community/Feed.kt	
+@@ -40,8 +40,6 @@
+         val root: View = binding.root
+         val communityPostButton = binding.communityPostButton
+         val communityUserPost = binding.communityUserPost.text.toString()
+-        val setTagsButton = binding.setTagsButton
+-        val linkAnimeButton = binding.linkAnimeButton
+ 
+         communityPostButton.setOnClickListener {
+             createPost()
+Index: app/src/main/java/com/project24/animexapp/ui/community/ClubsAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/project24/animexapp/ui/community/ClubsAdapter.kt b/app/src/main/java/com/project24/animexapp/ui/community/ClubsAdapter.kt
+new file mode 100644
+--- /dev/null	
++++ b/app/src/main/java/com/project24/animexapp/ui/community/ClubsAdapter.kt	
+@@ -0,0 +1,225 @@
++package com.project24.animexapp.ui.community
++
++import android.content.Context
++import android.content.Intent
++import android.graphics.Color
++import android.view.LayoutInflater
++import android.view.View
++import android.view.ViewGroup
++import android.widget.LinearLayout
++import android.widget.TextView
++import android.widget.Toast
++import androidx.recyclerview.widget.RecyclerView
++import com.google.firebase.auth.FirebaseAuth
++import com.google.firebase.firestore.FieldValue
++import com.google.firebase.firestore.ktx.firestore
++import com.google.firebase.ktx.Firebase
++import com.project24.animexapp.NotificationsData
++import com.project24.animexapp.R
++import java.text.SimpleDateFormat
++import java.util.*
++
++class ClubsAdapter(var clubsList: List<ClubsData>): RecyclerView.Adapter<ClubsAdapter.ViewHolder>() {
++
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
++        val view = LayoutInflater.from(parent.context).inflate(R.layout.club_item, parent, false)
++        return ViewHolder(view)
++    }
++
++    override fun getItemCount(): Int {
++        return clubsList.size
++    }
++
++    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
++        val clubItem = clubsList[position]
++        holder.bindClub(clubItem)
++    }
++
++    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
++        private var view: View = itemView
++        private lateinit var clubs: ClubsData
++        var joinButton: LinearLayout
++        var context: Context = itemView.context
++        val db = Firebase.firestore
++        var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
++        private val sdf = SimpleDateFormat("MM/dd/yyyy hh:mm:ss")
++        private val currentTime: String = sdf.format(Date())
++        val currentUserId = firebaseAuth.currentUser?.uid
++
++        init {
++            view.setOnClickListener(this)
++            val currentUserId = firebaseAuth.currentUser?.uid
++            val currentUserEmail = firebaseAuth.currentUser?.email
++            joinButton = itemView.findViewById(R.id.joinLL)
++            val notifId = db.collection("Users").document(currentUserId.toString()).collection("Notifications").document().id
++            var currentUsername: String
++
++            joinButton.setOnClickListener {
++                if(currentUserId == null ) {
++                    Toast.makeText(context, "You need to be logged in to do that", Toast.LENGTH_SHORT).show()
++                } else {
++                    if(clubs.clubAccess == "anyone") {
++                        // check if user already a member of club
++                        db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).get().addOnSuccessListener { it ->
++                            // if user is already a member
++                            if(it.exists()) {
++                                // check if user is the creator. if they are, then toast "you are creator". else, decrement club member count, delete user from member collection
++                                db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).get().addOnSuccessListener {
++                                    if(it["memberPrivileges"]?.equals("creator") == true) {
++                                        Toast.makeText(context, "You are the creator of this club.", Toast.LENGTH_SHORT).show()
++                                        view.findViewById<TextView>(R.id.joinButton).isClickable = false
++                                    } else {
++                                        joinButton.setBackgroundColor(Color.parseColor("#673AB7"))
++                                        view.findViewById<TextView>(R.id.joinButton).text = "Join"
++                                        db.collection("Clubs").document(clubs.clubId.toString())
++                                            .update("clubMemberCount", FieldValue.increment(-1))
++                                        db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).delete()
++                                        db.collection("Users").document(currentUserId.toString()).collection("Clubs").document(clubs.clubId.toString()).delete()
++                                    }
++                                }
++
++                                // if user is not member of club, add to member collection
++                            } else {
++                                joinButton.setBackgroundColor(Color.parseColor("#32cd32"))
++
++                                db.collection("Users").document(currentUserId!!).get().addOnSuccessListener { document ->
++                                    if(document!=null) {
++                                        currentUsername = document.data?.get("username").toString()
++                                        db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).set(
++                                            ClubMembersData(currentUsername, currentUserId, "member")
++                                        )
++                                    }
++                                }
++
++                                db.collection("Users").document(currentUserId.toString()).collection("Clubs").document(clubs.clubId.toString()).set(
++                                    ClubsData(clubs.clubName, clubs.clubShortDesc, clubs.clubLongDesc, clubs.clubAccess, clubs.clubId, clubs.clubMemberCount)
++                                )
++                                db.collection("Clubs").document(clubs.clubId.toString()).update("clubMemberCount", FieldValue.increment(1))
++                            }
++                        }
++                    }
++                    // if club access requires permission
++                    else if(clubs.clubAccess == "reqPerm") {
++                        db.collection("Clubs").document(clubs.clubId.toString()).collection("Requests").document(currentUserId.toString()).get().addOnSuccessListener { it ->
++
++                            // if user is in the request collection
++                            if(it.exists()) {
++                                joinButton.setBackgroundColor(Color.parseColor("#673AB7"))
++                                view.findViewById<TextView>(R.id.joinButton).text = "Request to join"
++                                db.collection("Clubs").document(clubs.clubId.toString()).collection("Requests").document(currentUserId.toString()).delete()
++
++                                // delete notification
++                                db.collection("Clubs").document(clubs.clubId.toString()).collection("Admins").get().addOnSuccessListener {
++                                    for(doc in it) {
++                                        db.collection("Users").document(doc.id).collection("Notifications").document(notifId).delete()
++                                    }
++                                }
++
++                            } else {
++
++                                // if user is a member of club and is not in request collection
++                                db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).get().addOnSuccessListener { it ->
++                                    if (it.exists()) {
++                                        db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).get().addOnSuccessListener {
++                                            if(it["memberPrivileges"]?.equals("creator") == true) {
++                                                Toast.makeText(context, "You are the creator of this club.", Toast.LENGTH_SHORT).show()
++                                                view.findViewById<TextView>(R.id.joinButton).isClickable = false
++                                            } else {
++                                                joinButton.setBackgroundColor(Color.parseColor("#673AB7"))
++                                                view.findViewById<TextView>(R.id.joinButton).text = "Request to join"
++                                                db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).delete()
++                                                db.collection("Clubs").document(clubs.clubId.toString()).update("clubMemberCount", FieldValue.increment(-1))
++                                            }
++                                        }
++
++                                    } else {
++
++                                        // For each admin of the club, add to request notifications to notification collection in the user database
++                                        db.collection("Users").document(currentUserId!!).get().addOnSuccessListener { document ->
++                                            if(document!=null) {
++                                                currentUsername = document.data?.get("username").toString()
++                                                db.collection("Clubs").document(clubs.clubId.toString()).collection("Admins").get().addOnSuccessListener {
++                                                    for(doc in it) {
++                                                        db.collection("Users").document(doc.id).collection("Notifications").document(notifId).set(
++                                                            NotificationsData("joinRequest", currentUserEmail, currentUserId,"$currentUsername has requested to join ${clubs.clubName}", notifId, currentUsername, clubs.clubId, currentTime)
++                                                        )
++                                                    }
++                                                }
++                                            }
++                                        }
++
++
++                                        view.findViewById<TextView>(R.id.joinButton).text = "Requested"
++                                        joinButton.setBackgroundColor(Color.parseColor("#c9c9c9"))
++
++                                        // Add user to clubs request collection
++                                        db.collection("Users").document(currentUserId!!).get().addOnSuccessListener { document ->
++                                            if(document!=null) {
++                                                currentUsername = document.data?.get("username").toString()
++                                                db.collection("Clubs").document(clubs.clubId.toString()).collection("Requests").document(currentUserId.toString()).set(
++                                                    ClubMembersData(currentUsername, currentUserId, "member")
++                                                )
++                                            }
++                                        }
++                                    }
++                                }
++                            }
++                        }
++                    }
++                }
++                // if club can be joined by anyone
++            }
++        }
++
++        fun bindClub(clubs: ClubsData) {
++            this.clubs = clubs
++            joinButton = itemView.findViewById(R.id.joinLL)
++            val currentUserId = firebaseAuth.currentUser?.uid
++
++            view.findViewById<TextView>(R.id.clubNameAdapter).text = clubs.clubName
++            view.findViewById<TextView>(R.id.clubShortDescAdapter).text = clubs.clubShortDesc
++            view.findViewById<TextView>(R.id.clubMemberCountAdapter).text = clubs.clubMemberCount.toString() + " "
++
++            if(clubs.clubAccess == "anyone") {
++                db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).get().addOnSuccessListener {
++                    if (it.exists()) {
++                        view.findViewById<TextView>(R.id.joinButton).text = "Joined"
++                        joinButton.setBackgroundColor(Color.parseColor("#32cd32"))
++                    } else {
++                        view.findViewById<TextView>(R.id.joinButton).text = "Join"
++                    }
++                }
++            }
++            else if(clubs.clubAccess == "reqPerm") {
++                db.collection("Clubs").document(clubs.clubId.toString()).collection("Requests").document(currentUserId.toString()).get().addOnSuccessListener { it ->
++                    if (it.exists()) {
++                        view.findViewById<TextView>(R.id.joinButton).text = "Requested"
++                        joinButton.setBackgroundColor(Color.parseColor("#c9c9c9"))
++                    } else {
++                        db.collection("Clubs").document(clubs.clubId.toString()).collection("Members").document(currentUserId.toString()).get().addOnSuccessListener {
++                            if (it.exists()) {
++                                view.findViewById<TextView>(R.id.joinButton).text = "Joined"
++                                joinButton.setBackgroundColor(Color.parseColor("#32cd32"))
++                            } else {
++                                view.findViewById<TextView>(R.id.joinButton).text = "Request to join"
++                            }
++                        }
++                    }
++                }
++            }
++        }
++
++        override fun onClick(v: View) {
++            val context = itemView.context
++            val showClubDetailsIntent = Intent(context, ClubDetails::class.java)
++            showClubDetailsIntent.putExtra("clubName", clubs.clubName.toString())
++            showClubDetailsIntent.putExtra("clubMemberCount", clubs.clubMemberCount.toString())
++            showClubDetailsIntent.putExtra("clubLongDesc", clubs.clubLongDesc.toString())
++            showClubDetailsIntent.putExtra("clubDate", clubs.clubDate.toString())
++            showClubDetailsIntent.putExtra("clubId", clubs.clubId.toString())
++            showClubDetailsIntent.putExtra("clubAccess", clubs.clubAccess.toString())
++            context.startActivity(showClubDetailsIntent)
++//            startLoadingActivity(itemView.context) // Activities are placed in "First In Last Out" stack
++        }
++    }
++}
+\ No newline at end of file
+Index: app/src/main/res/drawable/ic_baseline_clear_24.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/drawable/ic_baseline_clear_24.xml b/app/src/main/res/drawable/ic_baseline_clear_24.xml
+new file mode 100644
+--- /dev/null	
++++ b/app/src/main/res/drawable/ic_baseline_clear_24.xml	
+@@ -0,0 +1,5 @@
++<vector android:height="24dp" android:tint="#C3C3C3"
++    android:viewportHeight="24" android:viewportWidth="24"
++    android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
++    <path android:fillColor="@android:color/white" android:pathData="M19,6.41L17.59,5 12,10.59 6.41,5 5,6.41 10.59,12 5,17.59 6.41,19 12,13.41 17.59,19 19,17.59 13.41,12z"/>
++</vector>
+Index: app/src/main/res/menu/bottom_nav_menu.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<menu xmlns:android=\"http://schemas.android.com/apk/res/android\">\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_home\"\r\n        android:icon=\"@drawable/ic_home_black_24dp\"\r\n        android:title=\"@string/title_home\" />\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_dashboard\"\r\n        android:icon=\"@drawable/ic_dashboard_black_24dp\"\r\n        android:title=\"@string/title_dashboard\" />\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_notifications\"\r\n        android:icon=\"@drawable/ic_baseline_newspaper_24\"\r\n        android:title=\"@string/title_notifications\" />\r\n\r\n    <item\r\n        android:id=\"@+id/navigation_profile\"\r\n        android:icon=\"@drawable/ic_baseline_person_24\"\r\n        android:title=\"@string/title_profile\" />\r\n\r\n</menu>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/menu/bottom_nav_menu.xml b/app/src/main/res/menu/bottom_nav_menu.xml
+--- a/app/src/main/res/menu/bottom_nav_menu.xml	
++++ b/app/src/main/res/menu/bottom_nav_menu.xml	
+@@ -21,4 +21,9 @@
+         android:icon="@drawable/ic_baseline_person_24"
+         android:title="@string/title_profile" />
+ 
++    <item
++        android:id="@+id/navigation_notifs"
++        android:icon="@drawable/ic_notifications_black_24dp"
++        android:title="@string/title_notifs" />
++
+ </menu>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2022-11-29_10_11_p_m___Changes_1.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_2022-11-29_10_11_p_m___Changes_1.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_2022-11-29_10_11_p_m___Changes_1.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/shelf/Uncommitted_changes_before_Update_at_2022-11-29_10_11_p_m___Changes_1.xml	
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_Update_at_2022-11-29_10_11_p_m__[Changes]1" date="1669788686092" recycled="true" deleted="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2022-11-29_10_11_p_m__[Changes]1/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before Update at 2022-11-29 10:11 p.m. [Changes]" />
++</changelist>
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"CompilerConfiguration\">\r\n    <bytecodeTargetLevel target=\"1.8\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+--- a/.idea/compiler.xml	
++++ b/.idea/compiler.xml	
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="1.8" />
++    <bytecodeTargetLevel target="11" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: app/src/main/res/layout/post_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"wrap_content\"\r\n    android:orientation=\"vertical\"\r\n    android:paddingRight=\"16dp\"\r\n    android:paddingLeft=\"16dp\"\r\n    android:paddingTop=\"12dp\"\r\n    android:paddingBottom=\"12dp\"\r\n    android:background=\"@drawable/custom_dialog_background\"\r\n    android:backgroundTint=\"#FFFFFF\"\r\n    android:layout_marginTop=\"15dp\"\r\n    >\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"horizontal\">\r\n        <ImageView\r\n            android:layout_width=\"40dp\"\r\n            android:layout_height=\"40dp\"\r\n            android:background=\"@drawable/roundborder\"\r\n            android:layout_marginRight=\"10dp\"/>\r\n        <LinearLayout\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"vertical\">\r\n            <TextView\r\n                android:id=\"@+id/postUsername\"\r\n                android:layout_width=\"wrap_content\"\r\n                android:layout_height=\"wrap_content\"\r\n                android:text=\"AlishaAnime\"\r\n                android:textColor=\"@color/text_black\"\r\n                android:textSize=\"13dp\"\r\n                android:textStyle=\"bold\" />\r\n        </LinearLayout>\r\n\r\n        <TextView\r\n            android:gravity=\"right\"\r\n            android:id=\"@+id/postDate\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:paddingBottom=\"13dp\"\r\n            android:text=\"Nov 23, 2022\"\r\n            android:textSize=\"12dp\" />\r\n    </LinearLayout>\r\n\r\n    <TextView\r\n        android:layout_marginTop=\"-20dp\"\r\n        android:id=\"@+id/postText\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"If you don't want to use the default name, type a new name. If that resource name already exists in the project, as indicated by an error at the bottom of the wizard, it's overwritten. The name can contain lowercase characters, underscores, and digits only\"\r\n        android:textColor=\"@color/text_black\"\r\n        android:textSize=\"13dp\"\r\n        android:paddingRight=\"10dp\"\r\n        android:paddingLeft=\"10dp\"\r\n        android:layout_marginLeft=\"40dp\"\r\n       />\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"horizontal\"\r\n        android:layout_marginTop=\"15dp\"\r\n        android:gravity=\"right\">\r\n        <ImageView\r\n            android:id=\"@+id/thumbsUpButton\"\r\n            android:layout_width=\"20dp\"\r\n            android:layout_height=\"20dp\"\r\n            android:background=\"@drawable/ic_baseline_thumb_up_off_alt_24\" />\r\n        <TextView\r\n            android:id=\"@+id/postLikesCount\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"match_parent\"\r\n            android:text=\"0\"\r\n            android:layout_marginLeft=\"2dp\"/>\r\n\r\n        <ImageView\r\n            android:layout_width=\"20dp\"\r\n            android:layout_height=\"20dp\"\r\n            android:background=\"@drawable/ic_baseline_mode_comment_24\"\r\n            android:layout_marginLeft=\"10dp\"/>\r\n        <TextView\r\n            android:id=\"@+id/postCommentsCount\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"match_parent\"\r\n            android:text=\"2\"\r\n            android:layout_marginLeft=\"2dp\"/>\r\n    </LinearLayout>\r\n</LinearLayout>\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/post_item.xml b/app/src/main/res/layout/post_item.xml
+--- a/app/src/main/res/layout/post_item.xml	
++++ b/app/src/main/res/layout/post_item.xml	
+@@ -77,17 +77,7 @@
+             android:text="0"
+             android:layout_marginLeft="2dp"/>
+ 
+-        <ImageView
+-            android:layout_width="20dp"
+-            android:layout_height="20dp"
+-            android:background="@drawable/ic_baseline_mode_comment_24"
+-            android:layout_marginLeft="10dp"/>
+-        <TextView
+-            android:id="@+id/postCommentsCount"
+-            android:layout_width="wrap_content"
+-            android:layout_height="match_parent"
+-            android:text="2"
+-            android:layout_marginLeft="2dp"/>
++
+     </LinearLayout>
+ </LinearLayout>
+ 
+Index: app/src/main/java/com/project24/animexapp/ui/CommunityTabAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.project24.animexapp.ui\r\n\r\nimport android.content.Context\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.fragment.app.FragmentManager\r\nimport androidx.fragment.app.FragmentPagerAdapter\r\nimport com.project24.animexapp.ui.community.Events\r\nimport com.project24.animexapp.ui.community.Feed\r\nimport com.project24.animexapp.ui.community.Games\r\nimport com.project24.animexapp.ui.community.News\r\n\r\ninternal class CommunityTabAdapter(var context: Context, fm: FragmentManager, var totalTabs: Int): FragmentPagerAdapter(fm) {\r\n\r\n\r\n    override fun getItem(position: Int): Fragment {\r\n        return when(position) {\r\n            0 -> {\r\n                Feed()\r\n            }\r\n\r\n            1 -> {\r\n                News()\r\n            }\r\n\r\n            2 -> {\r\n                Events()\r\n            }\r\n\r\n            3 -> {\r\n                Games()\r\n            }\r\n            else -> getItem(position)\r\n        }\r\n    }\r\n\r\n    override fun getCount(): Int {\r\n        return totalTabs\r\n    }\r\n\r\n}
+===================================================================
+diff --git a/app/src/main/java/com/project24/animexapp/ui/CommunityTabAdapter.kt b/app/src/main/java/com/project24/animexapp/ui/CommunityTabAdapter.kt
+--- a/app/src/main/java/com/project24/animexapp/ui/CommunityTabAdapter.kt	
++++ b/app/src/main/java/com/project24/animexapp/ui/CommunityTabAdapter.kt	
+@@ -4,10 +4,8 @@
+ import androidx.fragment.app.Fragment
+ import androidx.fragment.app.FragmentManager
+ import androidx.fragment.app.FragmentPagerAdapter
+-import com.project24.animexapp.ui.community.Events
++import com.project24.animexapp.ui.community.Clubs
+ import com.project24.animexapp.ui.community.Feed
+-import com.project24.animexapp.ui.community.Games
+-import com.project24.animexapp.ui.community.News
+ 
+ internal class CommunityTabAdapter(var context: Context, fm: FragmentManager, var totalTabs: Int): FragmentPagerAdapter(fm) {
+ 
+@@ -17,18 +15,10 @@
+             0 -> {
+                 Feed()
+             }
+-
+             1 -> {
+-                News()
+-            }
+-
+-            2 -> {
+-                Events()
++                Clubs()
+             }
+ 
+-            3 -> {
+-                Games()
+-            }
+             else -> getItem(position)
+         }
+     }
