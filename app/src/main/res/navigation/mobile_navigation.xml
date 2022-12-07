@@ -28,4 +28,10 @@
         android:name="com.project24.animexapp.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_notifs"
+        android:name="com.project24.animexapp.ui.notifications.NotificationsFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

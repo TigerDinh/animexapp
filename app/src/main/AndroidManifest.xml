@@ -16,6 +16,13 @@
         android:theme="@style/Theme.AnimeXApp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.community.ClubDetails"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.LoadingScreens.LoadingBarActivity"
             android:exported="false">
             <meta-data
@@ -24,6 +31,13 @@
         </activity>
         <activity
             android:name=".ui.community.Feed"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".Clubs"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -44,7 +58,21 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".ui.profile.ProfileViewModel"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.profile.ProfileFragment"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.notifications.NotificationsFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

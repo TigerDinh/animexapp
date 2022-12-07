@@ -17,17 +17,8 @@ internal class CommunityTabAdapter(var context: Context, fm: FragmentManager, va
             0 -> {
                 Feed()
             }
-
             1 -> {
-                News()
-            }
-
-            2 -> {
-                Events()
-            }
-
-            3 -> {
-                Games()
+                Clubs()
             }
             else -> getItem(position)
         }
