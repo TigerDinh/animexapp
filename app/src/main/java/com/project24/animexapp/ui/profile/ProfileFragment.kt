@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -47,7 +46,6 @@ class ProfileFragment : Fragment() {
     private lateinit var watchingAnimeRV: RecyclerView
     private lateinit var watchingAnimeAdapter: LocalAnimeRVAdapter
 
-    private lateinit var profileViewModel : ProfileViewModel
 
     private lateinit var currentUserID : String
     private lateinit var chosenLanguage : String
@@ -63,8 +61,6 @@ class ProfileFragment : Fragment() {
     ): View {
         firebaseAuth = FirebaseAuth.getInstance()
         val db = Firebase.firestore
-        profileViewModel =
-            ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
