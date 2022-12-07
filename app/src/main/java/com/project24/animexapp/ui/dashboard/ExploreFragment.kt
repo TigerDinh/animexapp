@@ -212,7 +212,6 @@ class ExploreFragment : Fragment() {
             Log.d("debug",": $filterSettings")
             dialog.dismiss()
 
-            //TODO Hassan, this is the called function when the user confirms all their filters
             //There is a bug where other genres are being colored bc the listview is recyling the view
             //im still trying to fix it, but if you wanna take a crack go ahead
             /*Filters are stored in filterSettings (string array[6])

@@ -44,7 +44,6 @@ class AnimeCardRVAdapter(var animeList : List<KitsuAnimeData>): RecyclerView.Ada
             val showAnimeIntent =
                 Intent(itemView.context, AnimeDetails::class.java)
             val japnTitle = this.anime.attributes.otherTitles?.enJapTitle
-            //Log.d("JAPNTTITLE",""+japnTitle)
             showAnimeIntent.putExtra(
                 itemView.context.getString(R.string.anime_id_kitsu),
                 japnTitle ?: this.anime.attributes.title
@@ -59,7 +58,6 @@ class AnimeCardRVAdapter(var animeList : List<KitsuAnimeData>): RecyclerView.Ada
         }
 
         fun bindAnime(anime: KitsuAnimeData) {
-            //Log.d("BIND",anime.toString())
             this.anime = anime
             this.imgURL = anime.attributes.coverImageData!!.original
             Glide.with(this.itemView).load(imgURL).centerCrop().into(view.findViewById(R.id.card_img))

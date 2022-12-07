@@ -9,12 +9,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.project24.animexapp.LogInActivity
@@ -33,6 +37,7 @@ class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var db : FirebaseFirestore
 
     private lateinit var favoritesList: List<LocalAnime>
     private lateinit var favoritesAnimeRV: RecyclerView
@@ -50,6 +55,14 @@ class ProfileFragment : Fragment() {
     private lateinit var currentUserID : String
     private lateinit var chosenLanguage : String
 
+    private lateinit var favEmptyText : TextView
+    private lateinit var watchingEmptyText : TextView
+    private lateinit var watchLaterEmptyText : TextView
+    private lateinit var noAccountContent : LinearLayout
+    private lateinit var profileContent : LinearLayout
+    private lateinit var profileLoginButton : Button
+    private lateinit var profileLogoutButton : Button
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -60,7 +73,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         firebaseAuth = FirebaseAuth.getInstance()
-        val db = Firebase.firestore
+        db = Firebase.firestore
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -68,13 +81,13 @@ class ProfileFragment : Fragment() {
         val profileEmail = binding.profileEmail
         val currentUserEmail = firebaseAuth.currentUser?.email.toString()
         currentUserID = firebaseAuth.currentUser?.uid.toString()
-        val favEmptyText = binding.emptyFavText
-        val watchingEmptyText = binding.emptyWatchingText
-        val watchLaterEmptyText = binding.emptyWatchLaterText
-        val profileContent = binding.profileContent
-        val profileLogoutButton = binding.profileLogoutButton
-        val noAccountContent = binding.noAccountContent
-        val profileLoginButton = binding.profileLoginButton
+        favEmptyText = binding.emptyFavText
+        watchingEmptyText = binding.emptyWatchingText
+        watchLaterEmptyText = binding.emptyWatchLaterText
+        profileContent = binding.profileContent
+        profileLogoutButton = binding.profileLogoutButton
+        noAccountContent = binding.noAccountContent
+        profileLoginButton = binding.profileLoginButton
         val englishBtn = binding.englishBtn
         val japaneseBtn = binding.japaneseBtn
         val chosenLanguagePreferences = requireActivity().getSharedPreferences(getString(R.string.shared_preference_language_key), MODE_PRIVATE)
@@ -185,8 +198,11 @@ class ProfileFragment : Fragment() {
         )
         watchingAnimeRV.adapter = watchingAnimeAdapter
 
-        if (currentUserID != "null") {
+        return root
+    }
 
+    override fun onStart() {
+        if (currentUserID !=="null") {
             val favDocRef = db.collection("Users").document(currentUserID).collection("Favourites")
             val watchLaterDocRef = db.collection("Users").document(currentUserID).collection("WatchLater")
             val watchingDocRef = db.collection("Users").document(currentUserID).collection("Watching")
@@ -196,6 +212,7 @@ class ProfileFragment : Fragment() {
 
             favDocRef.get().addOnSuccessListener() {
                 if(it.isEmpty) {
+                    favEmptyText.visibility = View.VISIBLE
                     favEmptyText.text = "You have no items on your favourites yet."
                 } else {
                     favEmptyText.visibility = View.GONE
@@ -204,6 +221,7 @@ class ProfileFragment : Fragment() {
 
             watchingDocRef.get().addOnSuccessListener() {
                 if(it.isEmpty) {
+                    watchingEmptyText.visibility = View.VISIBLE
                     watchingEmptyText.text = "You have no items on your watching yet."
                 } else {
                     watchingEmptyText.visibility = View.GONE
@@ -212,30 +230,13 @@ class ProfileFragment : Fragment() {
 
             watchLaterDocRef.get().addOnSuccessListener() {
                 if(it.isEmpty) {
+                    watchLaterEmptyText.visibility = View.VISIBLE
                     watchLaterEmptyText.text = "You have no items on your watch later yet."
                 } else {
                     watchLaterEmptyText.visibility = View.GONE
                 }
             }
 
-            updateFavourites(currentUserID, chosenLanguage)
-            updateWatchingLater(currentUserID, chosenLanguage)
-            updateCurrentlyWatching(currentUserID, chosenLanguage)
-        } else {
-            profileContent.visibility = View.GONE
-            profileLogoutButton.visibility = View.GONE
-
-            profileLoginButton.setOnClickListener {
-                val intent = Intent(activity, LogInActivity::class.java)
-                startActivity(intent)
-
-            }
-        }
-        return root
-    }
-
-    override fun onResume() {
-        if (currentUserID!=="null") {
             val updateUiThread = Thread(){
                 val handler = Handler(Looper.getMainLooper())
                 val myRunnable = Runnable {
@@ -247,9 +248,23 @@ class ProfileFragment : Fragment() {
             }
             updateUiThread.start()
             updateUiThread.join()
+            favoritesAnimeAdapter.notifyDataSetChanged()
+            watchingAnimeAdapter.notifyDataSetChanged()
+            watchLaterAnimeAdapter.notifyDataSetChanged()
         }
 
-        super.onResume()
+
+        else{
+            profileContent.visibility = View.GONE
+            profileLogoutButton.visibility = View.GONE
+
+            profileLoginButton.setOnClickListener {
+                val intent = Intent(activity, LogInActivity::class.java)
+                startActivity(intent)
+
+            }
+        }
+        super.onStart()
     }
 
     fun logUserFavourites(username: String){
@@ -284,37 +299,42 @@ class ProfileFragment : Fragment() {
 
         db.collection("Users").document(currentUserID).collection("Favourites").get()
             .addOnSuccessListener { favourite ->
-                for (document in favourite) {
-                    var malID: Long = document.data.getValue("mal_id") as Long
-                    var imgURL: String = document.data.getValue("image_url") as String
+                if (favourite.size() == 0){
+                    favoritesAnimeAdapter.animeList = emptyList()
+                    favoritesAnimeAdapter.notifyDataSetChanged()
+                }
 
-                    // To prevent older version of database from crashing
-                    if (document.data.size > 3) {
-                        if (chosenLanguage == getString(R.string.english)
-                            && document.data.getValue("anime_english_title") != null
-                        ) {
-                            var animeTitle: String =
-                                document.data.getValue("anime_english_title") as String
-                            favoritesList =
-                                favoritesList + LocalAnime(malID, animeTitle, imgURL)
-                            // DELETE THIS
-                            Log.d("ARRR", favoritesList.toString())
-                        } else {
+                else{
+                    for (document in favourite) {
+                        var malID: Long = document.data.getValue("mal_id") as Long
+                        var imgURL: String = document.data.getValue("image_url") as String
+
+                        // To prevent older version of database from crashing
+                        if (document.data.size > 3) {
+                            if (chosenLanguage == getString(R.string.english)
+                                && document.data.getValue("anime_english_title") != null
+                            ) {
+                                var animeTitle: String =
+                                    document.data.getValue("anime_english_title") as String
+                                favoritesList =
+                                    favoritesList + LocalAnime(malID, animeTitle, imgURL)
+                            } else {
+                                var animeTitle: String =
+                                    document.data.getValue("anime_title") as String
+                                favoritesList =
+                                    favoritesList + LocalAnime(malID, animeTitle, imgURL)
+                            }
+                        }
+                        else{
                             var animeTitle: String =
                                 document.data.getValue("anime_title") as String
                             favoritesList =
                                 favoritesList + LocalAnime(malID, animeTitle, imgURL)
                         }
-                    }
-                    else{
-                        var animeTitle: String =
-                            document.data.getValue("anime_title") as String
-                        favoritesList =
-                            favoritesList + LocalAnime(malID, animeTitle, imgURL)
-                    }
 
-                    favoritesAnimeAdapter.animeList = favoritesList
-                    favoritesAnimeAdapter.notifyDataSetChanged()
+                        favoritesAnimeAdapter.animeList = favoritesList
+                        favoritesAnimeAdapter.notifyDataSetChanged()
+                    }
                 }
             }
     }
@@ -325,35 +345,42 @@ class ProfileFragment : Fragment() {
 
         db.collection("Users").document(currentUserID).collection("WatchLater").get()
             .addOnSuccessListener { watchLater ->
-                for (document in watchLater) {
-                    var malID: Long = document.data.getValue("mal_id") as Long
-                    var imgURL: String = document.data.getValue("image_url") as String
+                if (watchLater.size() == 0){
+                    watchLaterAnimeAdapter.animeList = emptyList()
+                    watchLaterAnimeAdapter.notifyDataSetChanged()
+                }
 
-                    // To prevent older version of database from crashing
-                    if (document.data.size > 3) {
-                        if (chosenLanguage == getString(R.string.english)
-                            && document.data.getValue("anime_english_title")  != null
-                        ) {
-                            var animeTitle: String =
-                                document.data.getValue("anime_english_title") as String
-                            watchLaterList =
-                                watchLaterList + LocalAnime(malID, animeTitle, imgURL)
+                else{
+                    for (document in watchLater) {
+                        var malID: Long = document.data.getValue("mal_id") as Long
+                        var imgURL: String = document.data.getValue("image_url") as String
+
+                        // To prevent older version of database from crashing
+                        if (document.data.size > 3) {
+                            if (chosenLanguage == getString(R.string.english)
+                                && document.data.getValue("anime_english_title")  != null
+                            ) {
+                                var animeTitle: String =
+                                    document.data.getValue("anime_english_title") as String
+                                watchLaterList =
+                                    watchLaterList + LocalAnime(malID, animeTitle, imgURL)
+                            }
+                            else {
+                                var animeTitle: String =
+                                    document.data.getValue("anime_title") as String
+                                watchLaterList =
+                                    watchLaterList + LocalAnime(malID, animeTitle, imgURL)
+                            }
                         }
-                        else {
+                        else{
                             var animeTitle: String =
                                 document.data.getValue("anime_title") as String
                             watchLaterList =
                                 watchLaterList + LocalAnime(malID, animeTitle, imgURL)
                         }
+                        watchLaterAnimeAdapter.animeList = watchLaterList
+                        watchLaterAnimeAdapter.notifyDataSetChanged()
                     }
-                    else{
-                        var animeTitle: String =
-                            document.data.getValue("anime_title") as String
-                        watchLaterList =
-                            watchLaterList + LocalAnime(malID, animeTitle, imgURL)
-                    }
-                    watchLaterAnimeAdapter.animeList = watchLaterList
-                    watchLaterAnimeAdapter.notifyDataSetChanged()
                 }
             }
     }
@@ -363,34 +390,39 @@ class ProfileFragment : Fragment() {
         watchingList = emptyList()
         db.collection("Users").document(currentUserID).collection("Watching").get()
             .addOnSuccessListener { watching ->
-                //Log.d("favorite",favourite.documents.)
-                //var idList = emptyList<Long>()
-                for (document in watching) {
-                    var malID: Long = document.data.getValue("mal_id") as Long
-                    var imgURL: String = document.data.getValue("image_url") as String
+                if (watching.size() == 0){
+                    watchingAnimeAdapter.animeList = emptyList()
+                    watchingAnimeAdapter.notifyDataSetChanged()
+                }
 
-                    // To prevent older version of database from crashing
-                    if (document.data.size > 3) {
-                        if (chosenLanguage == getString(R.string.english)
-                            && document.data.getValue("anime_english_title") != null
-                        ) {
-                            var animeTitle: String =
-                                document.data.getValue("anime_english_title") as String
-                            watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
+                else{
+                    for (document in watching) {
+                        var malID: Long = document.data.getValue("mal_id") as Long
+                        var imgURL: String = document.data.getValue("image_url") as String
+
+                        // To prevent older version of database from crashing
+                        if (document.data.size > 3) {
+                            if (chosenLanguage == getString(R.string.english)
+                                && document.data.getValue("anime_english_title") != null
+                            ) {
+                                var animeTitle: String =
+                                    document.data.getValue("anime_english_title") as String
+                                watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
+                            }
+                            else {
+                                var animeTitle: String =
+                                    document.data.getValue("anime_title") as String
+                                watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
+                            }
                         }
                         else {
                             var animeTitle: String =
                                 document.data.getValue("anime_title") as String
                             watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
                         }
+                        watchingAnimeAdapter.animeList = watchingList
+                        watchingAnimeAdapter.notifyDataSetChanged()
                     }
-                    else {
-                        var animeTitle: String =
-                            document.data.getValue("anime_title") as String
-                        watchingList = watchingList + LocalAnime(malID, animeTitle, imgURL)
-                    }
-                    watchingAnimeAdapter.animeList = watchingList
-                    watchingAnimeAdapter.notifyDataSetChanged()
                 }
             }
     }
